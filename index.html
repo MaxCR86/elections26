@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>בחירות 2026</title>
+<meta property="og:title" content="בחירות 2026">
+<meta property="og:description" content="עכשיו או אף פעם. או בעוד שנה.">
+<meta property="og:image" content="https://elections26.dimaxtlv.com/poster.jpg">
+<meta property="og:url" content="https://elections26.dimaxtlv.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#050608">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:ital,wdth,wght@0,50..125,100..900;1,50..125,100..900&family=Secular+One&family=Assistant:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: one 9:16 cinema stage centred on black; UI chips pinned to the stage corners. Single dark look by design. */
+:root {
+  --ink: #050608; --fg: #f3f5f8; --muted: #a9b1bf; --ballot: #2a4fd6; --p1: #ffc23a; --p2: #3ae0ff;
+  --metal: linear-gradient(180deg,#fff 0%,#e3e8ee 40%,#9aa4b1 62%,#eef1f5 100%);
+  --f-mark: "Saira", "Helvetica Neue", Arial, sans-serif;
+  --f-he: "Secular One", "Assistant", "Arial Hebrew", system-ui, sans-serif;
+  --f-ui: "Assistant", "Arial Hebrew", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--ink); color: var(--fg); font-family: var(--f-ui); margin: 0; display: grid; place-items: center; overflow: hidden; }
+#stage { position: relative; height: min(100%, 177.78vw); aspect-ratio: 9 / 16; max-width: 100%; overflow: hidden; background: #000;
+  container-type: inline-size; isolation: isolate; direction: rtl; }
+.cam { position: absolute; inset: 0; }
+canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
+.flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 21; }
+
+/* ---------- DiMax ident ---------- */
+.mark { position: absolute; left: 50%; top: 40%; translate: -50% -50%; display: flex; align-items: baseline; z-index: 3; direction: ltr;
+  font-family: var(--f-mark); font-style: italic; font-weight: 500; font-stretch: 118%; font-size: 19cqw; line-height: .8; white-space: nowrap; letter-spacing: -.01em;
+  filter: drop-shadow(0 1.2cqw 2.4cqw #000c); }
+.mark .D, .mark .stem, .mark .Max { background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: .1cqw rgba(255,255,255,.28); }
+.mark .i { display: inline-block; position: relative; }
+.mark .stem { display: inline-block; transform-origin: 50% 100%; }
+.mark .dot { position: absolute; left: var(--dotL, 0); bottom: var(--dotB, 0); width: var(--dotS, 0); height: var(--dotS, 0); transform: skewX(var(--skew, -11deg));
+  background: linear-gradient(165deg, #5b7dff, var(--ballot) 55%, #1a36a8); box-shadow: inset 0 0 0 .14cqw rgba(255,255,255,.45); }
+.mark .sheen { position: absolute; inset: -12% -6%; pointer-events: none; mix-blend-mode: color-dodge;
+  background: linear-gradient(105deg, transparent 44%, rgba(255,255,255,.9) 50%, transparent 56%) 150% 0 / 300% 100% no-repeat; }
+.plate { position: absolute; left: 0; right: 0; top: 65%; display: grid; justify-items: center; gap: 1.8cqw; z-index: 3; opacity: 0; }
+.plate b { font-family: var(--f-he); font-weight: 400; font-size: 6.4cqw; letter-spacing: .5em; padding-inline-start: .5em; color: #eef2f7; display: flex; align-items: center; gap: 3cqw; }
+.plate b::before, .plate b::after { content: ""; width: 11cqw; height: 1px; background: linear-gradient(90deg, #dfe6ee, transparent); }
+.plate b::after { transform: scaleX(-1); }
+.plate small { font-size: 3.6cqw; color: var(--muted); }
+.fog { position: absolute; inset: -20%; z-index: 4; pointer-events: none;
+  background: radial-gradient(40% 25% at 30% 60%, #9fb3d81a, transparent), radial-gradient(45% 20% at 70% 40%, #9fb3d814, transparent); }
+.plinth { position: absolute; left: 30%; right: 30%; top: 47%; height: 14%; z-index: 2; background: linear-gradient(#24357a, #121b45); border-radius: .6cqw; box-shadow: inset 0 1.5cqw 0 #3348a0; }
+.plinth::before { content: ""; position: absolute; left: 30%; right: 30%; top: 0; height: 1.6cqw; background: #05070f; }
+.drl { position: absolute; bottom: 3%; width: 22%; height: 1.4cqw; border-radius: 1cqw; background: #e8f3ff; box-shadow: 0 0 4cqw 1cqw #cfe6ff; z-index: 6; opacity: 0; }
+.lit { position: absolute; inset: 0; z-index: 3; filter: brightness(.08); }
+
+/* ---------- select screen ---------- */
+.hud { position: absolute; left: 5%; right: 5%; z-index: 6; text-align: center; font-family: var(--f-he); color: #fff; }
+.hud h2 { margin: 0; font-weight: 400; font-size: 8.5cqw; letter-spacing: .02em; text-shadow: 0 0 4cqw #ff8a2a88; }
+.grid { position: absolute; left: 11%; right: 11%; top: 11%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4cqw; z-index: 4; }
+.tile { position: relative; aspect-ratio: 1; background: radial-gradient(circle at 50% 30%, #2a3350, #10131d); border: .5cqw solid #2b3140; overflow: hidden; }
+.tile img { position: absolute; left: 50%; top: -4%; width: 150%; translate: -50% 0; }
+.tile i { position: absolute; inset: auto 0 0; font-style: normal; font-size: 3cqw; text-align: center; color: #fff; background: #000b; font-family: var(--f-ui); font-weight: 700; padding-block: .3cqw; }
+.tile.p1 { border-color: var(--p1); box-shadow: 0 0 0 .6cqw var(--p1), 0 0 4cqw var(--p1); }
+.tile.p2 { border-color: var(--p2); box-shadow: 0 0 0 .6cqw var(--p2), 0 0 4cqw var(--p2); }
+.stamp { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-mark); font-style: italic; font-weight: 800; font-size: 10cqw; color: #fff; text-shadow: 0 0 2cqw #000; }
+.dq { position: absolute; inset: 0; display: grid; place-content: center; gap: .6cqw; background: #b00e1ccc; color: #fff; text-align: center; line-height: 1; opacity: 0; }
+.dq b { font-family: var(--f-mark); font-style: italic; font-weight: 800; font-size: 3.6cqw; } .dq small { font-family: var(--f-ui); font-weight: 700; font-size: 3cqw; }
+.bars { font-family: var(--f-ui); font-size: 3.6cqw; display: grid; gap: 1cqw; margin-top: 1.5cqw; }
+.bars div { display: grid; grid-template-columns: 50cqw 1fr; align-items: center; gap: 2cqw; text-align: start; }
+.bars span { height: 2.4cqw; background: linear-gradient(270deg, #ffd84a, #ff7a1a); justify-self: start; }
+.split { position: absolute; inset: 0; z-index: 1; background: linear-gradient(115deg, #0c3448 0 49.6%, #fff 49.6% 50.4%, #3a0d0d 50.4%); }
+.vs { position: absolute; left: 50%; top: 44%; translate: -50% -50%; z-index: 7; direction: ltr; font-family: var(--f-mark); font-style: italic; font-weight: 800; font-stretch: 110%; font-size: 30cqw;
+  background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 4cqw #ff8a2a); opacity: 0; }
+.round.he { direction: rtl; font-family: var(--f-he); font-style: normal; font-weight: 400; font-size: 13cqw; }
+.move { position: absolute; top: 8%; z-index: 9; display: grid; gap: .6cqw; max-width: 46%; padding: 2cqw 3cqw; background: #000c; border-radius: 1.6cqw; opacity: 0; }
+.move.m1 { right: 4%; text-align: right; border-right: 1cqw solid var(--p1); } .move.m2 { left: 4%; top: 17%; text-align: right; border-left: 1cqw solid var(--p2); }
+.move b { font-family: var(--f-he); font-weight: 400; font-size: 6cqw; color: #fff; line-height: 1; }
+.move small { font-family: var(--f-ui); font-weight: 700; font-size: 3cqw; color: var(--muted); }
+.move i { font-family: var(--f-he); font-style: normal; font-size: 4.8cqw; color: #ffd84a; line-height: 1.1; }
+.bubble { position: absolute; z-index: 9; background: #fff; color: #111; font-family: var(--f-he); font-size: 4.6cqw; padding: 2cqw 3.2cqw; border-radius: 3cqw; max-width: 48%; opacity: 0; box-shadow: 0 1cqw 3cqw #0008; }
+.booth { position: absolute; left: 50%; bottom: 2%; translate: -50% 0; width: 52%; z-index: 8; background: #000c; border: .3cqw solid #ffd84a55; border-radius: 2cqw; padding: 1.2cqw 2cqw 0; display: grid; grid-template-columns: 1fr 1fr; opacity: 0; }
+.booth img { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: top; }
+.booth span { grid-column: 1 / -1; text-align: center; font-family: var(--f-he); font-size: 3.4cqw; color: #ffd84a; padding-block: .6cqw; }
+.alarm { position: absolute; left: 0; right: 0; top: 38%; z-index: 10; background: #d4142a; color: #fff; font-family: var(--f-he); font-size: 6.6cqw; text-align: center; padding: 2cqw 0; opacity: 0; }
+.round { position: absolute; inset: 0; z-index: 11; display: grid; place-items: center; direction: ltr; font-family: var(--f-mark); font-style: italic; font-weight: 800; font-stretch: 112%; font-size: 19cqw; color: #ffd84a;
+  text-shadow: 0 1cqw 0 #8a3b00, 0 0 5cqw #ff8a2a; opacity: 0; }
+
+/* ---------- poster ---------- */
+.bgp { position: absolute; inset: 0; background: #000 url("img/bg.jpg") center / cover; z-index: 0; }
+.ch { position: absolute; z-index: 2; pointer-events: none; }
+.ch img { width: 100%; height: 100%; object-fit: contain; object-position: bottom; display: block; filter: drop-shadow(0 1.5cqw 2cqw #000a); }
+.shade { position: absolute; inset: 0; z-index: 6; pointer-events: none;
+  background: radial-gradient(ellipse 95% 60% at 50% 42%, transparent 55%, #0009), linear-gradient(transparent 62%, #000d 82%, #000); }
+.title { position: absolute; left: 4%; right: 4%; bottom: 3.5%; z-index: 8; text-align: center; color: #fff; display: grid; gap: 1.1cqw; }
+.title h1 { margin: 0; font-family: var(--f-he); font-weight: 400; font-size: 14.5cqw; line-height: .95; letter-spacing: -.01em;
+  background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 .5cqw 0 #222) drop-shadow(0 1.5cqw 3cqw #000); }
+.title .tag { font-family: var(--f-he); font-size: 5.6cqw; color: #fff; margin-top: -.6cqw; margin-bottom: 1cqw; text-shadow: 0 .4cqw 1.5cqw #000; }
+.title .when { font-family: var(--f-ui); font-weight: 700; font-size: 4.6cqw; letter-spacing: .03em; }
+.title .where { font-family: var(--f-ui); font-size: 4cqw; }
+.title .what { font-family: var(--f-ui); font-size: 3.6cqw; color: var(--muted); }
+.title .joke { font-family: var(--f-he); font-size: 4cqw; color: #ffd84a; margin-top: .6cqw; }
+.title .fine { font-family: var(--f-ui); font-size: 2.6cqw; color: #8f97a6; margin-top: .8cqw; }
+.title .fine button { all: unset; cursor: pointer; text-decoration: underline; }
+
+/* ---------- arcade start screen ---------- */
+.ghosts img { position: absolute; bottom: 0; height: 58%; translate: -50% 0; filter: brightness(0) drop-shadow(0 0 1.2cqw var(--c)); opacity: .9; }
+.ghosts .g1 { --c: var(--p1); } .ghosts .g2 { --c: var(--p2); }
+.start { position: absolute; inset: 0; z-index: 12; display: grid; align-content: center; justify-items: center; gap: 3.2cqw; text-align: center; padding-bottom: 30%; }
+.presents { font-family: var(--f-he); font-size: 4.2cqw; color: var(--muted); letter-spacing: .08em; }
+.press { font-family: var(--f-mark); font-style: italic; font-weight: 800; font-stretch: 112%; font-size: 13cqw; line-height: 1; color: #ffd84a;
+  text-shadow: 0 .8cqw 0 #8a3b00, 0 0 5cqw #ff8a2a; animation: blink 1s steps(2, jump-none) infinite; }
+@keyframes blink { 50% { opacity: .15; } }
+.press-he { font-family: var(--f-he); font-size: 6cqw; color: #fff; }
+.btns { display: grid; gap: 3cqw; margin-top: 3cqw; width: 68%; }
+.arc { font: 400 6cqw/1 var(--f-he); padding: 4.2cqw 0; border-radius: 999px; cursor: pointer; border: 0; color: #111;
+  box-shadow: 0 1.4cqw 0 #0008, inset 0 -1cqw 0 #0003; transition: transform .08s; }
+.arc:active { transform: translateY(1cqw); box-shadow: 0 .4cqw 0 #0008, inset 0 -1cqw 0 #0003; }
+.arc:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.a1 { background: linear-gradient(#ffe07a, var(--p1)); } .a2 { background: linear-gradient(#9cf3ff, var(--p2)); }
+.credit { font-family: var(--f-ui); font-weight: 700; font-size: 3.2cqw; color: #8f97a6; margin-top: 2cqw; }
+@media (prefers-reduced-motion: reduce) { .press { animation: none; } }
+
+/* ---------- UI chips ---------- */
+.ui { position: absolute; z-index: 30; font: 700 3.4cqw/1 var(--f-ui); color: #fff; background: #000a; border: 1px solid #fff4; border-radius: 999px;
+  padding: 1.8cqw 3cqw; cursor: pointer; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.ui:focus-visible { outline: 2px solid var(--p2); outline-offset: 2px; }
+#snd { top: 2.5%; inset-inline-start: 3%; }
+#skip { top: 2.5%; inset-inline-end: 3%; }
+#again { bottom: 1.2%; inset-inline-start: 3%; font-size: 2.8cqw; padding: 1.2cqw 2.4cqw; }
+#credits { position: absolute; inset: 6% 6% 6%; z-index: 40; background: #0b0d12f2; border: 1px solid #fff3; border-radius: 3cqw; padding: 5cqw; overflow: auto;
+  font-size: 3.4cqw; line-height: 1.5; color: var(--muted); }
+#credits h3 { margin: 0 0 2cqw; font-family: var(--f-he); font-weight: 400; color: #fff; font-size: 5cqw; }
+#credits ul { margin: 0; padding-inline-start: 4cqw; }
+#credits a { color: #cfe2ff; }
+@media (prefers-reduced-motion: reduce) { .mark .sheen { display: none; } }
+</style>
+</head>
+<body>
+<div id="stage" lang="he" dir="rtl" aria-label="הזמנה למסיבת ליל הבחירות 2026">
+  <div class="cam" id="cam"></div>
+  <div class="flash" id="flash"></div>
+</div>
+
+<script>
+// ---------- data ----------
+// [id, label, x% (centre), feetY%, height%]; coalition right, opposition left
+const R = [['netanyahu','נתניהו',65,86,35],['bengvir','בן גביר',82,86,28],['smotrich','סמוטריץ׳',96,87,27],
+  ['deri','דרעי',59,68,20],['regev','רגב',72,69,20],['levin','לוין',85,68,20],['saar','סער',97,67,19],
+  ['ohana','אוחנה',66,57,15],['goldknopf','גולדקנופף',80,57,15],
+  ['karhi','קרעי',68,44,18],['gotliv','גוטליב',80,33,18],['katz','כ״ץ',94,42,17]];
+const L = [['eisenkot','איזנקוט',36,86,33],['lapid','לפיד',19,86,28],['liberman','ליברמן',4,87,27],
+  ['tibi','טיבי',41,68,20],['abbas','עבאס',28,69,20],['jabareen','ג׳בארין',15,68,20],['tropper','טרופר',3,67,19],
+  ['golan','גולן',32,44,18],['bennett','בנט',20,33,18],['kahana','כהנא',6,42,17]];
+const LEDGE = [['gantz','גנץ',1,62,13],['hendel','הנדל',4,49,11]];
+const BALC = [['gafni','גפני',8,17,10],['edelstein','אדלשטיין',19,17,10]];
+const SKY = [['haskel','השכל',45,20,12],['winter','וינטר',56,22,12]];
+const ALL = [...R, ...L, ...LEDGE, ...BALC, ...SKY];
+const NAME = Object.fromEntries(ALL.map((r) => [r[0], r[1]]));
+const CREDITS = {"tibi":["אמיר דיב - Amir Deeb","CC BY-SA 4.0"],"ohana":["Avi Ohayon","CC BY-SA 3.0"],"liberman":["Preiss /MSC","CC BY 3.0 de"],"netanyahu":["Avi Ohayon","CC BY-SA 3.0"],"gantz":["U.S. Embassy Jerusalem","CC BY 2.0"],"smotrich":["Avi Ohayon","CC BY-SA 3.0"],"eisenkot":["Yahav Trudler - Yahav Studio","CC BY-SA 3.0"],"saar":["Sharon Gabay","CC BY-SA 3.0"],"katz":["U.S. Embassy Jerusalem","CC BY 2.0"],"bengvir":["Shlomi Amsalem","CC BY-SA 4.0"],"edelstein":["Ronen Horesh","CC BY-SA 4.0"],"abbas":["דוד שי","CC BY-SA 4.0"],"kahana":["Arielinson","CC BY-SA 4.0"],"regev":["בן חדד - Ben Haddad","CC BY-SA 4.0"],"gafni":["Nati Shohat","CC BY-SA 4.0"],"bennett":["Avi Ohayon","CC BY-SA 3.0"],"winter":["Nadav Margalit","CC BY-SA 4.0"],"haskel":["Sharon Gabay","CC BY-SA 3.0"],"karhi":["Shlomi Amsalem","CC BY-SA 4.0"],"gotliv":["Ronen Horesh","CC BY-SA 4.0"],"golan":["Shlomi Amsalem","CC BY-SA 4.0"],"lapid":["Avi Ohayon","CC BY-SA 3.0"],"levin":["Avi Ohayon","CC BY-SA 3.0"],"goldknopf":["Avi Ohayon","CC BY-SA 3.0"],"jabareen":["אמיר דיב - Amir Deeb","CC BY-SA 4.0"],"deri":["רווח הפקות","CC BY-SA 3.0"],"tropper":["Yanai Yechiel","CC BY-SA 4.0"],"hendel":["יניב מורוזובסקי","CC BY-SA 4.0"]};
+// Each load: every character gets a random style, and the cursors lock a random coalition vs opposition pair.
+const STY = ['clay', 'lego', 'kitsch3d'];
+const BAD = new Set(['lapid_clay', 'golan_clay', 'abbas_clay', 'tropper_clay', 'gantz_clay', 'hendel_clay']); // stray logo in these renders
+const BEST = { netanyahu: 'lego', bengvir: 'kitsch3d', smotrich: 'clay', deri: 'lego', regev: 'kitsch3d', levin: 'clay', katz: 'lego', saar: 'kitsch3d',
+  gotliv: 'kitsch3d', ohana: 'clay', karhi: 'lego', goldknopf: 'clay', eisenkot: 'lego', bennett: 'kitsch3d', lapid: 'kitsch3d', liberman: 'lego',
+  golan: 'kitsch3d', tibi: 'kitsch3d', abbas: 'lego', jabareen: 'clay', kahana: 'kitsch3d', tropper: 'lego', gantz: 'kitsch3d', hendel: 'kitsch3d',
+  gafni: 'lego', edelstein: 'kitsch3d', haskel: 'lego', winter: 'clay' };   // fixed mix for the exported still
+const pick = (a) => a[Math.random() * a.length | 0];
+let STYLE = {};
+const IMG = (id) => `img/${id}_${STYLE[id]}.webp`;
+function rollStyles(fixed) {
+  STYLE = Object.fromEntries(ALL.map(([id]) => [id, fixed ? BEST[id] : pick(STY.filter((s) => !BAD.has(`${id}_${s}`)))]));
+  [...ALL.map((r) => IMG(r[0])), 'img/bg.jpg'].forEach((u) => { new Image().src = u; });
+}
+const MOVES = {
+  netanyahu: ['הקו האדום', 'הנאום באו״ם', 'הישרדות נצחית'], bengvir: ['חותמת רישיון', 'מגפון במהדורה', 'פרובוקציה מתוזמנת'],
+  smotrich: ['מספריים של תקציב', 'מחשבון הגירעון', 'גזירה גזירה'], deri: ['המפתח לכל קואליציה', 'המתווך הנצחי', 'חוזר תמיד'],
+  regev: ['גזירת סרט אינסופית', 'רמזור אדום', 'טקס פתיחה'], levin: ['פטיש ההריסה', 'רפורמה בשלבים', 'פטיש בית המשפט'],
+  katz: ['סערת ציוצים', 'ציוץ בשלוש בלילה', 'שרשור זועם'], saar: ['הבומרנג', 'חזרה הביתה', 'תקווה חדשה, ישנה'],
+  gotliv: ['המיקרופון הבוער', 'צעקה בוועדה', 'קפיצה בין מפלגות'], ohana: ['פטיש היו״ר', 'הישיבה נעולה', 'קריאה לסדר'],
+  karhi: ['כיבוי ערוץ', 'סגירת תאגיד', 'מספרי כבלים'], goldknopf: ['מגן הפטור', 'ספר נגד צו', 'דחייה אינסופית'],
+  eisenkot: ['תוכנית סדורה', 'מבט של רמטכ״ל', 'שקט מתוח'], bennett: ['הקאמבק', 'ג׳טפק הייטק', 'אקזיט פוליטי'],
+  lapid: ['פתיח של מהדורה', 'טלפרומפטר', 'יש עתיד? יש.'], liberman: ['צו גיוס לכולם', 'מבט קפוא', 'עושה המלכים'],
+  golan: ['מגפון המחאה', 'דגל בקפלן', 'דמוקרטיה בכוח'], tibi: ['הלשון החדה', 'עקיצה בכנסת', 'שאלה מביכה'],
+  abbas: ['חתיכת הפאזל החסרה', 'גשר', 'יד מושטת'], jabareen: ['תוכנית מתאר', 'מחוגה חדה', 'ועדת תכנון'],
+  kahana: ['מטוס נייר מונחה', 'טיסה נמוכה', 'מחשבה של טייס'], tropper: ['קומדיה וטרגדיה', 'מסך אחרון', 'מחזה בשלוש מערכות'] };
+let P1 = 'netanyahu', P2 = 'eisenkot';
+function rollFighters() { P1 = pick(R.map((r) => r[0])); P2 = pick(L.map((r) => r[0])); }
+
+// ---------- helpers ----------
+const stage = document.getElementById('stage'), cam = document.getElementById('cam'), F = document.getElementById('flash');
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const el = (tag, cls, html) => Object.assign(document.createElement(tag), { className: cls || '', innerHTML: html || '' });
+const A = (n, kf, o) => n.animate(kf, { fill: 'both', ...o });
+let timers = [];
+const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+const flash = (o = .9, ms = 140) => RM || A(F, [{ opacity: o }, { opacity: 0 }], { duration: ms });
+const shake = (px = 9, ms = 260) => RM || A(cam, Array.from({ length: 8 }, (_, i) => ({ transform: `translate(${(i % 2 ? 1 : -1) * px * (1 - i / 8)}px,${((i % 3) - 1) * px * (1 - i / 8)}px)` })).concat({ transform: 'none' }), { duration: ms });
+const slam = (n, delay = 0) => A(n, [{ opacity: 0, transform: 'scale(1.7)' }, { opacity: 1, transform: 'none' }], { duration: 420, delay, easing: 'cubic-bezier(.2,1.4,.4,1)' });
+
+// canvas particles + per-scene painter
+const FX = (() => {
+  const c = el('canvas', 'fx'); stage.append(c);
+  const ctx = c.getContext('2d'); let W = 1, H = 1, last = performance.now();
+  const size = () => { const d = Math.min(devicePixelRatio || 1, 2); W = stage.clientWidth; H = stage.clientHeight; c.width = W * d; c.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  size(); addEventListener('resize', size);
+  const ps = []; let paint = null;
+  (function loop(t) {
+    const real = (t - last) / 1000, dt = Math.min(.05, real); last = t;
+    ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter';
+    if (paint) paint(ctx, W, H, t);
+    for (let i = ps.length - 1; i >= 0; i--) {
+      const p = ps[i]; p.life -= real; if (p.life <= 0) { ps.splice(i, 1); continue; }
+      p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+      const a = Math.min(1, p.life * 1.6);
+      ctx.strokeStyle = `hsla(${p.h},100%,${55 + 40 * a}%,${a})`; ctx.lineWidth = p.w;
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * .035, p.y - p.vy * .035); ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(loop);
+  })(last);
+  return {
+    burst(x, y, n, o = {}) { if (RM) return; const k = W / 400;
+      for (let i = 0; i < n; i++) { const a = (o.a0 ?? 0) + Math.random() * (o.spread ?? Math.PI * 2), s = ((o.s0 ?? 150) + Math.random() * (o.s1 ?? 500)) * k;
+        ps.push({ x: x * W, y: y * H, vx: Math.cos(a) * s, vy: Math.sin(a) * s, g: (o.g ?? 900) * k, life: .35 + Math.random() * (o.life ?? .9), h: o.h ?? 22 + Math.random() * 25, w: (o.w ?? 1.6) * Math.max(1, k * .8) }); } },
+    set paint(f) { paint = f; }, clear() { ps.length = 0; paint = null; },
+  };
+})();
+const embers = () => { FX.paint = (ctx, W, H, t) => { for (let i = 0; i < 26; i++) { const p = ((t / 5200) + i * .137) % 1, x = W * ((i * .381) % 1), y = H * (1 - p);
+  ctx.fillStyle = `rgba(255,${140 + (i * 13) % 80},60,${.6 * (1 - p)})`; ctx.fillRect(x + Math.sin(t / 700 + i) * 8, y, 2.2, 2.2); } }; };
+
+// ---------- sound ----------
+let soundOn = true;
+const SND = Object.fromEntries(['ident', 'blip', 'dq', 'lock', 'vs', 'alarm', 'fight', 'crash', 'idle', 'music'].map((k) => {
+  const a = new Audio(`audio/${k}.mp3`); a.preload = 'auto'; if (k === 'idle') a.loop = true; return [k, a]; }));
+const sfx = (k, vol = 1) => { if (!soundOn) return; const a = SND[k]; a.volume = vol; a.currentTime = 0; a.play().catch(() => {}); };
+const blip = () => { if (!soundOn) return; const a = SND.blip.cloneNode(); a.volume = .55; a.play().catch(() => {}); };
+const stopAll = () => Object.values(SND).forEach((a) => { a.pause(); });
+const fadeOut = (a, ms = 800) => { const v0 = a.volume, t0 = performance.now(); const f = () => { const k = (performance.now() - t0) / ms; if (k >= 1) { a.pause(); a.volume = v0; return; } a.volume = v0 * (1 - k); requestAnimationFrame(f); }; f(); };
+
+// ---------- DiMax mark ----------
+const SLANT_DEG = 11, SLANT = Math.tan(SLANT_DEG * Math.PI / 180);
+const markEl = () => el('div', 'mark', '<span class="D">D</span><span class="i"><span class="stem">ı</span><b class="dot"></b></span><span class="Max">Max</span><i class="sheen"></i>');
+function fitMark(m) {
+  const fs = parseFloat(getComputedStyle(m).fontSize), c = document.createElement('canvas').getContext('2d');
+  c.font = `italic 500 ${fs}px Saira`; c.fontStretch = 'expanded';
+  const cap = c.measureText('D').actualBoundingBoxAscent, xh = c.measureText('x').actualBoundingBoxAscent;
+  const st = c.measureText('ı'), mid = (st.actualBoundingBoxRight - st.actualBoundingBoxLeft) / 2;
+  const size = fs * .13, bottom = cap - size, x = (h) => mid + SLANT * (h - xh / 2);
+  m.style.setProperty('--dotS', size + 'px'); m.style.setProperty('--dotB', bottom + 'px');
+  m.style.setProperty('--dotL', x(bottom + size / 2) - size / 2 + 'px'); m.style.setProperty('--skew', -SLANT_DEG + 'deg');
+}
+const sweep = (m, ms = 1000) => A(m.querySelector('.sheen'), [{ backgroundPosition: '150% 0' }, { backgroundPosition: '-50% 0' }], { duration: ms, easing: 'ease-in-out' });
+
+function ident() {                                   // high-beams ident, ~5.6s
+  cam.style.background = 'linear-gradient(#04060b, #0b1020 70%, #121a30)';
+  const lit = el('div', 'lit'), m = markEl(); cam.append(lit); lit.append(m, el('div', 'plinth')); fitMark(m);
+  const fog = el('div', 'fog'); cam.append(fog);
+  A(fog, [{ transform: 'translateX(-4%)' }, { transform: 'translateX(4%)' }], { duration: 6000, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' });
+  const dl = el('div', 'drl'), dr = el('div', 'drl'); dl.style.left = '14%'; dr.style.right = '14%'; cam.append(dl, dr);
+  const plate = el('div', 'plate', '<b>הפקות</b><small>בשיתוף ועדת הבחירות (לא באמת)</small>'); cam.append(plate);
+  const Lp = [.3, 1.03], Rp = [.7, 1.03], tgt = [.5, .4], lock = (p) => Math.atan2(tgt[1] - p[1], tgt[0] - p[0]);
+  let start = 0, on = false, flare = 0;
+  const lerp = (a, b, x) => a + (b - a) * x, ease = (x) => (x < 0 ? 0 : x > 1 ? 1 : 1 - (1 - x) ** 3);
+  const beam = (ctx, W, H, p, ang, k) => { const x = p[0] * W, y = p[1] * H, len = H * 1.15, s = .085;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, len); g.addColorStop(0, `rgba(255,248,230,${.42 * k})`); g.addColorStop(.6, `rgba(255,248,230,${.1 * k})`); g.addColorStop(1, 'rgba(255,248,230,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(ang - s) * len, y + Math.sin(ang - s) * len); ctx.lineTo(x + Math.cos(ang + s) * len, y + Math.sin(ang + s) * len); ctx.fill(); };
+  FX.paint = (ctx, W, H, t) => {
+    if (!on) return;
+    const e = (t - start) / 1000, sw = ease((e - .4) / 2.0);
+    const aL = e < 2.4 ? lerp(-2.25, -0.95, Math.sin(sw * Math.PI * .9)) : lock(Lp), aR = e < 2.4 ? lerp(-0.9, -2.2, Math.sin(sw * Math.PI * .9)) : lock(Rp);
+    const k = .6 + (e >= 2.4 ? .3 : 0) + flare;
+    beam(ctx, W, H, Lp, aL, k); beam(ctx, W, H, Rp, aR, k);
+    if (e >= 2.4) { const x = tgt[0] * W, y = tgt[1] * H, r = W * .28;
+      ctx.save(); ctx.translate(x, y); ctx.scale(6, .05); const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+      g.addColorStop(0, `rgba(190,215,255,${.7 + flare})`); g.addColorStop(1, 'rgba(120,160,255,0)'); ctx.fillStyle = g; ctx.fillRect(-r, -r, r * 2, r * 2); ctx.restore(); }
+  };
+  sfx('ident', .9);
+  at(800, () => [dl, dr].forEach((d) => A(d, [{ opacity: 0 }, { opacity: 1 }, { opacity: .2 }, { opacity: 1 }], { duration: 300 })));
+  at(1200, () => { on = true; start = performance.now(); A(lit, [{ filter: 'brightness(.08)' }, { filter: 'brightness(.35)' }], { duration: 2400, easing: 'ease-in' }); });
+  at(3600, () => { A(lit, [{ filter: 'brightness(.35)' }, { filter: 'brightness(1.6)' }, { filter: 'brightness(1)' }], { duration: 500 });
+    flash(.75, 110); setTimeout(() => flash(.75, 110), 190); flare = .5; setTimeout(() => (flare = 0), 420); sweep(m, 1100); });
+  at(4100, () => A(plate, [{ opacity: 0, transform: 'translateY(2cqw)' }, { opacity: 1, transform: 'none' }], { duration: 700, easing: 'ease-out' }));
+  at(7300, () => A(cam, [{ opacity: 1 }, { opacity: 0 }], { duration: 350 }));   // hold the committee line ~3s
+}
+
+// ---------- select → VS → challenger → FIGHT ----------
+const seeded = (s) => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return (Math.abs(h) % 1000) / 1000; };
+const stats = (id) => `<b style="font-weight:400;font-size:6.4cqw">${NAME[id]}</b><div class="bars">
+  <div>ותק<span style="width:${45 + seeded(id + 'a') * 55}%"></span></div>
+  <div>אמינות<span style="width:${3 + seeded(id + 'b') * 10}%"></span></div>
+  <div>סיכוי לעבור את אחוז החסימה<span style="width:${15 + seeded(id + 'c') * 80}%"></span></div></div>`;
+function ch([id, label, x, y, h], z = 2) {
+  const w = h * (2 / 3) * (16 / 9), d = el('div', 'ch'); d.dataset.id = id;
+  d.style.cssText = `left:${x - w / 2}%;top:${y - h}%;width:${w}%;height:${h}%;z-index:${z}`;
+  d.append(Object.assign(new Image(), { src: IMG(id), alt: label })); cam.append(d); return d;
+}
+
+function select() {                                   // ~10.5s, ends on FIGHT
+  FX.paint = null; cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = '';
+  cam.style.background = 'radial-gradient(ellipse at 50% 30%, #1a2140, #05060b 75%)'; A(cam, [{ opacity: 0 }, { opacity: 1 }], { duration: 300 });
+  const head = el('div', 'hud', '<h2>בחרו צד</h2>'); head.style.top = '3.5%'; cam.append(head);
+  const grid = el('div', 'grid'); cam.append(grid);
+  const Rr = R.map((r) => r[0]), Lr = [...L.map((r) => r[0]), 'gantz', 'hendel'], tiles = {};
+  for (let r = 0; r < 6; r++) [Rr[r * 2], Rr[r * 2 + 1], Lr[r * 2], Lr[r * 2 + 1]].forEach((id) => {
+    const t = el('div', 'tile', `<img src="${IMG(id)}" alt=""><i>${NAME[id]}</i>`); tiles[id] = t; grid.append(t); });
+  const info = el('div', 'hud'); info.style.bottom = '4.5%'; cam.append(info);
+  A(grid, [{ opacity: 0, transform: 'scale(.92)' }, { opacity: 1, transform: 'none' }], { duration: 400 });
+  sfx('music', .55);
+  const others = (pool, keep) => pool.filter((id) => id !== keep).sort(() => Math.random() - .5).slice(0, 4);
+  const p1 = [...others(R.map((r) => r[0]), P1), P1], p2 = [...others(L.map((r) => r[0]), P2), P2];
+  const hop = (cls, id) => { Object.values(tiles).forEach((t) => t.classList.remove(cls)); tiles[id].classList.add(cls); blip(); };
+  p1.forEach((id, i) => at(500 + i * 520, () => { hop('p1', id); info.innerHTML = stats(id); }));
+  p2.forEach((id, i) => at(760 + i * 520, () => hop('p2', id)));
+  at(3000, () => { sfx('dq', .8); ['gantz', 'hendel'].forEach((id, i) => { const t = tiles[id], dq = el('div', 'dq', '<b dir="ltr">GAME OVER</b><small>3.25%</small>'); t.append(dq);
+    A(dq, [{ opacity: 0 }, { opacity: 1 }], { duration: 150 }); A(t, [{ transform: 'none' }, { transform: `translateY(170cqw) rotate(${i ? 30 : -30}deg)` }], { duration: 900, delay: 380, easing: 'ease-in' }); }); });
+  at(4100, () => { tiles[P1].append(el('div', 'stamp', 'P1')); tiles[P2].append(el('div', 'stamp', 'P2')); sfx('lock'); flash(.4, 120); shake(6); info.innerHTML = `<b style="font-weight:400;font-size:6.4cqw">${NAME[P1]} מול ${NAME[P2]}</b>`; });
+  at(4900, () => {                                     // VS screen
+    cam.innerHTML = ''; cam.append(el('div', 'split'));
+    const a = ch([P1, '', 70, 93, 62], 5), b = ch([P2, '', 30, 93, 62], 5);
+    A(a, [{ transform: 'translateX(120%)' }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,1.2,.4,1)' });
+    A(b, [{ transform: 'translateX(-120%)' }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,1.2,.4,1)' });
+    const vs = el('div', 'vs', 'VS'); cam.append(vs); slam(vs, 420);
+    setTimeout(() => { sfx('vs'); shake(12); FX.burst(.5, .44, 90, { s0: 200, s1: 800 }); }, 450);
+    const plateOf = (id, cls) => el('div', `move ${cls}`, `<b>${NAME[id]}</b><small>מהלך מיוחד</small><i>${pick(MOVES[id])}</i>`);
+    const m1 = plateOf(P1, 'm1'), m2 = plateOf(P2, 'm2'); cam.append(m1, m2);
+    A(m1, [{ opacity: 0, transform: 'translateX(30%)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 900, easing: 'cubic-bezier(.2,1.3,.4,1)' });
+    A(m2, [{ opacity: 0, transform: 'translateX(-30%)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 1500, easing: 'cubic-bezier(.2,1.3,.4,1)' });
+    const booth = el('div', 'booth', `<img src="${IMG('gafni')}" alt=""><img src="${IMG('edelstein')}" alt=""><span>כבר לא במשחק. עדיין עם פופקורן.</span>`); cam.append(booth);
+    A(booth, [{ opacity: 0, transform: 'translateY(20%)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 2000 });
+  });
+  at(7700, () => {                                     // new challenger
+    const al = el('div', 'alarm', 'מפלגה חדשה נכנסה למשחק!'); cam.append(al); sfx('alarm', .8);
+    A(al, [{ opacity: 0 }, { opacity: 1 }, { opacity: .25 }, { opacity: 1 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1500 });
+    SKY.forEach((r, i) => { const n = ch([r[0], '', 38 + i * 24, 36, 19], 8);
+      A(n, [{ transform: 'translateY(-200%) rotate(25deg)' }, { transform: 'none' }], { duration: 700, delay: 300 + i * 150, easing: 'cubic-bezier(.3,1.4,.5,1)' }); });
+  });
+  const rnd = el('div', 'round');
+  at(9300, () => { cam.append(rnd); rnd.className = 'round he'; rnd.textContent = 'הקלפיות נפתחו'; A(rnd, [{ opacity: 0, transform: 'scale(2)' }, { opacity: 1, transform: 'none' }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1000 }); });
+  at(10500, () => { rnd.className = 'round'; rnd.textContent = 'FIGHT!'; sfx('fight'); A(rnd, [{ opacity: 0, transform: 'scale(2.6)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.2,1.5,.4,1)' }); shake(14); flash(.6, 160); });
+}
+
+// ---------- poster ----------
+function poster(animate) {
+  cam.innerHTML = ''; cam.style.background = '#000'; cam.style.opacity = 1;
+  cam.append(el('div', 'bgp'));
+  const z = (r) => (r[0] === 'netanyahu' ? 5 : LEDGE.includes(r) ? 4 : r[4] >= 27 ? 4 : r[4] >= 19 ? 3 : 2), m = {};
+  for (const r of ALL) m[r[0]] = ch(r, z(r));
+  LEDGE.forEach(([id], i) => (m[id].style.transform = `rotate(${i ? 58 : 72}deg)`));  // tumbling out of the frame's left edge
+  cam.append(el('div', 'shade'));
+  const t = el('div', 'title', `
+    <h1>בחירות 2026</h1>
+    <div class="tag">עכשיו או אף פעם. או בעוד שנה.</div>
+    <div class="when">יום ג׳, 27.10 · מ־20:00</div>
+    <div class="where">הגג של דימקס – נחלת בנימין 132</div>
+    <div class="what">מוזיקה עד שהמדגם יהרוס את האווירה</div>
+    <div class="joke">גם אם המדגם רע, יורדים במדרגות.</div>
+    <div class="fine"><bdi>DiMax</bdi> הפקות · בשיתוף ועדת הבחירות (לא באמת) · סאטירה, נוצר ב־<bdi>AI</bdi> · <button type="button" id="credBtn">קרדיטים לצילומים</button></div>`);
+  cam.append(t);
+  t.querySelector('#credBtn').onclick = showCredits;
+  embers();
+  if (!animate) return;
+  const off = (n, tr) => A(n, [{ transform: tr }, { transform: tr }], { duration: 1 });
+  R.forEach((r) => off(m[r[0]], r[3] < 50 ? 'translate(60%,-160%)' : 'translateX(160%)'));
+  L.forEach((r) => off(m[r[0]], r[3] < 50 ? 'translate(-60%,-160%)' : 'translateX(-160%)'));
+  [...SKY, ...BALC].forEach((r) => off(m[r[0]], 'translateY(-400%)'));
+  LEDGE.forEach((r) => off(m[r[0]], 'none'));
+  A(t, [{ opacity: 0 }, { opacity: 0 }], { duration: 1 });
+  sfx('crash'); fadeOut(SND.music, 600); flash(1, 500); shake(14, 600);
+  [...R, ...L].forEach(([id, , , y, h], i) => A(m[id], [{ transform: getComputedStyle(m[id]).transform }, { transform: 'none' }], { duration: y < 50 ? 900 : 650, delay: (35 - h) * 14, easing: 'cubic-bezier(.3,0,.15,1)' }));
+  setTimeout(() => { FX.burst(.5, .56, 170, { s0: 200, s1: 1000, g: 700, life: 1.1 }); FX.burst(.5, .56, 60, { s0: 100, s1: 500, g: 400, h: 190, life: 1.2 }); shake(10, 400); }, 650);
+  setTimeout(() => {
+    SKY.forEach(([id], i) => A(m[id], [{ transform: 'translateY(-160%) rotate(20deg)' }, { transform: 'none' }], { duration: 900, delay: i * 180, easing: 'cubic-bezier(.3,1.3,.5,1)' }));
+    BALC.forEach(([id], i) => A(m[id], [{ transform: 'translateY(30%)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 500, delay: 400 + i * 150 }));
+    LEDGE.forEach(([id], i) => A(m[id], [{ transform: 'none' }, { transform: 'rotate(-20deg) translateY(4%)', offset: .4 }, { transform: m[id].style.transform }], { duration: 1100, delay: 300 + i * 200, easing: 'ease-in' }));
+  }, 1300);
+  setTimeout(() => { A(t, [{ opacity: 0, transform: 'scale(1.3)' }, { opacity: 1, transform: 'none' }], { duration: 480, easing: 'cubic-bezier(.2,1.3,.4,1)' }); if (soundOn) { SND.idle.volume = .45; SND.idle.play().catch(() => {}); } }, 2700);
+  setTimeout(() => { flash(.25, 300); }, 2700);
+}
+
+// ---------- UI ----------
+function showCredits() {
+  if (document.getElementById('credits')) return;
+  const box = el('div', '', `<h3>קרדיטים</h3>
+    <p>הדמויות מבוססות על צילומים מוויקישיתוף, ועובדו לקריקטורות סאטיריות באמצעות AI. רישיונות: CC BY ו־CC BY‑SA.</p>
+    <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li>${NAME[id]}: <bdi>${who}</bdi> (<bdi>${lic}</bdi>)</li>`).join('')}</ul>
+    <p>תפאורה, מוזיקה ואפקטים: נוצרו ב־AI. כל הדמיון למציאות מקרי לחלוטין, חוץ מכל השאר.</p>`);
+  box.id = 'credits'; const x = el('button', 'ui', 'סגירה'); x.style.cssText = 'position:sticky;top:0;float:left'; x.onclick = () => box.remove();
+  box.prepend(x); stage.append(box);
+}
+const uiBtn = (id, txt, fn) => { const b = el('button', 'ui', txt); b.id = id; b.type = 'button'; b.onclick = fn; stage.append(b); return b; };
+let sndBtn = null, skipBtn = null, againBtn = null;
+const paintSnd = () => { if (!sndBtn) return; sndBtn.textContent = soundOn ? '🔊 סאונד פועל' : '🔇 סאונד כבוי'; sndBtn.setAttribute('aria-pressed', String(soundOn)); };
+const showSnd = () => { if (!sndBtn) sndBtn = uiBtn('snd', '', () => { soundOn = !soundOn; if (soundOn) unlock(); else stopAll(); paintSnd(); }); paintSnd(); };
+const unlock = () => Object.values(SND).forEach((a) => { const v = a.volume; a.muted = true; a.play().then(() => { a.pause(); a.currentTime = 0; a.muted = false; a.volume = v; }).catch(() => { a.muted = false; }); });
+
+function reset() { timers.forEach(clearTimeout); timers = []; FX.clear(); stopAll(); cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = ''; cam.style.opacity = 1;
+  document.getElementById('credits')?.remove(); skipBtn?.remove(); againBtn?.remove(); skipBtn = againBtn = null; }
+
+// 1. DiMax ident (silent: the page has had no tap yet)  2. arcade start screen  3. the trailer  4. text last
+function boot() { reset(); soundOn = false; rollStyles(false); rollFighters(); ident(); at(7700, startScreen); }
+function startScreen() {
+  reset(); cam.style.background = 'radial-gradient(ellipse at 50% 35%, #1a2140, #05060b 75%)';
+  const ghosts = el('div', 'ghosts');
+  [[P1, 72, 'g1'], [P2, 28, 'g2']].forEach(([id, x, cls]) => { const g = new Image(); g.src = IMG(id); g.alt = ''; g.style.left = `${x}%`; g.className = cls; ghosts.append(g); });
+  const s = el('div', 'start', `
+    <div class="press" dir="ltr">INSERT VOTE</div>
+    <div class="press-he">הכניסו פתק כדי להתחיל</div>
+    <div class="btns">
+      <button type="button" id="goSnd" class="arc a1">🔊 עם סאונד</button>
+      <button type="button" id="goMute" class="arc a2">🔇 בשקט, יש לי שכנים</button>
+    </div>
+    <div class="credit">פתקים: 1</div>`);
+  cam.append(ghosts, s);
+  A(s, [{ opacity: 0 }, { opacity: 1 }], { duration: 400 });
+  const go = (withSound) => { soundOn = withSound; if (withSound) { unlock(); sfx('lock', .9); } flash(.5, 140); shake(6); setTimeout(trailer, 350); };
+  s.querySelector('#goSnd').onclick = () => go(true);
+  s.querySelector('#goMute').onclick = () => go(false);
+}
+function end() { skipBtn?.remove(); skipBtn = null; againBtn = uiBtn('again', '↻ שוב', trailer); }
+function trailer() {
+  reset(); showSnd();
+  skipBtn = uiBtn('skip', 'דלגו ⏭', () => { reset(); poster(false); if (soundOn) { SND.idle.volume = .45; SND.idle.play().catch(() => {}); } end(); });
+  select();
+  at(10900, () => poster(true));
+  at(10900 + 3300, end);
+}
+
+Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('40px "Secular One"')]).catch(() => {}).finally(() => {
+  if (location.hash === '#poster') { reset(); rollStyles(true); poster(false); } else boot();
+});
+</script>
+
+</body>
+</html>
