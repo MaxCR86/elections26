@@ -252,10 +252,12 @@ html { scrollbar-color: #3a4266 #07080d; }
 .foot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4cqw; overflow: hidden; padding: 0 0 12cqw; background: linear-gradient(#07080d, #0b1020 72%, #121a30); perspective: 700px; }
 .roll { width: 100%; height: 96cqw; overflow: hidden; -webkit-mask-image: linear-gradient(transparent, #000 16%, #000 84%, transparent); mask-image: linear-gradient(transparent, #000 16%, #000 84%, transparent); }
 .roll .track { padding: 8cqw 8%; font: 700 3.4cqw/1.6 var(--f-ui); color: var(--muted); text-align: center; }
-.roll ul { list-style: none; margin: 6cqw 0; padding: 0; display: grid; gap: 3cqw; }
-.roll li { display: flex; align-items: center; gap: 3cqw; text-align: start; }
-.roll li img { width: 11cqw; height: 11cqw; border-radius: 50%; object-fit: cover; object-position: 50% 6%; background: #1a2140; flex: none; }
-.roll li b { color: var(--fg); font-weight: 700; }
+.roll ul { list-style: none; margin: 6cqw 0; padding: 0; display: grid; gap: 6cqw; }
+.roll h3 { margin: 0 0 3cqw; font: 400 9cqw/1 var(--f-he); color: #ffd84a; text-shadow: 0 .8cqw 0 #8a3b00; }
+.roll li { display: grid; justify-items: center; gap: .8cqw; text-align: center; }
+.roll li em { font-style: normal; color: var(--p1); }
+.roll li img { width: 16cqw; height: 16cqw; border-radius: 50%; object-fit: cover; object-position: 50% 6%; background: #1a2140; flex: none; }
+.roll li b { color: var(--fg); font: 400 4.6cqw/1.1 var(--f-he); }
 .markbox { display: grid; justify-items: center; gap: 4cqw; margin-top: 2cqw; }
 .foot .mark { position: relative; left: auto; top: auto; translate: none; font-size: 27cqw; transition: transform .25s ease-out; z-index: 2; }
 .foot .glow { position: absolute; left: 10%; right: 10%; bottom: 22%; height: 26%; background: radial-gradient(closest-side, #8fb0ff40, transparent); opacity: 0; pointer-events: none; }
@@ -295,7 +297,8 @@ const isOpts = (v) => Array.isArray(v) && v.length > 0 && v.every((o) => o && ty
 const resolve = (v) => { if (isOpts(v)) { const on = v.filter((o) => o.on); return pick(on.length ? on : [v[0]]).t; }
   if (Array.isArray(v)) return v.map(resolve);
   return v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, resolve(x)])) : v; };
-let LAST = null, FIGHTS = null;                         // FIGHTS: total fights played by everyone (stats table)
+let LAST = null, FIGHTS = null, WINS = {};                         // FIGHTS: total fights played by everyone (stats table)
+const paintWins = () => document.querySelectorAll('.roll li[data-id]').forEach((li) => { const n = WINS[li.dataset.id] || 0; li.querySelector('.wins').textContent = n ? fmt(C.credits.wins, { n }) : ''; });
 const ballots = () => fmt(C.start.credits, { n: FIGHTS ?? 0 });                                       // [winner, loser] of the last fight, they lead the stairwell crew
 let PWR = {};                                          // power = party's expected seats × weight of the place on its list
 const computePower = () => { PWR = {}; const w = C.game.rank_weights;
@@ -333,11 +336,12 @@ function rollThreshold() {
     const fail = Math.random() * 100 < p.risk, v = fail ? 1.4 + Math.random() * 1.7 : 3.5 + Math.random() * 2.3;
     RISKY.push({ ids, fail, v }); if (fail) ids.forEach((id) => OUT.add(id)); });
 }
-let CHAMP = null;                                      // last game's winner, who stays on for the next one
+let CHAMP = null, STREAK = 0, RECENT = [];             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
 function rollFighters(champ = null) {
   const Rs = R.map((r) => r[0]).filter((id) => !OUT.has(id)), Ls = L.map((r) => r[0]).filter((id) => !OUT.has(id));
-  DUO = null; SAME = Math.random() * 100 < C.game.same_team_pct; CHAMP = champ;
-  if (champ) { const home = Rs.includes(champ) ? Rs : Ls, foe = wpick((SAME ? home : home === Rs ? Ls : Rs).filter((id) => id !== champ));
+  DUO = null; SAME = Math.random() * 100 < C.game.same_team_pct; STREAK = champ && champ === CHAMP ? STREAK + 1 : champ ? 1 : 0; CHAMP = champ;
+  if (champ) { const home = Rs.includes(champ) ? Rs : Ls, pool = (SAME ? home : home === Rs ? Ls : Rs).filter((id) => id !== champ), fresh = pool.filter((id) => !RECENT.includes(id)), foe = wpick(fresh.length ? fresh : pool);
+    RECENT = [...RECENT, foe].slice(-4);
     if (home === Rs) { P1 = champ; P2 = foe; } else { P2 = champ; P1 = foe; } }
   else if (SAME) { const pool = Math.random() < .5 ? Rs : Ls; P1 = wpick(pool); P2 = wpick(pool.filter((id) => id !== P1)); }
   else { P1 = wpick(Rs); P2 = wpick(Ls); }
@@ -626,11 +630,11 @@ function fight() {                                     // returns its length in 
     if (hp[k] && hp[k] < 35 && !beat[k]) { beat[k] = 1; setTimeout(() => sfx('heart', .55), 350); } };
   const sp = (k) => ids[k].reduce((a, id) => a + PW(id), 0) * (ids[k].length > 1 ? 1.15 : 1);   // a duo: 15% more than the two together
   const st = (k) => (DUO?.k === k && C.game.tiers[DUO.tier]) || TIER(ids[k][0]);
-  const odds = (k) => (sp(k) + 6) * st(k).hit, fixed = (k) => { const v = ids[k].map((id) => C.game.win?.[id]).filter((x) => x != null); return v.length ? Math.max(...v) : null; };
+  const odds = (k) => Math.pow(sp(k) + 4, 1.3) * st(k).hit * (ids[k][0] === CHAMP ? Math.pow(.75, STREAK) : 1), fixed = (k) => { const v = ids[k].map((id) => C.game.win?.[id]).filter((x) => x != null); return v.length ? Math.max(...v) : null; };
   const f1 = fixed(1), f2 = fixed(2);                                    // fixed win rates (e.g. Golan) beat the odds
   const p1 = f1 != null && f2 != null ? f1 / (f1 + f2) : f1 != null ? f1 / 100 : f2 != null ? 1 - f2 / 100 : odds(1) / (odds(1) + odds(2));
   const W = Math.random() < p1 ? 1 : 2, Lz = 3 - W;
-  LAST = [ids[W][0], ids[Lz][0]]; if (FIGHTS != null) FIGHTS++;
+  LAST = [ids[W][0], ids[Lz][0]]; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
   track('fight', `${ids[W].join('+')}>${ids[Lz].join('+')}${SAME ? ' same' : ''}`);
   const dmg = (k) => 24 * Math.min(1.9, Math.max(.5, (sp(k) + 6) / (sp(3 - k) + 6) * st(k).hit * st(3 - k).armor));
   const order = []; let w = 2, l = 2 + (Math.random() * 2 | 0), turn = Math.random() < .5 ? W : Lz;   // winner: 2 + the KO; loser: 2–3
@@ -678,7 +682,7 @@ function fight() {                                     // returns its length in 
       else { sfx(pick(['hit1', 'hit2']), .9); duck(.5); open(); shake(8, 200); FX.burst(x, .62, 46, { s0: 160, s1: 520, g: 500, life: .55, h: 30 });
         streak = streak.k === ak ? { k: ak, n: streak.n + 1 } : { k: ak, n: 1 };
         if (streak.n > 1) { pop('combo', fmt(C.fight.combo, { n: streak.n }), ak); setTimeout(() => sfx('combo', .5), 120); } }
-      const v = dmg(ak) * (blocked ? .25 : 1) / m.hits.length;
+      const v = dmg(ak) * (blocked ? .25 : 1) / m.hits.length * (.55 + Math.random() * .9);   // every hit lands differently
       setHP(dk, Math.max(ak === W ? 12 : 18, hp[dk] - v));   // nobody drops before the KO
     }));
     return m.dur;
@@ -779,8 +783,8 @@ function buildMore() {
       <button class="arc a1" type="button" id="again2" data-t="replay">${d.again} ${ICON.replay}</button><small class="ballots">${ballots()}</small>
     </section>
     <footer class="foot">
-      <div class="roll" aria-label="${C.credits.title}"><div class="track"><p>${C.credits.intro}</p>
-        <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li><img src="img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp" alt=""><span><b>${NAME[id]}</b> <bdi>${who}</bdi> · <bdi>${lic}</bdi></span></li>`).join('')}</ul>
+      <div class="roll" aria-label="${C.credits.title}"><div class="track"><h3>${C.credits.title}</h3><p>${C.credits.intro}</p>
+        <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li data-id="${id}"><img src="img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp" alt=""><b>${NAME[id]}</b><em class="wins"></em><span><bdi>${who}</bdi> · <bdi>${lic}</bdi></span></li>`).join('')}</ul>
         <p>${C.credits.outro}</p></div></div>
       <div class="glow"></div>
     </footer>`;
@@ -885,7 +889,7 @@ function trailer() {
 Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('40px "Secular One"')]).catch(() => {})
   .then(() => fetch('copy.json', { cache: 'no-cache' })).then((r) => r.json()).then((j) => {
     RAW = j; C = resolve(RAW); Object.assign(NAME, C.names); computePower(); buildMore(); track('load');
-    if (C.links.stats) fetch(C.links.stats.replace(/\/$/, '') + '/count').then((r) => r.json()).then((x) => { FIGHTS = x.fights; document.querySelectorAll('.credit, .ballots').forEach((n) => (n.textContent = ballots())); }).catch(() => {});
+    if (C.links.stats) fetch(C.links.stats.replace(/\/$/, '') + '/count').then((r) => r.json()).then((x) => { FIGHTS = x.fights; WINS = x.wins || {}; paintWins(); document.querySelectorAll('.credit, .ballots').forEach((n) => (n.textContent = ballots())); }).catch(() => {});
     if (location.hash === '#poster') { reset(); rollStyles(true); poster(false); } else boot();
   });
 </script>
