@@ -230,6 +230,18 @@ html { scrollbar-color: #3a4266 #07080d; }
 .bubble2 dt { font: 700 3.4cqw/1.3 var(--f-ui); color: var(--p2); }
 .bubble2 dd { margin: 0; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); }
 .win .join, .win .trio { opacity: 0; }
+.loot { display: grid; gap: 3cqw; text-align: center; }   /* the bring-list as item pickups */
+.loot h3 { margin: 0; font: 400 6cqw/1 var(--f-he); color: #ffd84a; text-shadow: 0 .6cqw 0 #8a3b00; }
+.loot ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4cqw; }
+.loot li { position: relative; display: grid; justify-items: center; align-content: start; gap: 1cqw; padding: 3cqw 1.6cqw; background: #0b0e1af2; border: .4cqw solid #ffd84a80; border-radius: 1.6cqw; opacity: 0; }
+.loot li img { width: 20cqw; height: 20cqw; object-fit: contain; filter: drop-shadow(0 0 3cqw #ffd84a66); }
+.loot li b { font: 400 4.6cqw/1.1 var(--f-he); color: #fff; } .loot li small { font: 700 3.4cqw/1.3 var(--f-ui); color: var(--muted); }
+.loot li::after { content: "+1"; position: absolute; top: 1cqw; left: 2cqw; font: italic 800 4.6cqw/1 var(--f-mark); color: #9dff3a; opacity: 0; }
+.loot p { margin: 0; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); }
+.win.on .loot li { animation: pickup .5s cubic-bezier(.2,1.4,.4,1) both; } .win.on .loot li:nth-child(1) { animation-delay: 1.3s; } .win.on .loot li:nth-child(2) { animation-delay: 1.55s; } .win.on .loot li:nth-child(3) { animation-delay: 1.8s; }
+.win.on .loot li::after { animation: plus1 .9s ease-out both; animation-delay: inherit; }
+@keyframes pickup { from { opacity: 0; transform: translateY(6cqw) scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes plus1 { 0% { opacity: 0; transform: none; } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6cqw); } }
 .win .trio { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; }
 .win .trio .arc { white-space: nowrap; } .win .trio .dim { grid-column: 1 / -1; white-space: normal; line-height: 1.25; }
 .chal { position: absolute; left: 0; right: 0; top: 40%; z-index: 5; background: #d4142a; color: #fff; font: 400 6.6cqw/1 var(--f-he); text-align: center; padding: 3cqw 0; opacity: 0; pointer-events: none; }
@@ -743,6 +755,10 @@ function fight() {                                     // returns its length in 
   }
   let t = 1000;
   plan.forEach((p) => { t += attack(p, t) + 200 + Math.random() * 240; });
+  if (Math.random() * 100 < (C.game.powerup_pct ?? 25)) { const pt = t * (.4 + Math.random() * .25), k = Lz;   // a Coke Zero drops to whoever is behind: hope, briefly
+    at(pt, () => { const n = el('div', 'prop'); n.style.cssText = `width:13cqw;height:13cqw;margin:-6.5cqw 0 0 -6.5cqw;--c:#ff2a2a`; n.append(Object.assign(new Image(), { src: 'img/loot/zero.webp', alt: '' })); cam.append(n);
+      A(n, [{ left: `${X[k]}%`, top: '-6%', transform: 'rotate(-30deg)' }, { left: `${X[k]}%`, top: '52%', transform: 'rotate(10deg)', offset: .8 }, { left: `${X[k]}%`, top: '50%', transform: 'rotate(0) scale(1.3)', opacity: 0 }], { duration: 900, easing: 'ease-in' }).finished.then(() => n.remove());
+      setTimeout(() => { if (!cam.contains(hud)) return; sfx('confirm', .7); setHP(k, hp[k] + 20); FX.burst(k === 1 ? .7 : .3, .5, 40, { s0: 120, s1: 380, g: -200, life: .7, h: 0 }); pop('combo', C.loot.powerup, k); }, 720); }); }
 
   const kw = next(W), fin = finisher(kw, FT[Lz][0], D(W)), m = { hits: [fin.impact] };   // the winner's own signature finisher, named in the callout right before the KO
   at(t, () => { sfx('special', .6); duck(.3, .6); const c = el('div', `callout ${W === 1 ? 'c1' : 'c2'}`, `<small>${C.fight.special_label}</small><b>${fin.name.replace(/[!?.]$/, '')}!</b>`); cam.append(c);
@@ -864,6 +880,7 @@ function buildMore() {
       <div class="arena2" aria-hidden="true"><img class="l" alt=""><img class="w" alt=""></div>
       <h2 class="wt"></h2>
       <div class="bubble2"><p class="q" aria-live="off"></p><dl>${d.rows.map((r) => `<dt>${r.k}</dt><dd>${chunks(r.v)}</dd>`).join('')}</dl></div>
+      <div class="loot"><h3>${C.loot.title}</h3><ul>${C.loot.items.map((it) => `<li><img src="img/loot/${it.img}.webp" alt=""><b>${it.name}</b><small>${it.cap}</small></li>`).join('')}</ul><p>${C.loot.line}</p></div>
       <a class="arc a1 join" data-t="whatsapp" ${wa ? `href="${wa}" target="_blank" rel="noopener"` : 'aria-disabled="true"'}>${d.whatsapp}</a>
       <div class="trio">
         <a class="arc a2" data-t="waze" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">${d.waze}</a>
@@ -914,7 +931,7 @@ function buildMore() {
   // 1. VICTORY: the winner slams in, the loser is down, the quote types out, then the details
   const win = more.querySelector('.win'); let played = false, iv = null;
   more.resetWin = () => { played = false; clearInterval(iv); win.classList.remove('on'); win.querySelector('.q').textContent = ''; };   // every run: this run's winner and their own line
-  onSeen(win, () => { if (played) return; played = true; track('saw_details'); void win.offsetWidth; win.classList.add('on');
+  onSeen(win, () => { if (played) return; played = true; track('saw_details'); void win.offsetWidth; win.classList.add('on'); if (!RM) [1300, 1550, 1800].forEach((ms) => setTimeout(() => sfx('confirm', .35), ms));
     const qn = win.querySelector('.q'), own = C.victory.quotes?.[VICTOR()[0]], text = fmt(own && Math.random() * 100 >= (v.quote_pct ?? 10) ? own : v.quote, { name: NAME[VICTOR()[0]] }); let i = 0;   // each winner has their own line; the general one comes up quote_pct% of the time
     if (RM) { qn.textContent = text; return; }
     setTimeout(() => { sfx('confirm', .5); iv = setInterval(() => { qn.textContent = text.slice(0, ++i); if (i % 3 === 0) blip(); if (i >= text.length) clearInterval(iv); }, 32); }, 650); });
