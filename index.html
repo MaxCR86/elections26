@@ -66,7 +66,7 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 .team.tr { background: linear-gradient(#ffc23a2e, #ffc23a08); border: .4cqw solid #ffc23a80; } .team.tr h3 { color: var(--p1); }
 .team.tl { background: linear-gradient(#3ae0ff2e, #3ae0ff08); border: .4cqw solid #3ae0ff80; } .team.tl h3 { color: var(--p2); }
 .tile { position: relative; aspect-ratio: 5 / 4; background: radial-gradient(circle at 50% 30%, #2a3350, #10131d); border: .5cqw solid #2b3140; overflow: hidden; }
-.tile img { position: absolute; left: 50%; top: -4%; width: 150%; translate: -50% 0; }
+.tile img { position: absolute; max-width: none; }
 .tile i { position: absolute; inset: auto 0 0; font-style: normal; font-size: 3cqw; text-align: center; color: #fff; background: #000b; font-family: var(--f-ui); font-weight: 700; padding-block: .3cqw; }
 .tile.p1 { border-color: var(--p1); box-shadow: 0 0 0 .6cqw var(--p1), 0 0 4cqw var(--p1); }
 .tile.p2 { border-color: var(--p2); box-shadow: 0 0 0 .6cqw var(--p2), 0 0 4cqw var(--p2); }
@@ -144,6 +144,8 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
   text-shadow: 0 .8cqw 0 #8a3b00, 0 0 5cqw #ff8a2a; animation: blink 1s steps(2, jump-none) infinite; }
 @keyframes blink { 50% { opacity: .15; } }
 .press-he { font-family: var(--f-he); font-size: 6cqw; color: #fff; }
+.pollline { max-width: 84%; font: 700 3.4cqw/1.45 var(--f-ui); color: #ffd84a; text-shadow: 0 .3cqw 0 #8a3b00; }
+.pollline small { display: block; color: var(--muted); text-shadow: none; }
 .btns { display: grid; gap: 3cqw; margin-top: 3cqw; width: 68%; }
 .arc { font: 400 6cqw/1 var(--f-he); padding: 4.2cqw 0; border-radius: 999px; cursor: pointer; border: 0; color: #111;
   box-shadow: 0 1.4cqw 0 #0008, inset 0 -1cqw 0 #0003; transition: transform .08s; }
@@ -173,6 +175,12 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 .combo, .blocktxt { position: absolute; top: 30%; z-index: 9; direction: ltr; font-family: var(--f-mark); font-style: italic; font-weight: 900; line-height: .9; opacity: 0; text-align: center; }
 .combo { font-size: 9cqw; color: #fff; text-shadow: 0 .6cqw 0 #8a3b00, 0 0 3cqw #ff8a2a; } .combo small { display: block; font-size: 5cqw; color: #ffd84a; }
 .blocktxt { font-size: 6cqw; color: #bfe9ff; text-shadow: 0 0 3cqw #3ae0ff; }
+.prop { position: absolute; z-index: 7; pointer-events: none; filter: drop-shadow(0 0 2.5cqw var(--c)) drop-shadow(0 1cqw 1cqw #000a); }
+.prop img { width: 100%; height: 100%; object-fit: contain; }
+.beam { position: absolute; z-index: 6; border-radius: 99px; background: linear-gradient(#fff, var(--c) 35%, var(--c) 65%, #fff); box-shadow: 0 0 4cqw var(--c), 0 0 10cqw var(--c); pointer-events: none; }
+.redline { position: absolute; left: 0; right: 0; top: 47%; height: 1.6cqw; z-index: 6; background: #ff2a2a; box-shadow: 0 0 4cqw #ff2a2a; transform-origin: right; pointer-events: none; }
+.ring { position: absolute; z-index: 6; width: 26cqw; height: 26cqw; margin: -13cqw 0 0 -13cqw; border-radius: 50%; border: 1.4cqw solid var(--c); box-shadow: 0 0 4cqw var(--c); pointer-events: none; }
+.stampmark { position: absolute; top: 58%; z-index: 8; width: 24cqw; height: 24cqw; margin: -12cqw 0 0 -12cqw; border-radius: 50%; border: 1.6cqw double var(--c); rotate: -14deg; opacity: 0; pointer-events: none; }
 .orb { position: absolute; z-index: 7; width: 12cqw; height: 12cqw; margin: -6cqw 0 0 -6cqw; border-radius: 50%; pointer-events: none;
   background: radial-gradient(circle, #fff 0 18%, var(--c) 40%, transparent 70%); filter: drop-shadow(0 0 3cqw var(--c)); }
 .dmg { position: absolute; z-index: 9; direction: ltr; font: italic 900 6cqw/1 var(--f-mark); color: #fff; text-shadow: 0 .4cqw 0 #000; pointer-events: none; }
@@ -299,6 +307,12 @@ const resolve = (v) => { if (isOpts(v)) { const on = v.filter((o) => o.on); retu
   return v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, resolve(x)])) : v; };
 let LAST = null, FIGHTS = null, WINS = {};                         // FIGHTS: total fights played by everyone (stats table)
 const paintWins = () => document.querySelectorAll('.roll li[data-id]').forEach((li) => { const n = WINS[li.dataset.id] || 0; li.querySelector('.wins').textContent = n ? fmt(C.credits.wins, { n }) : ''; });
+// "the game is real": when the strengths were last updated from the polls, and which ones (polls_meta, written daily by the poll job)
+const OUTLET = { 'Kan 11': 'כאן 11', 'Kan': 'כאן 11', 'HaHadashot 12': 'חדשות 12', 'Channel 12': 'חדשות 12', 'Channel 13': 'חדשות 13', 'Channel 14': 'ערוץ 14', 'i24 News': 'i24NEWS',
+  'Maariv': 'מעריב', 'Walla': 'וואלה', 'Israel Hayom': 'ישראל היום', 'Zman Yisrael': 'זמן ישראל', 'Channel 16': 'ערוץ 16', 'Ynet': 'ynet', 'Haaretz': 'הארץ' };
+const pollLine = () => { const m = C.polls_meta; if (!m?.polls?.length || !C.start.data) return '';
+  const [y, mo, d] = m.updated.split('-'), polls = [...new Set(m.polls.map((p) => OUTLET[p.pollster.split(' / ').pop()] || p.pollster.split(' / ').pop()))];
+  return `<div class="pollline">${fmt(C.start.data, { date: `${+d}.${+mo}`, n: m.polls.length, polls: polls.join(' · ') })}</div>`; };
 const ballots = () => fmt(C.start.credits, { n: FIGHTS ?? 0 });                                       // [winner, loser] of the last fight, they lead the stairwell crew
 let PWR = {};                                          // power = party's expected seats × weight of the place on its list
 const computePower = () => { PWR = {}; const w = C.game.rank_weights;
@@ -318,6 +332,10 @@ const BEST = { netanyahu: 'lego', bengvir: 'kitsch3d', smotrich: 'clay', deri: '
 const pick = (a) => a[Math.random() * a.length | 0];
 let STYLE = {};
 const IMG = (id) => `img/${id}_${STYLE[id]}.webp`;
+// face centre (x, y) and width, as fractions of each character image (measured once with the browser's FaceDetector)
+const FACE = {"abbas_kitsch3d":[0.471,0.244,0.301],"abbas_lego":[0.559,0.277,0.224],"bengvir_clay":[0.542,0.338,0.268],"bengvir_kitsch3d":[0.472,0.349,0.324],"bengvir_lego":[0.496,0.332,0.278],"bennett_clay":[0.587,0.28,0.278],"bennett_kitsch3d":[0.612,0.31,0.312],"bennett_lego":[0.565,0.304,0.267],"deri_clay":[0.607,0.28,0.316],"deri_kitsch3d":[0.571,0.296,0.359],"deri_lego":[0.566,0.295,0.303],"edelstein_clay":[0.481,0.324,0.44],"edelstein_kitsch3d":[0.466,0.3,0.381],"edelstein_lego":[0.485,0.337,0.421],"eisenkot_clay":[0.498,0.278,0.333],"eisenkot_kitsch3d":[0.48,0.284,0.352],"eisenkot_lego":[0.471,0.284,0.267],"gafni_clay":[0.486,0.313,0.427],"gafni_kitsch3d":[0.505,0.323,0.464],"gafni_lego":[0.52,0.338,0.444],"gantz_kitsch3d":[0.519,0.255,0.297],"gantz_lego":[0.555,0.278,0.269],"golan_kitsch3d":[0.515,0.375,0.235],"golan_lego":[0.54,0.315,0.204],"goldknopf_clay":[0.492,0.34,0.292],"goldknopf_kitsch3d":[0.534,0.334,0.281],"goldknopf_lego":[0.537,0.366,0.255],"gotliv_clay":[0.447,0.316,0.354],"gotliv_kitsch3d":[0.6,0.348,0.41],"gotliv_lego":[0.52,0.31,0.284],"haskel_clay":[0.342,0.255,0.203],"haskel_kitsch3d":[0.46,0.265,0.246],"haskel_lego":[0.324,0.093,0.22],"hendel_kitsch3d":[0.658,0.248,0.322],"hendel_lego":[0.626,0.263,0.282],"jabareen_clay":[0.641,0.267,0.307],"jabareen_kitsch3d":[0.606,0.27,0.315],"jabareen_lego":[0.54,0.27,0.224],"kahana_clay":[0.595,0.297,0.32],"kahana_kitsch3d":[0.555,0.346,0.37],"kahana_lego":[0.534,0.307,0.258],"karhi_clay":[0.517,0.321,0.244],"karhi_kitsch3d":[0.524,0.327,0.313],"karhi_lego":[0.549,0.303,0.236],"katz_clay":[0.455,0.289,0.335],"katz_kitsch3d":[0.413,0.337,0.377],"katz_lego":[0.495,0.311,0.282],"lapid_kitsch3d":[0.551,0.285,0.292],"lapid_lego":[0.605,0.331,0.234],"levin_clay":[0.493,0.313,0.332],"levin_kitsch3d":[0.521,0.335,0.422],"levin_lego":[0.518,0.3,0.265],"liberman_clay":[0.579,0.325,0.276],"liberman_kitsch3d":[0.496,0.291,0.304],"liberman_lego":[0.473,0.294,0.255],"netanyahu_clay":[0.498,0.324,0.246],"netanyahu_kitsch3d":[0.485,0.343,0.249],"netanyahu_lego":[0.455,0.32,0.237],"ohana_clay":[0.528,0.273,0.266],"ohana_kitsch3d":[0.518,0.318,0.32],"ohana_lego":[0.498,0.291,0.233],"regev_clay":[0.414,0.348,0.262],"regev_kitsch3d":[0.523,0.302,0.292],"regev_lego":[0.463,0.37,0.203],"saar_clay":[0.607,0.289,0.29],"saar_kitsch3d":[0.54,0.301,0.376],"saar_lego":[0.507,0.293,0.278],"smotrich_clay":[0.536,0.314,0.313],"smotrich_kitsch3d":[0.532,0.347,0.352],"smotrich_lego":[0.584,0.319,0.238],"tibi_clay":[0.542,0.254,0.288],"tibi_kitsch3d":[0.619,0.301,0.384],"tibi_lego":[0.472,0.266,0.243],"tropper_kitsch3d":[0.596,0.28,0.372],"tropper_lego":[0.593,0.281,0.259],"winter_clay":[0.456,0.203,0.205],"winter_kitsch3d":[0.408,0.247,0.207],"winter_lego":[0.417,0.394,0.22]};
+const faceFit = (img, id, tileAR = 1.25, faceTop = .4) => { const [x, y, w] = FACE[`${id}_${STYLE[id]}`] || [.5, .2, .25], W = 100 / (w * 2.4), Hh = W * tileAR * 1.5;
+  Object.assign(img.style, { width: W + '%', left: (50 - x * W) + '%', top: (faceTop * 100 - y * Hh) + '%', translate: 'none' }); };
 const POSES = ['stance', 'punch', 'kick', 'hit'];
 const POSE = (id, p) => `img/p/${id}_${STYLE[id]}_${p}.webp`;   // all poses face right
 function rollStyles(fixed) {
@@ -336,9 +354,9 @@ function rollThreshold() {
     const fail = Math.random() * 100 < p.risk, v = fail ? 1.4 + Math.random() * 1.7 : 3.5 + Math.random() * 2.3;
     RISKY.push({ ids, fail, v }); if (fail) ids.forEach((id) => OUT.add(id)); });
 }
-let CHAMP = null, STREAK = 0, RECENT = [];             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
+let CHAMP = null, STREAK = 0, RECENT = [], BENCH = [];   // BENCH: last round's losers sit the next one out             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
 function rollFighters(champ = null) {
-  const Rs = R.map((r) => r[0]).filter((id) => !OUT.has(id)), Ls = L.map((r) => r[0]).filter((id) => !OUT.has(id));
+  const Rs = R.map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id)), Ls = L.map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id));
   DUO = null; SAME = Math.random() * 100 < C.game.same_team_pct; STREAK = champ && champ === CHAMP ? STREAK + 1 : champ ? 1 : 0; CHAMP = champ;
   if (champ) { const home = Rs.includes(champ) ? Rs : Ls, pool = (SAME ? home : home === Rs ? Ls : Rs).filter((id) => id !== champ), fresh = pool.filter((id) => !RECENT.includes(id)), foe = wpick(fresh.length ? fresh : pool);
     RECENT = [...RECENT, foe].slice(-4);
@@ -347,7 +365,7 @@ function rollFighters(champ = null) {
   else { P1 = wpick(Rs); P2 = wpick(Ls); }
   for (const d of [...C.game.duos].sort(() => Math.random() - .5)) for (const k of [1, 2]) {
     const lead = k === 1 ? P1 : P2, mate = lead === d.a ? d.b : lead === d.b ? d.a : null;
-    if (!DUO && mate && !OUT.has(mate) && mate !== P1 && mate !== P2 && Math.random() * 100 < d.chance) DUO = { k, id: mate, tier: d.tier, line: d.line };
+    if (!DUO && mate && !OUT.has(mate) && !BENCH.includes(mate) && mate !== P1 && mate !== P2 && Math.random() * 100 < d.chance) DUO = { k, id: mate, tier: d.tier, line: d.line };
   }
   [P1, P2, DUO?.id].filter(Boolean).forEach((id) => POSES.forEach((p) => { new Image().src = POSE(id, p); }));
 }
@@ -518,7 +536,7 @@ function select() {                                   // returns its length in m
   grid.append(tr, tl); cam.append(grid);                // RTL: the coalition panel sits on the right
   const Rs = R.map((r) => r[0]), Ls = L.map((r) => r[0]), tiles = {};
   [[Rs, tr], [[...Ls, 'gantz', 'hendel'], tl]].forEach(([ids, box]) => ids.forEach((id) => {
-    const t = el('div', 'tile', `<img src="${IMG(id)}" alt=""><i>${NAME[id]}</i>`); tiles[id] = t; box.append(t); }));
+    const t = el('div', 'tile', `<img src="${IMG(id)}" alt=""><i>${NAME[id]}</i>`); faceFit(t.querySelector('img'), id); tiles[id] = t; box.append(t); }));
   const info = el('div', 'hud'); info.style.bottom = '4.5%'; cam.append(info);
   A(grid, [{ opacity: 0, transform: 'scale(.92)' }, { opacity: 1, transform: 'none' }], { duration: 400 });
   mix('select'); music('bed');
@@ -634,7 +652,7 @@ function fight() {                                     // returns its length in 
   const f1 = fixed(1), f2 = fixed(2);                                    // fixed win rates (e.g. Golan) beat the odds
   const p1 = f1 != null && f2 != null ? f1 / (f1 + f2) : f1 != null ? f1 / 100 : f2 != null ? 1 - f2 / 100 : odds(1) / (odds(1) + odds(2));
   const W = Math.random() < p1 ? 1 : 2, Lz = 3 - W;
-  LAST = [ids[W][0], ids[Lz][0]]; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
+  LAST = [ids[W][0], ids[Lz][0]]; BENCH = [...ids[Lz]]; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
   track('fight', `${ids[W].join('+')}>${ids[Lz].join('+')}${SAME ? ' same' : ''}`);
   const dmg = (k) => 24 * Math.min(1.9, Math.max(.5, (sp(k) + 6) / (sp(3 - k) + 6) * st(k).hit * st(3 - k).armor));
   const order = []; let w = 2, l = 2 + (Math.random() * 2 | 0), turn = Math.random() < .5 ? W : Lz;   // winner: 2 + the KO; loser: 2–3
@@ -696,8 +714,8 @@ function fight() {                                     // returns its length in 
     A(c, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'none', offset: .2 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: 1500, easing: 'ease-out' }); });
   t += 650;
   // KO: slow zoom, the finisher, impact frames, the loser drops
-  const kind = pick(['blast', 'upper', 'kick']), m = MOVESET[kind], kw = next(W);
-  at(t, () => { cam.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }], { duration: 900, fill: 'forwards', easing: 'ease-in' }); m.run(kw, D(W)); });
+  const kw = next(W), fin = finisher(kw, FT[Lz][0], D(W)), m = { hits: [fin.impact] };   // the winner's own signature finisher
+  at(t, () => { cam.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }], { duration: 900, fill: 'forwards', easing: 'ease-in' }); fin.run(); });
   at(t + m.hits[0], () => {
     sfx('ko', 1); duck(.05, null); setTimeout(() => sfx('kovoice', .85), 450); setTimeout(() => sfx('crowd', .35), 1300);
     const bf = el('div', 'blackframe'); cam.append(bf); A(bf, [{ opacity: 1 }, { opacity: 1, offset: .5 }, { opacity: 0 }], { duration: 140 }); flash(1, 120); shake(16, 520);
@@ -712,6 +730,46 @@ function fight() {                                     // returns its length in 
     FT[W].forEach((f) => f.bob.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-7%) scale(1.06)' }], { duration: 380, delay: 900, direction: 'alternate', iterations: 4, easing: 'ease-out' }));
   });
   return t + m.hits[0] + 2600;
+}
+
+// ---------- signature finishers: each fighter's own prop, used as intended ----------
+const FIN = {   // kind: throw | spear | boomerang | plane | slam | swarm | beam | line | tvoff | waves; c = effect colour
+  netanyahu: ['line', '#ff2a2a'], bengvir: ['slam', '#ff7a1a', 'stamp'], smotrich: ['throw', '#9dff3a'], deri: ['throw', '#b07aff'], regev: ['throw', '#ffd84a'],
+  levin: ['slam', '#ffd84a'], katz: ['swarm', '#ffffff'], saar: ['boomerang', '#ffd84a'], gotliv: ['beam', '#ff7a1a'], ohana: ['slam', '#ffd84a'],
+  karhi: ['tvoff', '#3ae0ff'], goldknopf: ['slam', '#c9a26b'], eisenkot: ['throw', '#3a8bff'], bennett: ['beam', '#3ae0ff'], lapid: ['throw', '#3ae0ff'],
+  liberman: ['throw', '#e9f3ff'], golan: ['waves', '#ff3aa8'], tibi: ['throw', '#3aff8a'], abbas: ['throw', '#ffd84a'], jabareen: ['spear', '#3aff8a'],
+  kahana: ['plane', '#e9f3ff'], tropper: ['throw', '#3a8bff'] };
+function finisher(f, def, d) {
+  const [kind, c, extra] = FIN[f.id] || ['throw', '#ffd84a'], ax = f.x + d * 8, dx = def.x - d * 2;
+  const prop = (size = 22) => { const n = el('div', 'prop'); n.style.cssText = `width:${size}cqw;height:${size}cqw;margin:${-size / 2}cqw 0 0 ${-size / 2}cqw;--c:${c}`;
+    n.append(Object.assign(new Image(), { src: `img/props/${f.id}.webp`, alt: '' })); if (d < 0) n.firstChild.style.scale = '-1 1'; cam.append(n); return n; };
+  const fly = (n, kf, ms, delay = 0, easing = 'ease-in') => A(n, kf, { duration: ms, delay, easing }).finished.then(() => n.remove());
+  const pt = (x, y, tr = '') => ({ left: `${x}%`, top: `${y}%`, transform: tr || 'none' });
+  const bar = (h, cls = 'beam') => { const n = el('div', cls); const l = Math.min(ax, dx), w = Math.abs(dx - ax);
+    n.style.cssText = `left:${l}%;width:${w}%;top:62%;height:${h}cqw;margin-top:${-h / 2}cqw;--c:${c};transform-origin:${d > 0 ? 'left' : 'right'}`; cam.append(n); return n; };
+  const K = {
+    throw: [640, () => { sfx('whoosh', .6); fly(prop(), [pt(ax, 60, 'scale(.6)'), pt(dx, 62, `scale(1.15) rotate(${d * 900}deg)`)], 520, 120); }],
+    spear: [560, () => { sfx('whoosh', .6); fly(prop(26), [pt(ax, 61, `rotate(${d * 90}deg) scale(.8)`), pt(dx, 62, `rotate(${d * 90}deg) scale(1.1)`)], 420, 120, 'cubic-bezier(.5,0,.9,.4)'); }],
+    boomerang: [560, () => { sfx('whoosh', .6); setTimeout(() => sfx('whoosh', .4), 700);
+      fly(prop(), [pt(ax, 60, 'scale(.7)'), { ...pt(dx, 50, `rotate(${d * 900}deg)`), offset: .45 }, { ...pt((ax + dx) / 2, 30, `rotate(${d * 1500}deg)`), offset: .75 }, pt(ax, 58, `rotate(${d * 2100}deg) scale(.6)`)], 1000, 120, 'ease-in-out'); }],
+    plane: [820, () => { sfx('jump', .4); fly(prop(18), [pt(ax, 58, `rotate(${d * -20}deg)`), { ...pt((ax + dx) / 2, 26, `rotate(${d * 10}deg) scale(1.2)`), offset: .55 }, pt(dx, 62, `rotate(${d * 35}deg)`)], 700, 120, 'ease-in-out'); }],
+    slam: [560, () => { sfx('jump', .5); const n = prop(30); fly(n, [pt(dx, -12, 'rotate(-25deg)'), { ...pt(dx, 52, 'rotate(8deg) scale(1.1)'), offset: .8 }, pt(dx, 50, 'rotate(0)')], 560, 0, 'cubic-bezier(.6,0,1,.6)');
+      if (extra === 'stamp') setTimeout(() => { const m = el('div', 'stampmark'); m.style.cssText = `left:${dx}%;--c:${c}`; cam.append(m); A(m, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'none' }], { duration: 160 }); }, 560); }],
+    swarm: [760, () => { for (let i = 0; i < 7; i++) setTimeout(() => { sfx('tick', .5); fly(prop(12 + Math.random() * 6), [pt(ax, 56 + Math.random() * 6, 'scale(.4)'), pt(dx + (Math.random() - .5) * 8, 52 + Math.random() * 18, `scale(1) rotate(${(Math.random() - .5) * 60}deg)`)], 380, 0, 'ease-out'); }, i * 70); }],
+    beam: [380, () => { sfx('blast', .7); const p = prop(18); A(p, [pt(ax, 60), pt(ax, 60)], { duration: 900 }).finished.then(() => p.remove());
+      const b = bar(9); A(b, [{ transform: 'scaleX(0)', opacity: 1 }, { transform: 'scaleX(1)', opacity: 1, offset: .25 }, { transform: 'scaleX(1) scaleY(1.4)', opacity: .8, offset: .6 }, { transform: 'scaleX(1) scaleY(.2)', opacity: 0 }], { duration: 900, delay: 120 }).finished.then(() => b.remove()); }],
+    line: [900, () => { const ln = el('div', 'redline'); cam.append(ln); sfx('special', .5);   // the red line, drawn across the screen first
+      A(ln, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)', offset: .5 }, { transform: 'scaleX(1)', opacity: 1, offset: .85 }, { transform: 'scaleX(1)', opacity: 0 }], { duration: 1500 }).finished.then(() => ln.remove());
+      setTimeout(() => { sfx('whoosh', .6); fly(prop(24), [pt(ax, 60, `rotate(${d * 90}deg)`), pt(dx, 62, `rotate(${d * 90}deg) scale(1.15)`)], 300, 0, 'ease-in'); }, 500); }],
+    tvoff: [420, () => { sfx('blast', .5); const p = prop(16); A(p, [pt(ax, 60), pt(ax, 60)], { duration: 1000 }).finished.then(() => p.remove());
+      const b = bar(3); A(b, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)', offset: .3 }, { transform: 'scaleX(1)', opacity: 0 }], { duration: 700, delay: 100 }).finished.then(() => b.remove());
+      setTimeout(() => { sfx('glitch', .6); def.img.animate([{ transform: 'none', filter: 'none' }, { transform: 'scale(1.1, .03)', filter: 'brightness(4)', offset: .5 }, { transform: 'scale(0, .03)', filter: 'brightness(4)' }, { transform: 'none', filter: 'none' }], { duration: 900 }); }, 420); }],
+    waves: [520, () => { sfx('alarm', .4); const p = prop(20); A(p, [pt(ax, 60), pt(ax, 60)], { duration: 900 }).finished.then(() => p.remove());
+      for (let i = 0; i < 4; i++) { const r = el('div', 'ring'); r.style.cssText = `--c:${c}`; cam.append(r);
+        A(r, [pt(ax, 60, 'scale(.3)'), { ...pt(dx, 60, 'scale(1.4)'), opacity: 0 }], { duration: 600, delay: 100 + i * 110, easing: 'ease-out' }).finished.then(() => r.remove()); } }],
+  };
+  const [impact, run] = K[kind] || K.throw;
+  return { impact, run: () => { f.img.src = POSE(f.id, 'punch'); setTimeout(() => { if (f.img.isConnected) f.img.src = POSE(f.id, 'stance'); }, impact + 500); run(); } };
 }
 
 // ---------- poster ----------
@@ -863,6 +921,7 @@ function startScreen() {
   const S = C.start, s = el('div', 'start', `
     <div class="press" dir="ltr">${S.press}</div>
     <div class="press-he">${S.sub}</div>
+    ${pollLine()}
     <div class="btns">
       <button type="button" id="goSnd" class="arc a1">${S.sound}</button>
       <button type="button" id="goMute" class="arc a2">${S.mute}</button>
