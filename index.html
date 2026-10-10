@@ -727,7 +727,7 @@ const chunks = (v) => { const p = String(v).split(' · '); let out = p[0];   // 
   for (let i = 1; i < p.length; i++) { const k = out.endsWith('</span>') ? -1 : out.lastIndexOf(' ');
     out = k < 0 ? `${out}<span class="nw"> · ${p[i]}</span>` : `${out.slice(0, k + 1)}<span class="nw">${out.slice(k + 1)} · ${p[i]}</span>`; }
   return out; };
-const ICON = { down: '<svg class="ic" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v12m-5-5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' };
+const ICON = { replay: '<svg class="ic" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10a5.5 5.5 0 1 0 1.8-4.1M4 3v3.6h3.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>', down: '<svg class="ic" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v12m-5-5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' };
 function buildMore() {
   const d = C.details, q = encodeURIComponent(C.links.address), wa = C.links.whatsapp;
   more.innerHTML = `
@@ -744,7 +744,7 @@ function buildMore() {
         </div></section>
       <div class="gap"></div>
       <section class="cont" aria-label="CONTINUE?"><p class="cq" dir="ltr">CONTINUE?</p><b class="count" aria-hidden="true">9</b>
-        <button class="arc a1" type="button" id="again2" data-t="replay">${d.again}</button><small>${C.start.credits}</small></section>
+        <button class="arc a1" type="button" id="again2" data-t="replay">${d.again} ${ICON.replay}</button><small>${C.start.credits}</small></section>
       <div class="gap" style="height:18dvh"></div>
     </div>
     <footer class="foot"><div class="glow"></div></footer>`;
@@ -876,7 +876,7 @@ function startScreen() {
 }
 function end() {
   skipBtn?.remove(); skipBtn = null; document.body.classList.add('done'); CREW.start(); track('finish');
-  againBtn = uiBtn('again', C.ui.again, () => { track('again'); C = resolve(RAW); rollFighters(); trailer(); });
+  againBtn = uiBtn('again', `${C.ui.again} ${ICON.replay}`, () => { track('again'); C = resolve(RAW); rollFighters(); trailer(); });
   downBtn = uiBtn('down', `${C.details.scroll} ${ICON.down}`, () => track('scroll_btn') || more.scrollIntoView({ behavior: 'smooth' }));
 }
 function trailer() {
