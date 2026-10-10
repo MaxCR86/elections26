@@ -307,7 +307,7 @@ function finale(hero, o = {}) {
     im.animate([{ filter: 'none' }, { filter: 'hue-rotate(90deg) contrast(3) brightness(2)', offset: .5 }, { filter: 'none' }], { duration: 300 }); setTimeout(() => { im.src = BIMG('f1'); }, 150);
     FX.burst(.4, .35, 160, { s0: 300, s1: 1000, g: 600, life: 1.1, h: 320, w: 3 }); };
   const winTail = (ms) => { at(ms, () => { conf.replaceChildren(); cam.append(conf); confetti(90, true); mix('fin'); music('fin'); sfx('crowd', .8);
-      const ttl = el('div', 'bz-title', fmt(T.true_win, { name: nm })); cam.append(ttl); A(ttl, [{ opacity: 0, transform: 'scale(2)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,1.5,.4,1)' }); track('boss_win', hero); saveRec({ boss: hero }); });
+      const ttl = el('div', 'bz-title', fmt(T.true_win, { name: nm })); cam.append(ttl); A(ttl, [{ opacity: 0, transform: 'scale(2)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,1.5,.4,1)' }); track('boss_win', hero); saveRec({ boss: hero, face: hero }); });
     at(ms + 5200, () => afterBoss()); };
   const loseTail = (ms) => { setHP(1, 0); track('boss_lose', hero); at(ms, () => gameOver()); };
 

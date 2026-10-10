@@ -270,6 +270,7 @@ html { scrollbar-color: #3a4266 #07080d; }
 .lb ol { margin: 2cqw 0 0; padding: 0; list-style: none; display: grid; gap: 1.6cqw; }
 .lb li { display: flex; gap: 2.4cqw; align-items: center; padding-bottom: 1.6cqw; border-bottom: .3cqw dashed #ffffff22; text-align: start; }
 .lb li b { flex: 1; font-weight: 700; }
+.lb li img.champ { box-shadow: 0 0 0 .6cqw #ff3aa8, 0 0 3cqw #ff3aa8; object-position: 50% 0; }
 .lb li img { width: 9cqw; height: 9cqw; border-radius: 50%; object-fit: cover; object-position: 50% 6%; background: #1a2140; box-shadow: 0 0 0 .5cqw var(--gold); }
 
 /* 4. the buttons: one big replay, then four item tiles */
@@ -727,7 +728,7 @@ function fight() {                                     // returns its length in 
   const setHP = (k, v) => { hp[k] = Math.max(0, Math.round(v)); bar[k].querySelector('i').style.width = hp[k] + '%'; setTimeout(() => (bar[k].querySelector('em').style.width = hp[k] + '%'), 380);
     if (hp[k] && hp[k] < 35 && !beat[k]) { beat[k] = 1; setTimeout(() => sfx('heart', .55), 350); } };
   const { W, plan, hpm } = bout(ids), Lz = 3 - W, sp = (k) => sideP(ids[k]), st = (k) => sideT(ids, k);   // the rolled hits decide (fixed rates like Golan's still win)
-  LAST = [ids[W][0], ids[Lz][0]]; bench(ids[Lz]); DECIDED = true; if (FIGHTS != null) FIGHTS++; saveRec({ n: REC().n + 1 }); ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
+  LAST = [ids[W][0], ids[Lz][0]]; bench(ids[Lz]); DECIDED = true; if (FIGHTS != null) FIGHTS++; saveRec({ n: REC().n + 1, face: ids[W][0] });   // face: the last character they saw win, their avatar on the board ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
   track('fight', `${ids[W].join('+')}>${ids[Lz].join('+')}${SAME ? ' same' : ''}`);
   if (hpm[1] !== hpm[2]) [1, 2].forEach((k) => { bar[k].style.width = `${hpm[k] / Math.max(hpm[1], hpm[2]) * 100}%`; if (k === 2) bar[k].style.marginInlineStart = 'auto'; });   // a longer bar: more HP
   const pose = (f, p, back) => { f.img.src = POSE(f.id, p); if (back) setTimeout(() => { if (f.img.isConnected) f.img.src = POSE(f.id, 'stance'); }, back); };
@@ -948,8 +949,8 @@ function buildMore() {
   rr.oninput = () => { lvl(); if (rr.value % 20 === 0) blip(); }; lvl();
   rg.onclick = async () => { const name = rn.value.replace(/\s+/g, ' ').trim(); if (name.length < 2) return rn.focus();
     rg.setAttribute('aria-disabled', 'true'); rm.className = 'msg'; rm.textContent = '';
-    try { const r = await fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { method: 'POST', body: JSON.stringify({ vid: VID, dev: DEV, name, p: +rr.value, games: REC().n, boss: REC().boss }) });   // text/plain: no CORS preflight
-      if (!r.ok) throw 0; try { localStorage.setItem('rsvp', JSON.stringify({ name, p: +rr.value, games: REC().n, boss: REC().boss })); } catch (e) {}
+    try { const r = await fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { method: 'POST', body: JSON.stringify({ vid: VID, dev: DEV, name, p: +rr.value, games: REC().n, boss: REC().boss, face: REC().face }) });   // text/plain: no CORS preflight
+      if (!r.ok) throw 0; try { localStorage.setItem('rsvp', JSON.stringify({ name, p: +rr.value, games: REC().n, boss: REC().boss, face: REC().face })); } catch (e) {}
       rm.textContent = C.rsvp.thanks; rg.textContent = C.rsvp.update; sfx('confirm', .6); flash(.25, 120); loadBoard();
     } catch (e) { rm.className = 'msg err'; rm.textContent = C.rsvp.error; }
     rg.removeAttribute('aria-disabled'); };
@@ -1002,13 +1003,14 @@ const loadBoard = () => { const b = more.querySelector('.board'); if (!b || !C.l
     b.querySelector('.bc').textContent = rows.length ? fmt(C.rsvp.board_count, { n: rows.length }) : C.rsvp.board_empty;
     b.querySelector('ol').replaceChildren(...rows.map((r) => { const li = document.createElement('li'), nm = document.createElement('b'), g = document.createElement('small');
       nm.textContent = r.name; g.textContent = r.games ? fmt(r.games === 1 ? C.rsvp.board_one : C.rsvp.board_rounds, { n: r.games }) : C.rsvp.board_zero; li.append(nm);
-      if (r.boss && NAME[r.boss]) { const i = new Image(); i.src = HEAD(r.boss); i.alt = fmt(C.rsvp.board_boss, { name: NAME[r.boss] }); i.title = i.alt; li.append(i); }
+      if (r.boss || NAME[r.face]) { const i = new Image(); i.alt = r.boss ? fmt(C.rsvp.board_boss, { name: NAME[r.boss] || '' }) : NAME[r.face]; i.title = i.alt;   // avatar: the last character they saw win; Sarah is reserved for whoever beat her
+        i.src = r.boss ? 'img/boss/sarah_f3.webp' : HEAD(r.face); if (r.boss) i.className = 'champ'; li.append(i); }
       li.append(g); return li; })); }).catch(() => {}); };
 // a registered visitor's score follows them: their remembered name (this device) is updated with the rounds they played
-const syncRsvp = () => { let m = null; try { m = JSON.parse(localStorage.getItem('rsvp')); } catch (e) {} const { n, boss } = REC();
-  if (!m || !C.links.stats || (m.games === n && (m.boss || null) === (boss || null))) return;
-  fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { method: 'POST', body: JSON.stringify({ vid: VID, dev: DEV, name: m.name, p: m.p, games: n, boss }) })
-    .then((r) => { if (!r.ok) return; try { localStorage.setItem('rsvp', JSON.stringify({ ...m, games: n, boss })); } catch (e) {} loadBoard(); }).catch(() => {}); };
+const syncRsvp = () => { let m = null; try { m = JSON.parse(localStorage.getItem('rsvp')); } catch (e) {} const { n, boss = null, face = null } = REC();
+  if (!m || !C.links.stats || (m.games === n && (m.boss || null) === boss && (m.face || null) === face)) return;
+  fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { method: 'POST', body: JSON.stringify({ vid: VID, dev: DEV, name: m.name, p: m.p, games: n, boss, face }) })
+    .then((r) => { if (!r.ok) return; try { localStorage.setItem('rsvp', JSON.stringify({ ...m, games: n, boss, face })); } catch (e) {} loadBoard(); }).catch(() => {}); };
 const VICTOR = () => LAST || [P1, P2];                 // [winner, loser]; a skipped show uses the drawn pair
 function fillMore() {                                  // this run's winner and loser, and a fresh countdown
   const [w, l] = VICTOR();

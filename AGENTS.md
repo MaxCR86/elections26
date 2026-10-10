@@ -1,7 +1,7 @@
 # elections26: election-night party invite (DiMax)
 
-Live at https://elections26.dimaxtlv.com (GitHub Pages, noindex). A Hebrew RTL arcade-game invite: DiMax ident, INSERT VOTE, a threshold scene, character select, a fight, then an in-game CONTINUE? (5 s, `game.continue_s`): play on, or give up (button or time-out) to the results: the poster (title + arrow) and the landing page below it: the winner with the details, the ballot box (RSVP), the voters board (rounds played, the face they beat Sarah with), the buttons, the character scoreboard (all players' wins, top first), ideas, DiMax, the polls line. Type on that page: 4 steps (Display 9 / Heading 6.4 / Body 4.6 / Meta 3.4 cqw), white, gold, grey.
-- RSVP rows carry `games` and `boss` (D1 columns added 10.10); a registered device re-syncs its score on every visit to the results (`syncRsvp`).
+Live at https://elections26.dimaxtlv.com (GitHub Pages, noindex). A Hebrew RTL arcade-game invite: DiMax ident, INSERT VOTE, a threshold scene, character select, a fight, then an in-game CONTINUE? (5 s, `game.continue_s`): play on, or give up (button or time-out) to the results: the poster (title + arrow) and the landing page below it: the winner with the details, the ballot box (RSVP), the voters board (rounds played; avatar = the last character they saw win, or Sarah, reserved for whoever beat her), the buttons, the character scoreboard (all players' wins, top first), ideas, DiMax, the polls line. Type on that page: 4 steps (Display 9 / Heading 6.4 / Body 4.6 / Meta 3.4 cqw), white, gold, grey.
+- RSVP rows carry `games`, `boss` and `face` (D1 columns added 10.10); a registered device re-syncs its score on every visit to the results (`syncRsvp`).
 - The top-up guard false-flagged one code edit by its wording (a payment-sounding pair of words). Panels use the class `.panel`; keep it that way.
 
 ## Where things live
