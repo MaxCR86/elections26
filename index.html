@@ -889,11 +889,12 @@ function buildMore() {
     setTimeout(() => { location.href = wa; }, 650); });
 
   // 1. VICTORY: the winner slams in, the loser is down, the quote types out, then the details
-  const win = more.querySelector('.win'); let played = false;
-  onSeen(win, () => { if (played) return; played = true; track('saw_details'); win.classList.add('on');
+  const win = more.querySelector('.win'); let played = false, iv = null;
+  more.resetWin = () => { played = false; clearInterval(iv); win.classList.remove('on'); win.querySelector('.q').textContent = ''; };   // every run: this run's winner and their own line
+  onSeen(win, () => { if (played) return; played = true; track('saw_details'); void win.offsetWidth; win.classList.add('on');
     const qn = win.querySelector('.q'), own = C.victory.quotes?.[VICTOR()[0]], text = fmt(own && Math.random() * 100 >= (v.quote_pct ?? 10) ? own : v.quote, { name: NAME[VICTOR()[0]] }); let i = 0;   // each winner has their own line; the general one comes up quote_pct% of the time
     if (RM) { qn.textContent = text; return; }
-    setTimeout(() => { sfx('confirm', .5); const iv = setInterval(() => { qn.textContent = text.slice(0, ++i); if (i % 3 === 0) blip(); if (i >= text.length) clearInterval(iv); }, 32); }, 650); });
+    setTimeout(() => { sfx('confirm', .5); iv = setInterval(() => { qn.textContent = text.slice(0, ++i); if (i % 3 === 0) blip(); if (i >= text.length) clearInterval(iv); }, 32); }, 650); });
 
   // 2. CONTINUE? counts down while on screen; at zero: GAME OVER, and it stays over
   const cont = more.querySelector('.cont'), cnt = cont.querySelector('.count'); let n = 9, tick = null, seenC = false;
@@ -922,7 +923,7 @@ function fillMore() {                                  // this run's winner and 
   more.querySelectorAll('.w').forEach((n) => (n.src = POSE(w, 'stance')));
   more.querySelector('.arena2 .l').src = POSE(l, 'hit'); more.querySelector('.pair .l').src = POSE(l, 'hit'); more.querySelector('.pair .w').src = POSE(w, 'punch');
   more.querySelector('.wt').textContent = fmt(C.fight.winner, { name: NAME[w] });
-  more.resetCont?.(); more.querySelector('.ballots').textContent = ballots();
+  more.resetWin?.(); more.resetCont?.(); more.querySelector('.ballots').textContent = ballots();
 }
 
 // ---------- UI ----------
