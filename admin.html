@@ -20,6 +20,7 @@ summary::before { content: ""; display: inline-block; width: 0; height: 0; margi
 details[open] > summary::before { rotate: -90deg; }
 body { margin: 0; background: radial-gradient(ellipse 120% 60% at 50% 0, #1a2140, var(--ink) 70%) fixed; color: var(--fg); font: 400 16px/1.5 Assistant, "Arial Hebrew", system-ui, sans-serif; min-height: 100vh; }
 ::selection { background: var(--p1); color: #111; }
+::placeholder { color: var(--muted); opacity: 1; }
 :focus-visible { outline: 2px solid var(--p2); outline-offset: 2px; }
 button, input, textarea, select { font: inherit; color: inherit; }
 .meta { font: 700 13px/1.3 Assistant, sans-serif; color: var(--muted); }
