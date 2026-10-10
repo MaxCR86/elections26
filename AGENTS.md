@@ -30,4 +30,4 @@ Live at https://elections26.dimaxtlv.com (GitHub Pages, noindex). A Hebrew RTL a
 - **`copy.json` edits:** the live repo copy is the source of truth after any admin save or poll commit. Edit it here, then copy it to `final/`. `build_site.py` pulls it back automatically.
 - **Accounts:** never use Blueye or business accounts or credentials.
 - **Language:** Hebrew RTL throughout. It's "בחירות 2026", never "round 6" or "מלחמת אזרחים".
-- **fal.ai spend:** about $9.70 of the agreed $10 cap so far.
+- **fal.ai spend:** about $9.77 of the agreed $10 cap so far (Lapid gloves, 10.10: 7 images).
