@@ -18,8 +18,10 @@ document.head.append(Object.assign(document.createElement('style'), { textConten
 .bz-plate { position: absolute; left: 6%; top: 62%; z-index: 12; display: grid; gap: 1cqw; opacity: 0; pointer-events: none; }
 .bz-plate b { font: 400 10cqw/1 var(--f-he); color: #ff9ad5; text-shadow: 0 .8cqw 0 #5a0d3a, 0 0 4cqw #ff3aa8; }
 .bz-plate small { font: 700 4cqw/1 var(--f-ui); color: #fff; letter-spacing: .04em; }
-.bz-say { position: absolute; z-index: 13; max-width: 62%; padding: 2.6cqw 3.4cqw; background: #fff; color: #111; border-radius: 3cqw; font: 400 5.4cqw/1.25 var(--f-he); box-shadow: 0 1.5cqw 4cqw #000a; opacity: 0; pointer-events: none; }
-.bz-say.boss { background: #ffe1f1; border: .6cqw solid #ff3aa8; }
+.bz-say { position: absolute; z-index: 13; max-width: 62%; background: #fff; color: #111; border: .7cqw solid #111; border-radius: 5cqw; box-shadow: .9cqw .9cqw 0 #111; font: 400 5cqw/1.2 var(--f-he); padding: 2.4cqw 3.6cqw; opacity: 0; pointer-events: none; }
+.bz-say::after { content: ""; position: absolute; bottom: -2.6cqw; width: 4cqw; height: 4cqw; background: inherit; border: solid #111; border-width: 0 .7cqw .7cqw 0; transform: skewX(18deg) rotate(45deg); }
+.bz-say.tail-r::after { right: 24%; } .bz-say.tail-l::after { left: 24%; }
+.bz-say.boss { background: #ffe1f1; border-color: #ff3aa8; box-shadow: .9cqw .9cqw 0 #ff3aa8; } .bz-say.boss::after { border-color: #ff3aa8; }
 .bossHud .p2 i { background: linear-gradient(#ffb3df, #e0217a); } .bossHud .p2 b small { font: italic 800 4.4cqw/1 var(--f-mark); color: #ff9ad5; margin-right: 1.6cqw; }
 .bossHud .clock { color: #ff9ad5; text-shadow: 0 0 2cqw #ff3aa8; }
 .bz-sum { position: absolute; inset: 0; z-index: 14; display: grid; align-content: center; gap: 4cqw; padding: 0 8%; background: radial-gradient(ellipse at 50% 40%, #1a2140f2, #05060bf7 75%); opacity: 0; }
@@ -82,10 +84,10 @@ function finale(hero, o = {}) {
   skipBtn = uiBtn('skip', C.ui.skip, () => { track('boss_skip'); afterBoss(); });
 
   let t = 0; const beat = (dt, fn) => at((t += dt), fn);   // the timeline: every beat is ms after the previous one
-  const say = (who, text, ms = 1800) => { const b = el('div', `bz-say${who === boss ? ' boss' : ''}`, text); const x = who.x;
+  const say = (who, text, ms = 1800) => { const x = who.x, b = el('div', `bz-say${who === boss ? ' boss' : ''} ${x > 50 ? 'tail-r' : 'tail-l'}`, text); ms = readMs(text, ms);   // a comic bubble, up long enough to read
     b.style.cssText = `top:${who === boss ? 34 : 38}%;${x > 50 ? 'right' : 'left'}:${x > 50 ? 100 - x - 14 : x - 16}%`; cam.append(b);
     A(b, [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'none', offset: .12 }, { opacity: 1, offset: .88 }, { opacity: 0 }], { duration: ms, easing: 'ease-out' }).finished.then(() => b.remove()); };
-  const big = (cls, html, ms, kf) => { const n = el('div', cls, html); cam.append(n); A(n, kf || [{ opacity: 0, transform: 'scale(1.8)' }, { opacity: 1, transform: 'none', offset: .15 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: ms, easing: 'ease-out' }).finished.then(() => n.remove()); return n; };
+  const big = (cls, html, ms, kf) => { ms = readMs(html, ms); const n = el('div', cls, html); cam.append(n); A(n, kf || [{ opacity: 0, transform: 'scale(1.8)' }, { opacity: 1, transform: 'none', offset: .15 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: ms, easing: 'ease-out' }).finished.then(() => n.remove()); return n; };
   const fighter = (id, x, h, flip, src) => { const w = h * 16 / 9, c = el('div', 'ch'); c.style.cssText = `left:${x - w / 2}%;top:${92 - h}%;width:${w}%;height:${h}%;z-index:5`;
     const mv = el('div', 'mv'), bob = el('div', 'bob'), img = Object.assign(new Image(), { src, alt: NAME[id] || '' }); if (flip) img.className = 'flip';
     bob.append(img); mv.append(bob); c.append(mv); cam.append(c);
