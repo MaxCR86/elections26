@@ -26,8 +26,9 @@
   color-scheme: dark;
 }
 html, body { height: 100%; }
-body { background: var(--ink); color: var(--fg); font-family: var(--f-ui); margin: 0; display: grid; place-items: center; overflow: hidden; }
-#stage { position: relative; height: min(100%, 177.78vw); aspect-ratio: 9 / 16; max-width: 100%; overflow: hidden; background: #000;
+body { background: var(--ink); color: var(--fg); font-family: var(--f-ui); margin: 0; overflow: hidden; }
+body.done { overflow-y: auto; }
+#stage { position: relative; height: min(100dvh, 177.78vw); aspect-ratio: 9 / 16; max-width: 100%; margin: 0 auto; overflow: hidden; background: #000;
   container-type: inline-size; isolation: isolate; direction: rtl; }
 .cam { position: absolute; inset: 0; }
 canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
@@ -59,18 +60,30 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 /* ---------- select screen ---------- */
 .hud { position: absolute; left: 5%; right: 5%; z-index: 6; text-align: center; font-family: var(--f-he); color: #fff; }
 .hud h2 { margin: 0; font-weight: 400; font-size: 8.5cqw; letter-spacing: .02em; text-shadow: 0 0 4cqw #ff8a2a88; }
-.grid { position: absolute; left: 11%; right: 11%; top: 11%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4cqw; z-index: 4; }
-.tile { position: relative; aspect-ratio: 1; background: radial-gradient(circle at 50% 30%, #2a3350, #10131d); border: .5cqw solid #2b3140; overflow: hidden; }
+.teams { position: absolute; left: 4%; right: 4%; top: 10.5%; display: flex; gap: 3.5cqw; z-index: 4; }
+.team { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqw; padding: 1.6cqw; border-radius: 1.8cqw; align-content: start; }
+.team h3 { grid-column: 1 / -1; margin: 0 0 .4cqw; font: 400 4.4cqw/1.1 var(--f-he); text-align: center; }
+.team.tr { background: linear-gradient(#ffc23a2e, #ffc23a08); border: .4cqw solid #ffc23a80; } .team.tr h3 { color: var(--p1); }
+.team.tl { background: linear-gradient(#3ae0ff2e, #3ae0ff08); border: .4cqw solid #3ae0ff80; } .team.tl h3 { color: var(--p2); }
+.tile { position: relative; aspect-ratio: 5 / 4; background: radial-gradient(circle at 50% 30%, #2a3350, #10131d); border: .5cqw solid #2b3140; overflow: hidden; }
 .tile img { position: absolute; left: 50%; top: -4%; width: 150%; translate: -50% 0; }
 .tile i { position: absolute; inset: auto 0 0; font-style: normal; font-size: 3cqw; text-align: center; color: #fff; background: #000b; font-family: var(--f-ui); font-weight: 700; padding-block: .3cqw; }
 .tile.p1 { border-color: var(--p1); box-shadow: 0 0 0 .6cqw var(--p1), 0 0 4cqw var(--p1); }
 .tile.p2 { border-color: var(--p2); box-shadow: 0 0 0 .6cqw var(--p2), 0 0 4cqw var(--p2); }
+.tile.risk { border-color: #fff; box-shadow: 0 0 0 .6cqw #fff, 0 0 4cqw #fff8; }
+.tile.out img { filter: grayscale(1) brightness(.5); }
+.tile.p1.bad, .tile.p2.bad { border-color: #ff2a4a; box-shadow: 0 0 0 .6cqw #ff2a4a, 0 0 4cqw #ff2a4a; }
+.vm { position: absolute; left: 8%; right: 8%; bottom: 24%; height: 2.4cqw; background: #000c; border: .3cqw solid #fff; border-radius: .4cqw; z-index: 2; direction: ltr; }
+.vm i { position: absolute; top: 0; bottom: 0; left: 0; width: 0; background: linear-gradient(#ffe66b, #f2a400); }
+.vm s { position: absolute; top: -1.2cqw; bottom: -1.2cqw; left: 54.2%; width: .5cqw; background: #fff; z-index: 1; }
+.vm b { position: absolute; bottom: 160%; left: -20%; right: -20%; text-align: center; font: italic 800 4.4cqw/1 var(--f-mark); color: #fff; text-shadow: 0 .4cqw 0 #000, 0 0 2cqw #000; }
+.vm.fail i { background: #ff4a3a; } .vm.pass i { background: #5fe08a; }
 .stamp { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-mark); font-style: italic; font-weight: 800; font-size: 10cqw; color: #fff; text-shadow: 0 0 2cqw #000; }
 .dq { position: absolute; inset: 0; display: grid; place-content: center; gap: .6cqw; background: #b00e1ccc; color: #fff; text-align: center; line-height: 1; opacity: 0; }
 .dq b { font-family: var(--f-mark); font-style: italic; font-weight: 800; font-size: 3.6cqw; } .dq small { font-family: var(--f-ui); font-weight: 700; font-size: 3cqw; }
 .bars { font-family: var(--f-ui); font-size: 3.6cqw; display: grid; gap: 1cqw; margin-top: 1.5cqw; }
 .bars div { display: grid; grid-template-columns: 50cqw 1fr; align-items: center; gap: 2cqw; text-align: start; }
-.bars span { height: 2.4cqw; background: linear-gradient(270deg, #ffd84a, #ff7a1a); justify-self: start; }
+.bars span { height: 2.4cqw; width: 0; background: linear-gradient(270deg, #ffd84a, #ff7a1a); justify-self: start; transition: width .35s ease-out; }
 .split { position: absolute; inset: 0; z-index: 1; background: linear-gradient(115deg, #0c3448 0 49.6%, #fff 49.6% 50.4%, #3a0d0d 50.4%); }
 .vs { position: absolute; left: 50%; top: 44%; translate: -50% -50%; z-index: 7; direction: ltr; font-family: var(--f-mark); font-style: italic; font-weight: 800; font-stretch: 110%; font-size: 30cqw;
   background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 4cqw #ff8a2a); opacity: 0; }
@@ -80,6 +93,23 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 .move b { font-family: var(--f-he); font-weight: 400; font-size: 6cqw; color: #fff; line-height: 1; }
 .move small { font-family: var(--f-ui); font-weight: 700; font-size: 3cqw; color: var(--muted); }
 .move i { font-family: var(--f-he); font-style: normal; font-size: 4.8cqw; color: #ffd84a; line-height: 1.1; }
+.arena { position: absolute; inset: 0; z-index: 1; background: radial-gradient(ellipse 80% 45% at 50% 78%, #ff8a2a22, transparent 70%), linear-gradient(#0008, transparent 30%, transparent 70%, #000a); }
+.fhud { position: absolute; left: 3%; right: 3%; top: 8.5%; z-index: 8; display: grid; grid-template-columns: 1fr auto 1fr; gap: 2.4cqw; align-items: start; opacity: 0; }
+.hp { display: grid; gap: 1cqw; } .hp b { font-family: var(--f-he); font-weight: 400; font-size: 5cqw; color: #fff; text-shadow: 0 .4cqw 1cqw #000; }
+.hp.p2 { text-align: left; }
+.hp span { position: relative; display: block; height: 3.6cqw; background: #1a1d26; border: .5cqw solid #e9edf3; border-radius: .6cqw; overflow: hidden; transform: skewX(-12deg); }
+.hp em, .hp i { position: absolute; top: 0; bottom: 0; width: 100%; transition: width .25s ease-out; }
+.hp.p1 em, .hp.p1 i { right: 0; } .hp.p2 em, .hp.p2 i { left: 0; }
+.hp em { background: #ff4a3a; transition-duration: .6s; } .hp i { background: linear-gradient(#ffe66b, #f2a400); }
+.clock { font-family: var(--f-mark); font-style: italic; font-weight: 800; font-size: 7cqw; color: #fff; text-shadow: 0 0 2cqw #ff8a2a; padding-top: 3cqw; }
+.callout { position: absolute; top: 24%; z-index: 9; display: grid; gap: .6cqw; text-align: center; opacity: 0; max-width: 70%; }
+.callout.c1 { right: 5%; } .callout.c2 { left: 5%; }
+.callout small { font-family: var(--f-ui); font-weight: 700; font-size: 3.6cqw; color: #fff; letter-spacing: .06em; }
+.callout b { font-family: var(--f-he); font-weight: 400; font-size: 9cqw; line-height: 1; color: #ffd84a; text-shadow: 0 .6cqw 0 #8a3b00, 0 0 4cqw #ff8a2a; }
+.blackframe { position: absolute; inset: 0; z-index: 22; background: #000; opacity: 0; pointer-events: none; }
+.ko { position: absolute; inset: 0; z-index: 12; display: grid; place-items: center; direction: ltr; font-family: var(--f-mark); font-style: italic; font-weight: 900; font-stretch: 115%; font-size: 34cqw;
+  background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 1cqw 0 #6a2a00) drop-shadow(0 0 5cqw #ff8a2a); opacity: 0; padding-bottom: 20%; }
+.winner { position: absolute; left: 0; right: 0; top: 56%; z-index: 12; text-align: center; font-family: var(--f-he); font-size: 7cqw; color: #fff; text-shadow: 0 .5cqw 2cqw #000; opacity: 0; }
 .bubble { position: absolute; z-index: 9; background: #fff; color: #111; font-family: var(--f-he); font-size: 4.6cqw; padding: 2cqw 3.2cqw; border-radius: 3cqw; max-width: 48%; opacity: 0; box-shadow: 0 1cqw 3cqw #0008; }
 .booth { position: absolute; left: 50%; bottom: 2%; translate: -50% 0; width: 52%; z-index: 8; background: #000c; border: .3cqw solid #ffd84a55; border-radius: 2cqw; padding: 1.2cqw 2cqw 0; display: grid; grid-template-columns: 1fr 1fr; opacity: 0; }
 .booth img { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: top; }
@@ -129,24 +159,102 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 .ui:focus-visible { outline: 2px solid var(--p2); outline-offset: 2px; }
 #snd { top: 2.5%; inset-inline-start: 3%; }
 #skip { top: 2.5%; inset-inline-end: 3%; }
-#again { bottom: 1.2%; inset-inline-start: 3%; font-size: 2.8cqw; padding: 1.2cqw 2.4cqw; }
+#again { top: 2.5%; inset-inline-end: 3%; }
 #credits { position: absolute; inset: 6% 6% 6%; z-index: 40; background: #0b0d12f2; border: 1px solid #fff3; border-radius: 3cqw; padding: 5cqw; overflow: auto;
   font-size: 3.4cqw; line-height: 1.5; color: var(--muted); }
 #credits h3 { margin: 0 0 2cqw; font-family: var(--f-he); font-weight: 400; color: #fff; font-size: 5cqw; }
 #credits ul { margin: 0; padding-inline-start: 4cqw; }
 #credits a { color: #cfe2ff; }
 @media (prefers-reduced-motion: reduce) { .mark .sheen { display: none; } }
+
+/* ---------- fighters (pose sprites face right; .flip mirrors the right-side fighter) ---------- */
+.mv, .bob { position: absolute; inset: 0; }
+.ch img.flip { scale: -1 1; }
+.combo, .blocktxt { position: absolute; top: 30%; z-index: 9; direction: ltr; font-family: var(--f-mark); font-style: italic; font-weight: 900; line-height: .9; opacity: 0; text-align: center; }
+.combo { font-size: 9cqw; color: #fff; text-shadow: 0 .6cqw 0 #8a3b00, 0 0 3cqw #ff8a2a; } .combo small { display: block; font-size: 5cqw; color: #ffd84a; }
+.blocktxt { font-size: 6cqw; color: #bfe9ff; text-shadow: 0 0 3cqw #3ae0ff; }
+.orb { position: absolute; z-index: 7; width: 12cqw; height: 12cqw; margin: -6cqw 0 0 -6cqw; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, #fff 0 18%, var(--c) 40%, transparent 70%); filter: drop-shadow(0 0 3cqw var(--c)); }
+.dmg { position: absolute; z-index: 9; direction: ltr; font: italic 900 6cqw/1 var(--f-mark); color: #fff; text-shadow: 0 .4cqw 0 #000; pointer-events: none; }
+
+/* ---------- same-team glitch ---------- */
+.cam.glitching { animation: glitch .14s steps(2, jump-none) infinite; }
+@keyframes glitch {
+  0% { transform: translate(1.6cqw, 0); filter: drop-shadow(-1.2cqw 0 #ff00d0) drop-shadow(1.2cqw 0 #00f0ff) hue-rotate(60deg); clip-path: inset(0 0 46% 0); }
+  50% { transform: translate(-1.6cqw, .6cqw); filter: invert(.15) drop-shadow(1cqw 0 #ff00d0); clip-path: inset(30% 0 12% 0); }
+  100% { transform: none; filter: none; clip-path: none; } }
+.glitch { position: absolute; left: 6%; right: 6%; top: 40%; z-index: 13; display: grid; gap: 1.4cqw; padding: 3cqw; background: #000e; border: .4cqw solid #ff2a4a; text-align: center; opacity: 0; }
+.glitch b { font: 700 5.4cqw/1 ui-monospace, "SF Mono", Menlo, monospace; color: #ff2a4a; letter-spacing: .04em; }
+.glitch span { font-family: var(--f-he); font-size: 5cqw; color: #fff; }
+@media (prefers-reduced-motion: reduce) { .cam.glitching, #down { animation: none; } }
+#down { bottom: 1.4%; left: 50%; translate: -50% 0; white-space: nowrap; font-size: 3.2cqw; background: #ffc23ae6; color: #111; border-color: #ffd84a; animation: nudge 1.2s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateY(.8cqw); } }
+
+/* ---------- after the show: the stairwell level. You scroll down the building; the cast runs down with you; ground floor is CONTINUE?.
+   Type steps: Display (Saira italic 900) / Heading (Secular One · Saira italic 800, 9cqw) / Body (Assistant 700, 4.6cqw) / Meta (Assistant 700, 3.4cqw) ---------- */
+#more { display: none; position: relative; width: min(100%, calc(100dvh * 9 / 16)); margin: 0 auto; container-type: inline-size; direction: rtl; background: #07080d; }
+body.done #more { display: block; }
+::selection { background: #ffc23a; color: #111; }
+html { scrollbar-color: #3a4266 #07080d; }
+.well { position: sticky; top: 0; height: 100dvh; overflow: hidden; z-index: 0; }
+.well .wall { position: absolute; inset: -2% 0; background: url("img/stairs.jpg") 50% 0 / auto 165% no-repeat; filter: saturate(1.1) brightness(.78); will-change: background-position; }
+.well::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(#07080d 0, transparent 14%, transparent 80%, #07080dcc); }
+.well .floor { position: absolute; top: 9%; inset-inline-end: 5%; direction: ltr; font: italic 900 52cqw/.8 var(--f-mark); font-stretch: 115%; color: #ffffff26; -webkit-text-stroke: .35cqw #ffffff59; mix-blend-mode: screen; pointer-events: none; }
+.crew { position: sticky; top: 0; height: 100dvh; margin-bottom: -100dvh; z-index: 2; pointer-events: none !important; }
+.run { pointer-events: auto; transition: opacity .25s; }
+.run { position: absolute; left: 0; top: 0; width: 30cqw; height: 30cqw; margin: -29cqw 0 0 -15cqw; will-change: transform; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.run img { width: 100%; height: 100%; object-fit: contain; object-position: bottom; filter: drop-shadow(0 2cqw 1.5cqw #000c); pointer-events: none; }
+.run img.flip { scale: -1 1; }
+.run::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: -1cqw; height: 3cqw; border-radius: 50%; background: radial-gradient(closest-side, #000a, transparent); z-index: -1; }
+.lvls { position: relative; z-index: 1; margin-top: -100dvh; pointer-events: none; }
+.lvls > * { pointer-events: auto; }
+.gap { height: 42dvh; pointer-events: none !important; }
+
+/* floor 5: the briefing plate, in the fight HUD's vocabulary: white frame, skewed bar, yellow chrome heading */
+.brief { margin: 0 5%; padding: 7cqw 6cqw 6cqw; background: #0b0e1af2; border: .5cqw solid #e9edf3; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b; }
+.brief h2 { margin: 0 0 5cqw; font: 400 9cqw/1 var(--f-he); color: #ffd84a; text-shadow: 0 .8cqw 0 #8a3b00, 0 0 4cqw #ff8a2a66; }
+.brief dl { display: grid; grid-template-columns: auto 1fr; gap: 3.6cqw 4cqw; margin: 0 0 6cqw; align-items: baseline; }
+.brief dt { font: 700 3.4cqw/1.3 var(--f-ui); color: var(--p2); }
+.brief dd { margin: 0; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); }
+.nw { white-space: nowrap; }
+.ic { width: 1.1em; height: 1.1em; vertical-align: -.2em; margin-inline-start: .3em; }
+#more .arc { display: block; box-sizing: border-box; width: 100%; text-align: center; text-decoration: none; font: 700 4.6cqw/1 var(--f-ui); padding: 4.4cqw 2cqw; }
+#more .arc:focus-visible { outline: .6cqw solid #fff; outline-offset: .8cqw; }
+.brief .trio { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; margin-top: 3.6cqw; }
+.brief .trio .arc { white-space: nowrap; } .brief .trio .dim { grid-column: 1 / -1; }
+.arc.dim { background: #1a2140; color: var(--fg); box-shadow: 0 1.4cqw 0 #0008, inset 0 0 0 .4cqw #ffffff33; }
+#more [aria-disabled="true"] { opacity: .45; pointer-events: none; }
+
+/* ground floor: CONTINUE? with the arcade countdown */
+.cont { display: grid; justify-items: center; gap: 2cqw; margin: 0 5%; padding: 8cqw 6cqw 7cqw; text-align: center; background: #0b0e1af2; border: .5cqw solid #e9edf3; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b; }
+.cont .cq { margin: 0; direction: ltr; font: italic 800 9cqw/1 var(--f-mark); font-stretch: 112%; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 .6cqw 0 #222); }
+.cont .count { direction: ltr; font: italic 900 38cqw/.9 var(--f-mark); font-stretch: 115%; color: #ffd84a; text-shadow: 0 1.4cqw 0 #8a3b00, 0 0 7cqw #ff8a2a; font-variant-numeric: tabular-nums; min-height: 34cqw; }
+.cont .count.over { font-size: 13cqw; line-height: 2.6; color: #ff4a3a; text-shadow: 0 .8cqw 0 #5a0d0d, 0 0 5cqw #ff4a3a; }
+.cont .arc { margin-top: 2cqw; }
+.cont small { font: 700 3.4cqw/1 var(--f-ui); color: var(--muted); margin-top: 1.6cqw; }
+
+/* end credits: the DiMax ident one more time, high beams and all */
+.foot { position: relative; z-index: 1; box-sizing: border-box; min-height: 96dvh; display: flex; flex-direction: column; align-items: center; gap: 4cqw; overflow: hidden; margin-top: -30dvh; padding: 30dvh 0 12cqw; background: linear-gradient(transparent, #07080d 45%, #0b1020 78%, #121a30); perspective: 700px; }
+.foot .mark { margin-top: auto; position: relative; left: auto; top: auto; translate: none; font-size: 27cqw; transition: transform .25s ease-out; z-index: 2; }
+.foot .glow { position: absolute; left: 10%; right: 10%; top: 42%; height: 26%; background: radial-gradient(closest-side, #8fb0ff40, transparent); opacity: 0; }
+.foot .drl { opacity: .15; bottom: 2.4cqw; }
+.foot .who { font: 700 3.4cqw/1 var(--f-ui); color: var(--muted); letter-spacing: .5em; padding-inline-start: .5em; }
+.foot .fine { margin: auto 8% 0; position: relative; z-index: 2; text-align: center; font: 700 3.4cqw/1.6 var(--f-ui); color: #8f97a6; }
+.foot details { margin-top: 2cqw; text-align: start; } .foot summary { cursor: pointer; text-align: center; list-style: none; text-decoration: underline; text-underline-offset: .4em; } .foot summary::-webkit-details-marker { display: none; }
+.foot details ul { padding-inline-start: 4cqw; max-height: 40cqw; overflow: auto; }
+@media (prefers-reduced-motion: reduce) { .well .wall { will-change: auto; } }
 </style>
-</head>
-<body>
+
 <div id="stage" lang="he" dir="rtl" aria-label="הזמנה למסיבת ליל הבחירות 2026">
   <div class="cam" id="cam"></div>
   <div class="flash" id="flash"></div>
 </div>
 
+<main id="more" aria-label="פרטי האירוע"></main>
+
 <script>
 // ---------- data ----------
-// [id, label, x% (centre), feetY%, height%]; coalition right, opposition left
+// [id, fallback label, x% (centre), feetY%, height%]; coalition right, opposition left. All text lives in copy.json (edited from /admin).
 const R = [['netanyahu','נתניהו',65,86,35],['bengvir','בן גביר',82,86,28],['smotrich','סמוטריץ׳',96,87,27],
   ['deri','דרעי',59,68,20],['regev','רגב',72,69,20],['levin','לוין',85,68,20],['saar','סער',97,67,19],
   ['ohana','אוחנה',66,57,15],['goldknopf','גולדקנופף',80,57,15],
@@ -159,8 +267,22 @@ const BALC = [['gafni','גפני',8,17,10],['edelstein','אדלשטיין',19,17
 const SKY = [['haskel','השכל',45,20,12],['winter','וינטר',56,22,12]];
 const ALL = [...R, ...L, ...LEDGE, ...BALC, ...SKY];
 const NAME = Object.fromEntries(ALL.map((r) => [r[0], r[1]]));
+let RAW = {}, C = {};                                  // copy.json as loaded, and this run's resolved copy
+// A text field is either a string or a set of options [{t, on}]; each run picks one of the switched-on options.
+const isOpts = (v) => Array.isArray(v) && v.length > 0 && v.every((o) => o && typeof o === 'object' && 't' in o);
+const resolve = (v) => { if (isOpts(v)) { const on = v.filter((o) => o.on); return pick(on.length ? on : [v[0]]).t; }
+  if (Array.isArray(v)) return v.map(resolve);
+  return v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, resolve(x)])) : v; };
+let LAST = null;                                       // [winner, loser] of the last fight, they lead the stairwell crew
+let PWR = {};                                          // power = party's expected seats × weight of the place on its list
+const computePower = () => { PWR = {}; const w = C.game.rank_weights;
+  C.parties.forEach((p) => p.members.forEach((id, i) => { PWR[id] = p.seats * (w[i] ?? w[w.length - 1]); })); };
+const PW = (id) => PWR[id] ?? 1;
+const NOTIER = { hit: 1, armor: 1, appear: 1 };
+const TIER = (id) => Object.values(C.game.tiers).find((t) => t.ids.includes(id)) || NOTIER;   // bosses: hit harder, take less, show up less
+const fmt = (s, o = {}) => String(s ?? '').replace(/\{(\w+)\}/g, (_, k) => o[k] ?? '');
 const CREDITS = {"tibi":["אמיר דיב - Amir Deeb","CC BY-SA 4.0"],"ohana":["Avi Ohayon","CC BY-SA 3.0"],"liberman":["Preiss /MSC","CC BY 3.0 de"],"netanyahu":["Avi Ohayon","CC BY-SA 3.0"],"gantz":["U.S. Embassy Jerusalem","CC BY 2.0"],"smotrich":["Avi Ohayon","CC BY-SA 3.0"],"eisenkot":["Yahav Trudler - Yahav Studio","CC BY-SA 3.0"],"saar":["Sharon Gabay","CC BY-SA 3.0"],"katz":["U.S. Embassy Jerusalem","CC BY 2.0"],"bengvir":["Shlomi Amsalem","CC BY-SA 4.0"],"edelstein":["Ronen Horesh","CC BY-SA 4.0"],"abbas":["דוד שי","CC BY-SA 4.0"],"kahana":["Arielinson","CC BY-SA 4.0"],"regev":["בן חדד - Ben Haddad","CC BY-SA 4.0"],"gafni":["Nati Shohat","CC BY-SA 4.0"],"bennett":["Avi Ohayon","CC BY-SA 3.0"],"winter":["Nadav Margalit","CC BY-SA 4.0"],"haskel":["Sharon Gabay","CC BY-SA 3.0"],"karhi":["Shlomi Amsalem","CC BY-SA 4.0"],"gotliv":["Ronen Horesh","CC BY-SA 4.0"],"golan":["Shlomi Amsalem","CC BY-SA 4.0"],"lapid":["Avi Ohayon","CC BY-SA 3.0"],"levin":["Avi Ohayon","CC BY-SA 3.0"],"goldknopf":["Avi Ohayon","CC BY-SA 3.0"],"jabareen":["אמיר דיב - Amir Deeb","CC BY-SA 4.0"],"deri":["רווח הפקות","CC BY-SA 3.0"],"tropper":["Yanai Yechiel","CC BY-SA 4.0"],"hendel":["יניב מורוזובסקי","CC BY-SA 4.0"]};
-// Each load: every character gets a random style, and the cursors lock a random coalition vs opposition pair.
+// Each load: every character gets a random style; fighters are drawn weighted against power (bosses show up less).
 const STY = ['clay', 'lego', 'kitsch3d'];
 const BAD = new Set(['lapid_clay', 'golan_clay', 'abbas_clay', 'tropper_clay', 'gantz_clay', 'hendel_clay']); // stray logo in these renders
 const BEST = { netanyahu: 'lego', bengvir: 'kitsch3d', smotrich: 'clay', deri: 'lego', regev: 'kitsch3d', levin: 'clay', katz: 'lego', saar: 'kitsch3d',
@@ -170,27 +292,48 @@ const BEST = { netanyahu: 'lego', bengvir: 'kitsch3d', smotrich: 'clay', deri: '
 const pick = (a) => a[Math.random() * a.length | 0];
 let STYLE = {};
 const IMG = (id) => `img/${id}_${STYLE[id]}.webp`;
+const POSES = ['stance', 'punch', 'kick', 'hit'];
+const POSE = (id, p) => `img/p/${id}_${STYLE[id]}_${p}.webp`;   // all poses face right
 function rollStyles(fixed) {
   STYLE = Object.fromEntries(ALL.map(([id]) => [id, fixed ? BEST[id] : pick(STY.filter((s) => !BAD.has(`${id}_${s}`)))]));
   [...ALL.map((r) => IMG(r[0])), 'img/bg.jpg'].forEach((u) => { new Image().src = u; });
 }
-const MOVES = {
-  netanyahu: ['הקו האדום', 'הנאום באו״ם', 'הישרדות נצחית'], bengvir: ['חותמת רישיון', 'מגפון במהדורה', 'פרובוקציה מתוזמנת'],
-  smotrich: ['מספריים של תקציב', 'מחשבון הגירעון', 'גזירה גזירה'], deri: ['המפתח לכל קואליציה', 'המתווך הנצחי', 'חוזר תמיד'],
-  regev: ['גזירת סרט אינסופית', 'רמזור אדום', 'טקס פתיחה'], levin: ['פטיש ההריסה', 'רפורמה בשלבים', 'פטיש בית המשפט'],
-  katz: ['סערת ציוצים', 'ציוץ בשלוש בלילה', 'שרשור זועם'], saar: ['הבומרנג', 'חזרה הביתה', 'תקווה חדשה, ישנה'],
-  gotliv: ['המיקרופון הבוער', 'צעקה בוועדה', 'קפיצה בין מפלגות'], ohana: ['פטיש היו״ר', 'הישיבה נעולה', 'קריאה לסדר'],
-  karhi: ['כיבוי ערוץ', 'סגירת תאגיד', 'מספרי כבלים'], goldknopf: ['מגן הפטור', 'ספר נגד צו', 'דחייה אינסופית'],
-  eisenkot: ['תוכנית סדורה', 'מבט של רמטכ״ל', 'שקט מתוח'], bennett: ['הקאמבק', 'ג׳טפק הייטק', 'אקזיט פוליטי'],
-  lapid: ['פתיח של מהדורה', 'טלפרומפטר', 'יש עתיד? יש.'], liberman: ['צו גיוס לכולם', 'מבט קפוא', 'עושה המלכים'],
-  golan: ['מגפון המחאה', 'דגל בקפלן', 'דמוקרטיה בכוח'], tibi: ['הלשון החדה', 'עקיצה בכנסת', 'שאלה מביכה'],
-  abbas: ['חתיכת הפאזל החסרה', 'גשר', 'יד מושטת'], jabareen: ['תוכנית מתאר', 'מחוגה חדה', 'ועדת תכנון'],
-  kahana: ['מטוס נייר מונחה', 'טיסה נמוכה', 'מחשבה של טייס'], tropper: ['קומדיה וטרגדיה', 'מסך אחרון', 'מחזה בשלוש מערכות'] };
-let P1 = 'netanyahu', P2 = 'eisenkot';
-function rollFighters() { P1 = pick(R.map((r) => r[0])); P2 = pick(L.map((r) => r[0])); }
+// Mostly coalition vs opposition; game.same_team_pct of fights are a same-team "bug". A duo member drags the partner in at that duo's chance.
+let P1 = 'netanyahu', P2 = 'eisenkot', SAME = false, DUO = null;   // P1 stands right, P2 left; DUO = { k: side, id: partner, tier, line }
+const wpick = (ids) => { const w = ids.map((id) => TIER(id).appear); let r = Math.random() * w.reduce((a, b) => a + b); return ids.find((_, i) => (r -= w[i]) < 0) ?? ids[0]; };
+// The threshold: once per page load, every at-risk party (parties[].risk %) may fall under 3.25% and leave the game.
+let OUT = new Set(), RISKY = [], DQ_SHOWN = false;
+const GRID_IDS = () => [...R.map((r) => r[0]), ...L.map((r) => r[0]), 'gantz', 'hendel'];
+function rollThreshold() {
+  OUT = new Set(); RISKY = [];
+  C.parties.forEach((p) => { if (!(p.risk > 0)) return; const ids = p.members.filter((id) => GRID_IDS().includes(id)); if (!ids.length) return;
+    const fail = Math.random() * 100 < p.risk, v = fail ? 1.4 + Math.random() * 1.7 : 3.5 + Math.random() * 2.3;
+    RISKY.push({ ids, fail, v }); if (fail) ids.forEach((id) => OUT.add(id)); });
+}
+function rollFighters() {
+  const Rs = R.map((r) => r[0]).filter((id) => !OUT.has(id)), Ls = L.map((r) => r[0]).filter((id) => !OUT.has(id));
+  DUO = null; SAME = Math.random() * 100 < C.game.same_team_pct;
+  if (SAME) { const pool = Math.random() < .5 ? Rs : Ls; P1 = wpick(pool); P2 = wpick(pool.filter((id) => id !== P1)); }
+  else { P1 = wpick(Rs); P2 = wpick(Ls); }
+  for (const d of [...C.game.duos].sort(() => Math.random() - .5)) for (const k of [1, 2]) {
+    const lead = k === 1 ? P1 : P2, mate = lead === d.a ? d.b : lead === d.b ? d.a : null;
+    if (!DUO && mate && !OUT.has(mate) && mate !== P1 && mate !== P2 && Math.random() * 100 < d.chance) DUO = { k, id: mate, tier: d.tier, line: d.line };
+  }
+  [P1, P2, DUO?.id].filter(Boolean).forEach((id) => POSES.forEach((p) => { new Image().src = POSE(id, p); }));
+}
+
+// ---------- stats: anonymous events to our own Cloudflare table, production only. No IP, no user-agent, no cookies. ----------
+const rid = () => (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 14);
+let VID; try { VID = localStorage.getItem('vid') || rid(); localStorage.setItem('vid', VID); } catch (e) { VID = rid(); }
+const SID = rid(), UA = navigator.userAgent, IPADOS = /Macintosh/.test(UA) && navigator.maxTouchPoints > 1;
+const DEV = /iPad|Tablet/.test(UA) || IPADOS ? 'tablet' : /Mobi|Android|iPhone/.test(UA) ? 'mobile' : 'desktop';
+const OS = /iPhone|iPad|iPod/.test(UA) || IPADOS ? 'ios' : /Android/.test(UA) ? 'android' : /Mac/.test(UA) ? 'mac' : /Win/.test(UA) ? 'windows' : 'other';
+const track = (ev, detail) => { if (location.hostname !== 'elections26.dimaxtlv.com' || !C.links?.stats) return;
+  try { navigator.sendBeacon(C.links.stats.replace(/\/$/, '') + '/e', JSON.stringify({ vid: VID, sid: SID, ev, dev: DEV, os: OS, detail })); } catch (e) {} };
+document.addEventListener('click', (e) => { const n = e.target.closest('[data-t]'); if (n) track(n.dataset.t); }, true);
 
 // ---------- helpers ----------
-const stage = document.getElementById('stage'), cam = document.getElementById('cam'), F = document.getElementById('flash');
+const stage = document.getElementById('stage'), cam = document.getElementById('cam'), F = document.getElementById('flash'), more = document.getElementById('more');
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const el = (tag, cls, html) => Object.assign(document.createElement(tag), { className: cls || '', innerHTML: html || '' });
 const A = (n, kf, o) => n.animate(kf, { fill: 'both', ...o });
@@ -231,14 +374,45 @@ const FX = (() => {
 const embers = () => { FX.paint = (ctx, W, H, t) => { for (let i = 0; i < 26; i++) { const p = ((t / 5200) + i * .137) % 1, x = W * ((i * .381) % 1), y = H * (1 - p);
   ctx.fillStyle = `rgba(255,${140 + (i * 13) % 80},60,${.6 * (1 - p)})`; ctx.fillRect(x + Math.sin(t / 700 + i) * 8, y, 2.2, 2.2); } }; };
 
-// ---------- sound ----------
-let soundOn = true;
-const SND = Object.fromEntries(['ident', 'blip', 'dq', 'lock', 'vs', 'alarm', 'fight', 'crash', 'idle', 'music'].map((k) => {
-  const a = new Audio(`audio/${k}.mp3`); a.preload = 'auto'; if (k === 'idle') a.loop = true; return [k, a]; }));
-const sfx = (k, vol = 1) => { if (!soundOn) return; const a = SND[k]; a.volume = vol; a.currentTime = 0; a.play().catch(() => {}); };
-const blip = () => { if (!soundOn) return; const a = SND.blip.cloneNode(); a.volume = .55; a.play().catch(() => {}); };
-const stopAll = () => Object.values(SND).forEach((a) => { a.pause(); });
-const fadeOut = (a, ms = 800) => { const v0 = a.volume, t0 = performance.now(); const f = () => { const k = (performance.now() - t0) / ms; if (k >= 1) { a.pause(); a.volume = v0; return; } a.volume = v0 * (1 - k); requestAnimationFrame(f); }; f(); };
+// ---------- sound (Web Audio: music bus → lowpass → duck, SFX bus, limiter) ----------
+// The game leads, the music follows: in the fight the music sits muffled under a lowpass and bursts open on every hit.
+const SFX = ['ballot', 'tick', 'confirm', 'dq', 'vs', 'alarm', 'fight', 'whoosh', 'hit1', 'hit2', 'special', 'ko', 'crowd', 'reveal',
+  'step', 'jump', 'land', 'block', 'blast', 'combo', 'glitch', 'heart', 'kovoice', 'bar', 'duo'];
+let soundOn = false, AC = null, bus = null; const BUF = {};
+try {
+  AC = new (window.AudioContext || window.webkitAudioContext)();      // starts suspended; a tap resumes it
+  const lim = AC.createDynamicsCompressor();
+  lim.threshold.value = -6; lim.knee.value = 6; lim.ratio.value = 12; lim.attack.value = .003; lim.release.value = .15;
+  const master = AC.createGain(), duckG = AC.createGain(), musicG = AC.createGain(), sfxG = AC.createGain(), lp = AC.createBiquadFilter();
+  master.gain.value = .8; musicG.gain.value = .3; lp.type = 'lowpass'; lp.frequency.value = 18000; lp.Q.value = .7;
+  musicG.connect(lp).connect(duckG).connect(master); sfxG.connect(master); master.connect(lim).connect(AC.destination);
+  bus = { master, duckG, musicG, sfxG, lp, music: null };
+  [...SFX.map((k) => [k, k]), ['bed', 'music_B_bed'], ['fin', 'music_B_fin']].forEach(([k, f]) => fetch(`audio/${f}.mp3`).then((r) => r.arrayBuffer())
+    .then((b) => new Promise((ok, no) => AC.decodeAudioData(b, ok, no))).then((d) => { BUF[k] = d; }).catch(() => {}));
+} catch (e) { AC = null; }
+const unlock = () => { if (!AC) return; try { if ('audioSession' in navigator) navigator.audioSession.type = 'playback'; } catch (e) {} AC.resume(); };
+const sfx = (k, g = 1, vary = true) => {
+  if (!soundOn || !AC || !BUF[k]) return;
+  const s = AC.createBufferSource(), v = AC.createGain(); s.buffer = BUF[k];
+  if (vary) s.playbackRate.value = 1 + (Math.random() - .5) * .06;         // ±3% so repeats never sound identical
+  v.gain.value = g * (vary ? Math.pow(10, (Math.random() - .5) * 3 / 20) : 1);
+  s.connect(v).connect(bus.sfxG); s.start();
+};
+const blip = () => sfx('tick', .45);
+const duck = (to = .5, hold = .15) => { if (!AC) return; const t = AC.currentTime, d = bus.duckG.gain;
+  d.cancelScheduledValues(t); d.setValueAtTime(d.value, t); d.setTargetAtTime(to, t, .012); if (hold != null) d.setTargetAtTime(1, t + hold, .25); };
+const MIX = { select: [.3, 18000], fight: [.22, 650], fin: [.34, 18000] };   // [music gain, lowpass Hz]
+let lpBase = 18000;
+const mix = (m) => { if (!AC) return; const [g, f] = MIX[m], t = AC.currentTime; lpBase = f;
+  bus.musicG.gain.setTargetAtTime(g, t, .3); bus.lp.frequency.cancelScheduledValues(t); bus.lp.frequency.setTargetAtTime(f, t, .3); };
+const open = (hold = .2) => { if (!AC) return; const t = AC.currentTime, f = bus.lp.frequency;
+  f.cancelScheduledValues(t); f.setValueAtTime(f.value, t); f.setTargetAtTime(9000, t, .01); f.setTargetAtTime(lpBase, t + hold, .3); };
+const musicStop = (sec = .6) => { if (!bus || !bus.music) return; const s = bus.music, t = AC.currentTime; bus.music = null;
+  const d = bus.duckG.gain; d.cancelScheduledValues(t); d.setValueAtTime(d.value, t); d.setTargetAtTime(0, t, Math.max(sec / 4, .005)); s.stop(t + sec + .05); };
+const music = (k) => { if (!soundOn || !AC || !BUF[k]) return; if (bus.music) { try { bus.music.stop(); } catch (e) {} }
+  const s = AC.createBufferSource(); s.buffer = BUF[k]; s.connect(bus.musicG);
+  const d = bus.duckG.gain, t = AC.currentTime; d.cancelScheduledValues(t); d.setValueAtTime(1, t); s.start(); bus.music = s; };
+const stopAll = () => musicStop(.05);
 
 // ---------- DiMax mark ----------
 const SLANT_DEG = 11, SLANT = Math.tan(SLANT_DEG * Math.PI / 180);
@@ -260,7 +434,7 @@ function ident() {                                   // high-beams ident, ~5.6s
   const fog = el('div', 'fog'); cam.append(fog);
   A(fog, [{ transform: 'translateX(-4%)' }, { transform: 'translateX(4%)' }], { duration: 6000, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' });
   const dl = el('div', 'drl'), dr = el('div', 'drl'); dl.style.left = '14%'; dr.style.right = '14%'; cam.append(dl, dr);
-  const plate = el('div', 'plate', '<b>הפקות</b><small>בשיתוף ועדת הבחירות (לא באמת)</small>'); cam.append(plate);
+  const plate = el('div', 'plate', `<b>${C.ident.presents}</b><small>${C.ident.line}</small>`); cam.append(plate);
   const Lp = [.3, 1.03], Rp = [.7, 1.03], tgt = [.5, .4], lock = (p) => Math.atan2(tgt[1] - p[1], tgt[0] - p[0]);
   let start = 0, on = false, flare = 0;
   const lerp = (a, b, x) => a + (b - a) * x, ease = (x) => (x < 0 ? 0 : x > 1 ? 1 : 1 - (1 - x) ** 3);
@@ -277,7 +451,6 @@ function ident() {                                   // high-beams ident, ~5.6s
       ctx.save(); ctx.translate(x, y); ctx.scale(6, .05); const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
       g.addColorStop(0, `rgba(190,215,255,${.7 + flare})`); g.addColorStop(1, 'rgba(120,160,255,0)'); ctx.fillStyle = g; ctx.fillRect(-r, -r, r * 2, r * 2); ctx.restore(); }
   };
-  sfx('ident', .9);
   at(800, () => [dl, dr].forEach((d) => A(d, [{ opacity: 0 }, { opacity: 1 }, { opacity: .2 }, { opacity: 1 }], { duration: 300 })));
   at(1200, () => { on = true; start = performance.now(); A(lit, [{ filter: 'brightness(.08)' }, { filter: 'brightness(.35)' }], { duration: 2400, easing: 'ease-in' }); });
   at(3600, () => { A(lit, [{ filter: 'brightness(.35)' }, { filter: 'brightness(1.6)' }, { filter: 'brightness(1)' }], { duration: 500 });
@@ -286,78 +459,246 @@ function ident() {                                   // high-beams ident, ~5.6s
   at(7300, () => A(cam, [{ opacity: 1 }, { opacity: 0 }], { duration: 350 }));   // hold the committee line ~3s
 }
 
-// ---------- select → VS → challenger → FIGHT ----------
+// ---------- select → (glitch) → VS → challenger → FIGHT ----------
 const seeded = (s) => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return (Math.abs(h) % 1000) / 1000; };
 const stats = (id) => `<b style="font-weight:400;font-size:6.4cqw">${NAME[id]}</b><div class="bars">
-  <div>ותק<span style="width:${45 + seeded(id + 'a') * 55}%"></span></div>
-  <div>אמינות<span style="width:${3 + seeded(id + 'b') * 10}%"></span></div>
-  <div>סיכוי לעבור את אחוז החסימה<span style="width:${15 + seeded(id + 'c') * 80}%"></span></div></div>`;
+  <div>${C.select.stat_1}<span data-w="${45 + seeded(id + 'a') * 55}"></span></div>
+  <div>${C.select.stat_2}<span data-w="${3 + seeded(id + 'b') * 10}"></span></div>
+  <div>${C.select.stat_3}<span data-w="${15 + seeded(id + 'c') * 80}"></span></div></div>`;
+const fillBars = (n) => requestAnimationFrame(() => requestAnimationFrame(() => n.querySelectorAll('[data-w]').forEach((s) => (s.style.width = s.dataset.w + '%'))));
+const sideNames = (k) => [k === 1 ? P1 : P2, DUO?.k === k ? DUO.id : null].filter(Boolean).map((id) => NAME[id]).join(' + ');
 function ch([id, label, x, y, h], z = 2) {
   const w = h * (2 / 3) * (16 / 9), d = el('div', 'ch'); d.dataset.id = id;
   d.style.cssText = `left:${x - w / 2}%;top:${y - h}%;width:${w}%;height:${h}%;z-index:${z}`;
-  d.append(Object.assign(new Image(), { src: IMG(id), alt: label })); cam.append(d); return d;
+  d.append(Object.assign(new Image(), { src: IMG(id), alt: NAME[id] })); cam.append(d); return d;
+}
+function glitch() {                                   // the "bug" that lets two teammates fight
+  sfx('glitch', .55); duck(.3, .6);
+  const g = el('div', 'glitch', `<b dir="ltr">${C.glitch.error}</b><span>${C.glitch.line}</span>`); cam.append(g);
+  const burst = (ms) => { cam.classList.add('glitching'); setTimeout(() => cam.classList.remove('glitching'), ms); };
+  burst(520); setTimeout(() => { burst(180); sfx('glitch', .3); }, 1150);
+  A(g, [{ opacity: 0 }, { opacity: 1, offset: .08 }, { opacity: 1, offset: .9 }, { opacity: 0 }], { duration: 2000 });
 }
 
-function select() {                                   // ~10.5s, ends on FIGHT
+function select() {                                   // returns its length in ms (ends on FIGHT)
   FX.paint = null; cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = '';
   cam.style.background = 'radial-gradient(ellipse at 50% 30%, #1a2140, #05060b 75%)'; A(cam, [{ opacity: 0 }, { opacity: 1 }], { duration: 300 });
-  const head = el('div', 'hud', '<h2>בחרו צד</h2>'); head.style.top = '3.5%'; cam.append(head);
-  const grid = el('div', 'grid'); cam.append(grid);
-  const Rr = R.map((r) => r[0]), Lr = [...L.map((r) => r[0]), 'gantz', 'hendel'], tiles = {};
-  for (let r = 0; r < 6; r++) [Rr[r * 2], Rr[r * 2 + 1], Lr[r * 2], Lr[r * 2 + 1]].forEach((id) => {
-    const t = el('div', 'tile', `<img src="${IMG(id)}" alt=""><i>${NAME[id]}</i>`); tiles[id] = t; grid.append(t); });
+  const head = el('div', 'hud', `<h2>${C.select.title}</h2>`); head.style.top = '3.5%'; cam.append(head);
+  const grid = el('div', 'teams'), tr = el('div', 'team tr', `<h3>${C.select.team_r}</h3>`), tl = el('div', 'team tl', `<h3>${C.select.team_l}</h3>`);
+  grid.append(tr, tl); cam.append(grid);                // RTL: the coalition panel sits on the right
+  const Rs = R.map((r) => r[0]), Ls = L.map((r) => r[0]), tiles = {};
+  [[Rs, tr], [[...Ls, 'gantz', 'hendel'], tl]].forEach(([ids, box]) => ids.forEach((id) => {
+    const t = el('div', 'tile', `<img src="${IMG(id)}" alt=""><i>${NAME[id]}</i>`); tiles[id] = t; box.append(t); }));
   const info = el('div', 'hud'); info.style.bottom = '4.5%'; cam.append(info);
   A(grid, [{ opacity: 0, transform: 'scale(.92)' }, { opacity: 1, transform: 'none' }], { duration: 400 });
-  sfx('music', .55);
-  const others = (pool, keep) => pool.filter((id) => id !== keep).sort(() => Math.random() - .5).slice(0, 4);
-  const p1 = [...others(R.map((r) => r[0]), P1), P1], p2 = [...others(L.map((r) => r[0]), P2), P2];
+  mix('select'); music('bed');
+  const Lr = [...Ls, 'gantz', 'hendel'];
+  let b = 0;                                           // the threshold beat: slow, one party at a time, first run only
+  const knock = (id, fall) => { const t = tiles[id]; t.append(el('div', 'dq', `<b dir="ltr">${C.select.dq}</b><small>${C.select.dq_sub}</small>`)); t.classList.add('out');
+    if (fall) { sfx('dq', .7); shake(5); A(t, [{ transform: 'none' }, { transform: 'rotate(-4deg)', offset: .25 }, { transform: `translateY(170cqw) rotate(${Math.random() < .5 ? 30 : -30}deg)` }], { duration: 1500, delay: 500, easing: 'ease-in' }); } };
+  if (!DQ_SHOWN && RISKY.length) {
+    DQ_SHOWN = true; info.innerHTML = `<b style="font-weight:400;font-size:6.4cqw">${C.select.threshold_title}</b>`;
+    b = 900;
+    RISKY.forEach((r) => { at(b, () => r.ids.forEach((id) => {
+      const t = tiles[id], m = el('div', `vm`, '<s></s><i></i><b dir="ltr">0.0%</b>'); t.classList.add('risk'); t.append(m); sfx('bar', .4);
+      const fill = m.querySelector('i'), num = m.querySelector('b'), t0 = performance.now(), cap = 6;
+      A(fill, [{ width: '0%' }, { width: `${r.v / cap * 100}%` }], { duration: 1300, easing: r.fail ? 'cubic-bezier(.2,.8,.4,1)' : 'ease-in-out' });
+      const iv = setInterval(() => { const k = Math.min(1, (performance.now() - t0) / 1300); num.textContent = (r.v * k).toFixed(1) + '%'; if (k >= 1) clearInterval(iv); }, 40);
+      setTimeout(() => { t.classList.remove('risk'); m.classList.add(r.fail ? 'fail' : 'pass'); if (r.fail) knock(id, true); else { sfx('confirm', .35); A(t, [{ filter: 'brightness(1.6)' }, { filter: 'none' }], { duration: 400 }); setTimeout(() => A(m, [{ opacity: 1 }, { opacity: 0 }], { duration: 400 }), 500); } }, 1450); })); b += 2300; });
+    b += 300; at(b - 200, () => { info.innerHTML = ''; });
+  } else OUT.forEach((id) => tiles[id] && knock(id, false));   // replays: they are already out
+  const wander = (pool) => pool.filter((id) => ![P1, P2, DUO?.id].includes(id) && !OUT.has(id)).sort(() => Math.random() - .5).slice(0, 4);
+  const intruder = SAME ? (Rs.includes(P1) ? 'p2' : 'p1') : null;   // the cursor that has no business on the other team
+  const p1 = [...wander(Rs), ...(intruder === 'p1' ? [] : [P1])], p2 = [...wander(Ls), ...(intruder === 'p2' ? [] : [P2])];
   const hop = (cls, id) => { Object.values(tiles).forEach((t) => t.classList.remove(cls)); tiles[id].classList.add(cls); blip(); };
-  p1.forEach((id, i) => at(500 + i * 520, () => { hop('p1', id); info.innerHTML = stats(id); }));
-  p2.forEach((id, i) => at(760 + i * 520, () => hop('p2', id)));
-  at(3000, () => { sfx('dq', .8); ['gantz', 'hendel'].forEach((id, i) => { const t = tiles[id], dq = el('div', 'dq', '<b dir="ltr">GAME OVER</b><small>3.25%</small>'); t.append(dq);
-    A(dq, [{ opacity: 0 }, { opacity: 1 }], { duration: 150 }); A(t, [{ transform: 'none' }, { transform: `translateY(170cqw) rotate(${i ? 30 : -30}deg)` }], { duration: 900, delay: 380, easing: 'ease-in' }); }); });
-  at(4100, () => { tiles[P1].append(el('div', 'stamp', 'P1')); tiles[P2].append(el('div', 'stamp', 'P2')); sfx('lock'); flash(.4, 120); shake(6); info.innerHTML = `<b style="font-weight:400;font-size:6.4cqw">${NAME[P1]} מול ${NAME[P2]}</b>`; });
-  at(4900, () => {                                     // VS screen
+  p1.forEach((id, i) => at(b + 500 + i * 520, () => { hop('p1', id); info.innerHTML = stats(id); fillBars(info); if (i === p1.length - 1) sfx('bar', .35); }));
+  p2.forEach((id, i) => at(b + 760 + i * 520, () => hop('p2', id)));
+  // the crossing: tile by tile to the divider, over it, and into the wrong team
+  const where = (id) => { const inR = Rs.includes(id) || R.some((r) => r[0] === id), list = inR ? R.map((r) => r[0]) : Lr, i = list.indexOf(id); return { inR, row: i >> 1, col: i % 2 }; };
+  const inner = (inR) => (inR ? 1 : 0);               // RTL: the column next to the divider
+  const at2 = (inR, row, col) => (inR ? R.map((r) => r[0]) : Lr)[row * 2 + col];
+  let path = [];
+  if (intruder) { const from = where((intruder === 'p1' ? p1 : p2).slice(-1)[0]), to = where(intruder === 'p1' ? P1 : P2);
+    let { inR, row, col } = from;
+    if (col !== inner(inR)) path.push(at2(inR, row, col = inner(inR)));
+    inR = !inR; col = inner(inR); path.push(at2(inR, row, col)); const cross = path.length - 1;
+    while (row !== to.row) { row += Math.sign(to.row - row); path.push(at2(inR, row, col)); }
+    if (col !== to.col) path.push(at2(inR, row, to.col));
+    path = path.map((id, i) => ({ id, cross: i === cross })); }
+  const L0 = b + 4100, c = path.length * 260;
+  path.forEach(({ id, cross }, i) => at(L0 + i * 260, () => { hop(intruder, id); tiles[id].classList.add('bad');
+    if (cross) { sfx('glitch', .35); cam.classList.add('glitching'); setTimeout(() => cam.classList.remove('glitching'), 220); } }));
+  at(L0 + c, () => {
+    if (SAME) glitch();
+    tiles[P1].append(el('div', 'stamp', 'P1')); tiles[P2].append(el('div', 'stamp', 'P2'));
+    if (DUO) { const t = tiles[DUO.id]; t.classList.add(`p${DUO.k}`); t.append(el('div', 'stamp', `P${DUO.k}+`)); setTimeout(() => sfx('duo', .6), 260); }
+    sfx('confirm', .6); flash(.4, 120); shake(6);
+    info.innerHTML = `<b style="font-weight:400;font-size:6.4cqw">${fmt(C.select.vs_line, { a: sideNames(1), b: sideNames(2) })}</b>`;
+  });
+  const g = b + c + (SAME ? 1500 : 0);                 // threshold beat + the crossing + time to read the glitch
+  at(4900 + g, () => {                                 // VS screen
     cam.innerHTML = ''; cam.append(el('div', 'split'));
     const a = ch([P1, '', 70, 93, 62], 5), b = ch([P2, '', 30, 93, 62], 5);
+    sfx('whoosh', .4);
     A(a, [{ transform: 'translateX(120%)' }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,1.2,.4,1)' });
     A(b, [{ transform: 'translateX(-120%)' }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,1.2,.4,1)' });
     const vs = el('div', 'vs', 'VS'); cam.append(vs); slam(vs, 420);
-    setTimeout(() => { sfx('vs'); shake(12); FX.burst(.5, .44, 90, { s0: 200, s1: 800 }); }, 450);
-    const plateOf = (id, cls) => el('div', `move ${cls}`, `<b>${NAME[id]}</b><small>מהלך מיוחד</small><i>${pick(MOVES[id])}</i>`);
+    setTimeout(() => { sfx('vs', .9); duck(.5); shake(12); FX.burst(.5, .44, 90, { s0: 200, s1: 800 }); }, 450);
+    const plateOf = (id, cls) => el('div', `move ${cls}`, `<b>${NAME[id]}</b><small>${C.versus.move_label}</small><i>${pick(C.moves[id] || [''])}</i>`);
     const m1 = plateOf(P1, 'm1'), m2 = plateOf(P2, 'm2'); cam.append(m1, m2);
     A(m1, [{ opacity: 0, transform: 'translateX(30%)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 900, easing: 'cubic-bezier(.2,1.3,.4,1)' });
     A(m2, [{ opacity: 0, transform: 'translateX(-30%)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 1500, easing: 'cubic-bezier(.2,1.3,.4,1)' });
-    const booth = el('div', 'booth', `<img src="${IMG('gafni')}" alt=""><img src="${IMG('edelstein')}" alt=""><span>כבר לא במשחק. עדיין עם פופקורן.</span>`); cam.append(booth);
+    if (DUO) {                                         // the partner barges in behind
+      const p = ch([DUO.id, '', DUO.k === 1 ? 90 : 10, 90, 50], 4), s = DUO.k === 1 ? 1 : -1;
+      A(p, [{ transform: `translateX(${s * 140}%) rotate(${s * 20}deg)` }, { transform: 'none' }], { duration: 420, delay: 1900, easing: 'cubic-bezier(.2,1.3,.4,1)' });
+      const ban = el('div', 'alarm', DUO.line); ban.style.cssText = 'background:var(--p2);color:#111;top:62%'; cam.append(ban);
+      A(ban, [{ opacity: 0, transform: 'scaleY(0)' }, { opacity: 1, transform: 'none', offset: .15 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: 1500, delay: 2000 });
+      setTimeout(() => { sfx('duo', .7); shake(8); }, 2000);
+    }
+    const booth = el('div', 'booth', `<img src="${IMG('gafni')}" alt=""><img src="${IMG('edelstein')}" alt=""><span>${C.versus.booth}</span>`); cam.append(booth);
     A(booth, [{ opacity: 0, transform: 'translateY(20%)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 2000 });
   });
-  at(7700, () => {                                     // new challenger
-    const al = el('div', 'alarm', 'מפלגה חדשה נכנסה למשחק!'); cam.append(al); sfx('alarm', .8);
+  at(7700 + g, () => {                                 // new challenger
+    const al = el('div', 'alarm', C.versus.alarm); cam.append(al); sfx('alarm', .6);
     A(al, [{ opacity: 0 }, { opacity: 1 }, { opacity: .25 }, { opacity: 1 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1500 });
     SKY.forEach((r, i) => { const n = ch([r[0], '', 38 + i * 24, 36, 19], 8);
       A(n, [{ transform: 'translateY(-200%) rotate(25deg)' }, { transform: 'none' }], { duration: 700, delay: 300 + i * 150, easing: 'cubic-bezier(.3,1.4,.5,1)' }); });
   });
   const rnd = el('div', 'round');
-  at(9300, () => { cam.append(rnd); rnd.className = 'round he'; rnd.textContent = 'הקלפיות נפתחו'; A(rnd, [{ opacity: 0, transform: 'scale(2)' }, { opacity: 1, transform: 'none' }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1000 }); });
-  at(10500, () => { rnd.className = 'round'; rnd.textContent = 'FIGHT!'; sfx('fight'); A(rnd, [{ opacity: 0, transform: 'scale(2.6)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.2,1.5,.4,1)' }); shake(14); flash(.6, 160); });
+  at(9300 + g, () => { cam.append(rnd); rnd.className = 'round he'; rnd.textContent = C.versus.polls_open; A(rnd, [{ opacity: 0, transform: 'scale(2)' }, { opacity: 1, transform: 'none' }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: 1000 }); });
+  at(10500 + g, () => { rnd.className = 'round'; rnd.textContent = C.versus.fight; sfx('fight', .9); duck(.45); A(rnd, [{ opacity: 0, transform: 'scale(2.6)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.2,1.5,.4,1)' }); shake(14); flash(.6, 160); });
+  return 11000 + g;
+}
+
+// ---------- the fight: 2–3 attacks each, then a KO. Power decides damage, blocking and (loosely) the winner ----------
+function fight() {                                     // returns its length in ms
+  FX.paint = null; cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = ''; cam.style.background = '#000'; mix('fight');
+  const bg = el('div', 'bgp'); bg.style.filter = 'brightness(.5) saturate(1.15)'; cam.append(bg, el('div', 'arena'));
+  const ids = { 1: [P1], 2: [P2] }; if (DUO) ids[DUO.k].push(DUO.id);
+  const hud = el('div', 'fhud', `<div class="hp p1"><b>${sideNames(1)}</b><span><em></em><i></i></span></div><div class="clock" dir="ltr">${C.fight.clock}</div><div class="hp p2"><b>${sideNames(2)}</b><span><em></em><i></i></span></div>`);
+  cam.append(hud);
+  if (SAME) { const c = hud.querySelector('.clock');                     // the bug leaks into the HUD
+    A(c, [{ opacity: 1 }, { opacity: 1, offset: .46 }, { opacity: .2, offset: .5 }, { opacity: 1, offset: .54 }], { duration: 1700, iterations: Infinity }); }
+  const X = { 1: 70, 2: 30 }, D = (k) => (k === 1 ? -1 : 1);            // P1 stands right and attacks leftwards
+  const duo = ids[1].length > 1 ? 1 : ids[2].length > 1 ? 2 : 0;
+  const mk = (id, k, i) => {                                             // i: 0 = lead, 1 = duo partner standing further back, never behind the lead
+    const pair = k === duo, h = pair ? 35 : 40, w = h * 16 / 9, x = X[k] + (pair ? D(k) * (i ? -13 : 6) : 0);
+    const c = el('div', 'ch'); c.style.cssText = `left:${x - w / 2}%;top:${92 - h}%;width:${w}%;height:${h}%;z-index:${i ? 4 : 5}`;
+    const mv = el('div', 'mv'), bob = el('div', 'bob'), img = Object.assign(new Image(), { src: POSE(id, 'stance'), alt: NAME[id] });
+    if (k === 1) img.className = 'flip';
+    bob.append(img); mv.append(bob); c.append(mv); cam.append(c);
+    bob.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${D(k)}cqw,-1.2%)` }], { duration: 420 + i * 70, delay: k * 140, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' });
+    A(c, [{ transform: `translateX(${D(k) * -70}%)`, opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 380, delay: i * 200, easing: 'cubic-bezier(.2,1.2,.4,1)' });
+    return { c, mv, bob, img, id, k, x, reach: pair && i ? 22 : 0 };
+  };
+  const FT = { 1: ids[1].map((id, i) => mk(id, 1, i)), 2: ids[2].map((id, i) => mk(id, 2, i)) };
+  A(hud, [{ opacity: 0, transform: 'translateY(-40%)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 200 });
+
+  const bar = { 1: hud.querySelector('.p1 span'), 2: hud.querySelector('.p2 span') }, hp = { 1: 100, 2: 100 }, beat = {};
+  const setHP = (k, v) => { hp[k] = Math.max(0, Math.round(v)); bar[k].querySelector('i').style.width = hp[k] + '%'; setTimeout(() => (bar[k].querySelector('em').style.width = hp[k] + '%'), 380);
+    if (hp[k] && hp[k] < 35 && !beat[k]) { beat[k] = 1; setTimeout(() => sfx('heart', .55), 350); } };
+  const sp = (k) => ids[k].reduce((a, id) => a + PW(id), 0) * (ids[k].length > 1 ? 1.15 : 1);   // a duo: 15% more than the two together
+  const st = (k) => (DUO?.k === k && C.game.tiers[DUO.tier]) || TIER(ids[k][0]);
+  const odds = (k) => (sp(k) + 6) * st(k).hit, fixed = (k) => { const v = ids[k].map((id) => C.game.win?.[id]).filter((x) => x != null); return v.length ? Math.max(...v) : null; };
+  const f1 = fixed(1), f2 = fixed(2);                                    // fixed win rates (e.g. Golan) beat the odds
+  const p1 = f1 != null && f2 != null ? f1 / (f1 + f2) : f1 != null ? f1 / 100 : f2 != null ? 1 - f2 / 100 : odds(1) / (odds(1) + odds(2));
+  const W = Math.random() < p1 ? 1 : 2, Lz = 3 - W;
+  LAST = [ids[W][0], ids[Lz][0]];
+  track('fight', `${ids[W].join('+')}>${ids[Lz].join('+')}${SAME ? ' same' : ''}`);
+  const dmg = (k) => 24 * Math.min(1.9, Math.max(.5, (sp(k) + 6) / (sp(3 - k) + 6) * st(k).hit * st(3 - k).armor));
+  const order = []; let w = 2, l = 2 + (Math.random() * 2 | 0), turn = Math.random() < .5 ? W : Lz;   // winner: 2 + the KO; loser: 2–3
+  while (w + l) { if (turn === W ? w : !l) { order.push(W); w--; } else { order.push(Lz); l--; } turn = 3 - turn; }
+
+  const pose = (f, p, back) => { f.img.src = POSE(f.id, p); if (back) setTimeout(() => { if (f.img.isConnected) f.img.src = POSE(f.id, 'stance'); }, back); };
+  const go = (f, kf, ms, easing = 'cubic-bezier(.3,0,.2,1)') => f.mv.animate(kf, { duration: ms, easing });
+  const tx = (x, y = 0, r = 0) => ({ transform: `translate(${x}cqw,${y}cqw) rotate(${r}deg)` }), rest = { transform: 'none' };
+  const MOVESET = {                                    // hits: impact times (ms); react: what the defender does
+    jab: { hits: [400], dur: 760, react: 'hit', run(f, d) { sfx('step', .45); go(f, [rest, { ...tx(d * (20 + f.reach)), offset: .5 }, { ...tx(d * (20 + f.reach)), offset: .7 }, rest], 760);
+      setTimeout(() => { sfx('whoosh', .45); pose(f, 'punch', 360); }, 260); } },
+    kick: { hits: [560], dur: 1000, react: 'hit', run(f, d) { sfx('jump', .5); setTimeout(() => pose(f, 'kick', 560), 100); setTimeout(() => sfx('land', .55), 800);
+      go(f, [rest, { ...tx(d * (10 + f.reach), -20, d * -6), offset: .35 }, { ...tx(d * (22 + f.reach), -3), offset: .56 }, { ...tx(d * (16 + f.reach)), offset: .8 }, rest], 1000, 'ease-out'); } },
+    upper: { hits: [430], dur: 820, react: 'launch', run(f, d) { sfx('step', .45); setTimeout(() => { sfx('whoosh', .5); pose(f, 'punch', 420); }, 280);
+      go(f, [rest, { ...tx(d * (18 + f.reach)), offset: .4 }, { ...tx(d * (21 + f.reach), -7, d * -9), offset: .55 }, rest], 820); } },
+    sweep: { hits: [430], dur: 820, react: 'trip', run(f, d) { sfx('step', .45); setTimeout(() => { sfx('whoosh', .45); pose(f, 'kick', 420); }, 240);
+      go(f, [rest, { ...tx(d * (20 + f.reach), 7, d * 10), offset: .5 }, rest], 820); } },
+    blast: { hits: [600], dur: 900, react: 'hit', run(f, d) { pose(f, 'punch', 650); sfx('blast', .55);
+      const o = el('div', 'orb'); o.style.setProperty('--c', f.k === 1 ? 'var(--p1)' : 'var(--p2)'); cam.append(o);
+      A(o, [{ left: `${f.x + d * 14}%`, top: '66%', transform: 'scale(.4)' }, { left: `${X[3 - f.k] - d * 4}%`, top: '64%', transform: 'scale(1.2)' }], { duration: 480, delay: 120, easing: 'ease-in' }).finished.then(() => o.remove()); } },
+    combo: { hits: [380, 640], dur: 1050, react: 'hit', run(f, d) { sfx('step', .45); go(f, [rest, { ...tx(d * (20 + f.reach)), offset: .3 }, { ...tx(d * (22 + f.reach)), offset: .7 }, rest], 1050);
+      setTimeout(() => { sfx('whoosh', .45); pose(f, 'punch'); }, 250); setTimeout(() => { sfx('whoosh', .5); pose(f, 'kick', 300); }, 510); } },
+  };
+  const react = (f, d, kind, blocked) => {
+    if (blocked) { go(f, [rest, tx(d * 4), rest], 300, 'ease-out'); f.img.animate([{ filter: 'brightness(1.8) drop-shadow(0 0 2cqw #3ae0ff)' }, { filter: 'none' }], { duration: 260 }); return; }
+    pose(f, 'hit', kind === 'hit' ? 420 : 900);
+    f.img.animate([{ filter: 'brightness(3.5) saturate(0) drop-shadow(0 0 2cqw #fff)' }, { filter: 'none' }], { duration: 150 });
+    if (kind === 'launch') { go(f, [rest, { ...tx(d * 8, -24, d * 18), offset: .4 }, { ...tx(d * 12, 0, d * 6), offset: .8 }, rest], 1000, 'ease-out'); setTimeout(() => sfx('land', .6), 800); }
+    else if (kind === 'trip') { go(f, [rest, { ...tx(d * 6, 3, d * -28), offset: .35 }, { ...tx(0, 4, d * -12), offset: .7 }, rest], 900, 'ease-out'); setTimeout(() => sfx('land', .5), 350); }
+    else go(f, [rest, tx(d * 9, 0, d * 6), rest], 380, 'ease-out');
+  };
+  const pop = (cls, html, k) => { const n = el('div', cls, html); n.style[k === 1 ? 'right' : 'left'] = '6%'; cam.append(n);
+    A(n, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'none', offset: .15 }, { opacity: 1, offset: .75 }, { opacity: 0, transform: 'translateY(-30%)' }], { duration: 900 }).finished.then(() => n.remove()); };
+  let streak = { k: 0, n: 0 };
+  const turns = { 1: 0, 2: 0 };
+  const next = (k) => { const f = FT[k][turns[k]++ % FT[k].length]; FT[k].forEach((o) => (o.c.style.zIndex = o === f ? 6 : 4)); return f; };   // a duo takes turns, the striker steps to the front
+  const attack = (ak, t, kind) => {
+    const m = MOVESET[kind], dk = 3 - ak, d = D(ak), f = next(ak);
+    const blocked = Math.random() < .12 + .3 * sp(dk) / (sp(dk) + sp(ak)) + (1 - st(dk).armor) * .5;   // bosses block more
+    at(t, () => m.run(f, d));
+    m.hits.forEach((h, j) => at(t + h, () => {
+      FT[dk].forEach((g) => react(g, d, m.react, blocked));
+      const x = dk === 1 ? .62 : .38;
+      if (blocked) { sfx('block', .7); FX.burst(x, .6, 30, { s0: 120, s1: 380, g: 300, life: .4, h: 195 }); pop('blocktxt', C.fight.block, dk); streak = { k: 0, n: 0 }; }
+      else { sfx(pick(['hit1', 'hit2']), .9); duck(.5); open(); shake(8, 200); FX.burst(x, .62, 46, { s0: 160, s1: 520, g: 500, life: .55, h: 30 });
+        streak = streak.k === ak ? { k: ak, n: streak.n + 1 } : { k: ak, n: 1 };
+        if (streak.n > 1) { pop('combo', fmt(C.fight.combo, { n: streak.n }), ak); setTimeout(() => sfx('combo', .5), 120); } }
+      const v = dmg(ak) * (blocked ? .25 : 1) / m.hits.length;
+      setHP(dk, Math.max(ak === W ? 12 : 18, hp[dk] - v));   // nobody drops before the KO
+    }));
+    return m.dur;
+  };
+  let t = 1000;
+  const kinds = Object.keys(MOVESET);
+  order.forEach((ak) => { t += attack(ak, t, pick(kinds)) + 260; });
+
+  const mvName = pick(C.moves[ids[W][0]] || ['']);     // the winner's special move, called out right before the KO
+  at(t, () => { sfx('special', .6); duck(.3, .6); const c = el('div', `callout ${W === 1 ? 'c1' : 'c2'}`, `<small>${C.fight.special_label}</small><b>${mvName}!</b>`); cam.append(c);
+    A(c, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'none', offset: .2 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: 1500, easing: 'ease-out' }); });
+  t += 650;
+  // KO: slow zoom, the finisher, impact frames, the loser drops
+  const kind = pick(['blast', 'upper', 'kick']), m = MOVESET[kind], kw = next(W);
+  at(t, () => { cam.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }], { duration: 900, fill: 'forwards', easing: 'ease-in' }); m.run(kw, D(W)); });
+  at(t + m.hits[0], () => {
+    sfx('ko', 1); duck(.05, null); setTimeout(() => sfx('kovoice', .85), 450); setTimeout(() => sfx('crowd', .35), 1300);
+    const bf = el('div', 'blackframe'); cam.append(bf); A(bf, [{ opacity: 1 }, { opacity: 1, offset: .5 }, { opacity: 0 }], { duration: 140 }); flash(1, 120); shake(16, 520);
+    FX.burst(Lz === 1 ? .62 : .38, .6, 140, { s0: 250, s1: 1000, g: 500, life: 1, h: 40 });
+    setHP(Lz, 0);
+    FT[Lz].forEach((f, i) => { f.bob.getAnimations().forEach((a) => a.cancel()); pose(f, 'hit');
+      A(f.mv, [rest, { transform: `translate(${D(W) * 30}cqw, 6cqw) rotate(${D(W) * 82}deg)`, opacity: .85 }], { duration: 1000, delay: 120 + i * 120, easing: 'cubic-bezier(.3,0,.6,1)' }); });
+    const ko = el('div', 'ko', C.fight.ko); cam.append(ko);
+    A(ko, [{ opacity: 0, transform: 'scale(2.4)' }, { opacity: 1, transform: 'none' }], { duration: 360, delay: 220, easing: 'cubic-bezier(.2,1.5,.4,1)' });
+    const win = el('div', 'winner', fmt(C.fight.winner, { name: sideNames(W) })); cam.append(win);
+    A(win, [{ opacity: 0, transform: 'translateY(30%)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 700 });
+    FT[W].forEach((f) => f.bob.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-7%) scale(1.06)' }], { duration: 380, delay: 900, direction: 'alternate', iterations: 4, easing: 'ease-out' }));
+  });
+  return t + m.hits[0] + 2600;
 }
 
 // ---------- poster ----------
 function poster(animate) {
-  cam.innerHTML = ''; cam.style.background = '#000'; cam.style.opacity = 1;
+  cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = ''; cam.style.background = '#000'; cam.style.opacity = 1;
   cam.append(el('div', 'bgp'));
   const z = (r) => (r[0] === 'netanyahu' ? 5 : LEDGE.includes(r) ? 4 : r[4] >= 27 ? 4 : r[4] >= 19 ? 3 : 2), m = {};
   for (const r of ALL) m[r[0]] = ch(r, z(r));
   LEDGE.forEach(([id], i) => (m[id].style.transform = `rotate(${i ? 58 : 72}deg)`));  // tumbling out of the frame's left edge
   cam.append(el('div', 'shade'));
-  const t = el('div', 'title', `
-    <h1>בחירות 2026</h1>
-    <div class="tag">עכשיו או אף פעם. או בעוד שנה.</div>
-    <div class="when">יום ג׳, 27.10 · מ־20:00</div>
-    <div class="where">הגג של דימקס – נחלת בנימין 132</div>
-    <div class="what">מוזיקה עד שהמדגם יהרוס את האווירה</div>
-    <div class="joke">גם אם המדגם רע, יורדים במדרגות.</div>
-    <div class="fine"><bdi>DiMax</bdi> הפקות · בשיתוף ועדת הבחירות (לא באמת) · סאטירה, נוצר ב־<bdi>AI</bdi> · <button type="button" id="credBtn">קרדיטים לצילומים</button></div>`);
+  const P = C.poster, t = el('div', 'title', `
+    <h1>${P.h1}</h1>
+    <div class="tag">${P.tag}</div>
+    <div class="when">${P.when}</div>
+    <div class="where">${P.where}</div>
+    <div class="what">${P.what}</div>
+    <div class="joke">${P.joke}</div>
+    <div class="fine">${P.fine} · <button type="button" id="credBtn">${P.credits_btn}</button></div>`);
   cam.append(t);
   t.querySelector('#credBtn').onclick = showCredits;
   embers();
@@ -368,7 +709,7 @@ function poster(animate) {
   [...SKY, ...BALC].forEach((r) => off(m[r[0]], 'translateY(-400%)'));
   LEDGE.forEach((r) => off(m[r[0]], 'none'));
   A(t, [{ opacity: 0 }, { opacity: 0 }], { duration: 1 });
-  sfx('crash'); fadeOut(SND.music, 600); flash(1, 500); shake(14, 600);
+  mix('fin'); music('fin'); sfx('reveal', .7); flash(1, 500); shake(14, 600);
   [...R, ...L].forEach(([id, , , y, h], i) => A(m[id], [{ transform: getComputedStyle(m[id]).transform }, { transform: 'none' }], { duration: y < 50 ? 900 : 650, delay: (35 - h) * 14, easing: 'cubic-bezier(.3,0,.15,1)' }));
   setTimeout(() => { FX.burst(.5, .56, 170, { s0: 200, s1: 1000, g: 700, life: 1.1 }); FX.burst(.5, .56, 60, { s0: 100, s1: 500, g: 400, h: 190, life: 1.2 }); shake(10, 400); }, 650);
   setTimeout(() => {
@@ -376,62 +717,178 @@ function poster(animate) {
     BALC.forEach(([id], i) => A(m[id], [{ transform: 'translateY(30%)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 500, delay: 400 + i * 150 }));
     LEDGE.forEach(([id], i) => A(m[id], [{ transform: 'none' }, { transform: 'rotate(-20deg) translateY(4%)', offset: .4 }, { transform: m[id].style.transform }], { duration: 1100, delay: 300 + i * 200, easing: 'ease-in' }));
   }, 1300);
-  setTimeout(() => { A(t, [{ opacity: 0, transform: 'scale(1.3)' }, { opacity: 1, transform: 'none' }], { duration: 480, easing: 'cubic-bezier(.2,1.3,.4,1)' }); if (soundOn) { SND.idle.volume = .45; SND.idle.play().catch(() => {}); } }, 2700);
+  setTimeout(() => { A(t, [{ opacity: 0, transform: 'scale(1.3)' }, { opacity: 1, transform: 'none' }], { duration: 480, easing: 'cubic-bezier(.2,1.3,.4,1)' }); }, 2700);
   setTimeout(() => { flash(.25, 300); }, 2700);
 }
+
+// ---------- after the show: the scroll-down page ----------
+const creditList = () => `<ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li>${NAME[id]}: <bdi>${who}</bdi> (<bdi>${lic}</bdi>)</li>`).join('')}</ul>`;
+const chunks = (v) => { const p = String(v).split(' · '); let out = p[0];   // glue each "· part" to the word before it so date and time never part
+  for (let i = 1; i < p.length; i++) { const k = out.endsWith('</span>') ? -1 : out.lastIndexOf(' ');
+    out = k < 0 ? `${out}<span class="nw"> · ${p[i]}</span>` : `${out.slice(0, k + 1)}<span class="nw">${out.slice(k + 1)} · ${p[i]}</span>`; }
+  return out; };
+const ICON = { down: '<svg class="ic" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v12m-5-5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' };
+function buildMore() {
+  const d = C.details, q = encodeURIComponent(C.links.address), wa = C.links.whatsapp;
+  more.innerHTML = `
+    <div class="well" aria-hidden="true"><div class="wall"></div><b class="floor">5</b></div>
+    <div class="lvls"><div class="crew"></div>
+      <div class="gap"></div>
+      <section class="brief" aria-label="${d.title}"><h2>${d.title}</h2>
+        <dl>${d.rows.map((r) => `<dt>${r.k}</dt><dd>${chunks(r.v)}</dd>`).join('')}</dl>
+        <a class="arc a1" data-t="whatsapp" ${wa ? `href="${wa}" target="_blank" rel="noopener"` : 'aria-disabled="true"'}>${d.whatsapp}</a>
+        <div class="trio">
+          <a class="arc a2" data-t="waze" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">${d.waze}</a>
+          <a class="arc a2" data-t="maps" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">${d.maps}</a>
+          <button class="arc dim" type="button" id="ics" data-t="calendar">${d.calendar}</button>
+        </div></section>
+      <div class="gap"></div>
+      <section class="cont" aria-label="CONTINUE?"><p class="cq" dir="ltr">CONTINUE?</p><b class="count" aria-hidden="true">9</b>
+        <button class="arc a1" type="button" id="again2" data-t="replay">${d.again}</button><small>${C.start.credits}</small></section>
+      <div class="gap" style="height:18dvh"></div>
+    </div>
+    <footer class="foot"><div class="glow"></div></footer>`;
+  more.querySelector('#ics').onclick = () => {        // 20:00–02:00 Israel time (UTC+2 after the clocks change on 25.10)
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DiMax//elections26//HE', 'BEGIN:VEVENT', 'UID:elections26@dimaxtlv.com', 'DTSTAMP:20261010T000000Z',
+      'DTSTART:20261027T180000Z', 'DTEND:20261028T000000Z', `SUMMARY:${C.poster.h1}`, `LOCATION:${C.links.address}`, 'URL:https://elections26.dimaxtlv.com', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), download: 'elections26.ics' }).click(); };
+  more.querySelector('#again2').onclick = () => { sfx('ballot', .7, false); scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); C = resolve(RAW); rollFighters(); setTimeout(trailer, RM ? 0 : 450); };
+
+  // end credits: DiMax again. The ballot-dot drops in, the high beams flash, the metal catches the light.
+  const foot = more.querySelector('.foot'), m = markEl(), dl = el('div', 'drl'), dr = el('div', 'drl');
+  dl.style.left = '14%'; dr.style.right = '14%';
+  foot.append(m, el('div', 'who', C.ident.presents), dl, dr, el('div', 'fine', `${C.poster.fine}<details><summary data-t="credits">${C.poster.credits_btn}</summary><p>${C.credits.intro}</p>${creditList()}<p>${C.credits.outro}</p></details>`));
+  let lit = false;
+  new IntersectionObserver(([e]) => { if (!e.isIntersecting || lit) return; lit = true; fitMark(m);
+    A(m.querySelector('.dot'), [{ translate: '0 -40cqw', opacity: 0 }, { translate: '0 0', opacity: 1, offset: .6 }, { translate: '0 -4cqw', offset: .8 }, { translate: '0 0' }], { duration: 900, delay: 200, easing: 'ease-in' });
+    setTimeout(() => { sfx('ballot', .5, false); [dl, dr].forEach((b) => A(b, [{ opacity: .15 }, { opacity: 1 }, { opacity: .3 }, { opacity: 1 }], { duration: 320 }));
+      A(foot.querySelector('.glow'), [{ opacity: 0 }, { opacity: 1 }, { opacity: .55 }], { duration: 900 }); sweep(m, 1300); }, 900); }, { threshold: .55 }).observe(foot);
+  const tilt = (rx, ry) => { if (!RM) m.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`; };
+  foot.addEventListener('pointermove', (e) => { const r = foot.getBoundingClientRect(); tilt(((e.clientY - r.top) / r.height - .5) * -18, ((e.clientX - r.left) / r.width - .5) * 30); });
+  foot.addEventListener('pointerleave', () => tilt(0, 0));
+
+  const seen = (sel, ev) => { let done = false; new IntersectionObserver(([e]) => { if (e.isIntersecting && !done) { done = true; track(ev); } }, { threshold: .5 }).observe(more.querySelector(sel)); };
+  seen('.brief', 'saw_details'); seen('.cont', 'saw_continue');
+  // CONTINUE? counts down while on screen; at zero it's GAME OVER, then the coin drops again
+  const cont = more.querySelector('.cont'), cnt = cont.querySelector('.count'); let n = 9, tick = null;
+  const step = () => { if (n < 0) { n = 9; cnt.classList.remove('over'); }
+    if (n === 0) { cnt.textContent = C.select.dq; cnt.classList.add('over'); sfx('dq', .5); n = -1; return; }
+    cnt.textContent = n; sfx('tick', .35); if (!RM) A(cnt, [{ transform: 'scale(1.35)', opacity: .4 }, { transform: 'none', opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.2,1.4,.4,1)' }); n--; };
+  new IntersectionObserver(([e]) => { clearInterval(tick); tick = null; if (e.isIntersecting) { step(); tick = setInterval(step, 1000); } }, { threshold: .6 }).observe(cont);
+}
+
+// The stairwell crew: scroll is the joystick. Scrolling runs them down the stairs, flinging fast makes them fly-kick,
+// stopping makes them square up and trade a hit. Tap one to make it punch.
+const CREW = (() => {
+  let runners = [], raf = 0, lastY = 0, vel = 0, dist = 0, still = 0, spar = false, active = false;
+  const well = () => more.querySelector('.well');
+  function start() {
+    const crew = more.querySelector('.crew'), pool = [...R, ...L].map((r) => r[0]);
+    const ids = [...new Set([...(LAST || []), ...pool.sort(() => Math.random() - .5)])].slice(0, 5);
+    crew.innerHTML = '';
+    runners = ids.map((id, i) => {
+      const n = el('div', 'run'), img = Object.assign(new Image(), { src: POSE(id, 'stance'), alt: '' }); n.append(img); crew.append(n);
+      const r = { id, n, img, ph: i * .37 + Math.random() * .2, sp: .8 + Math.random() * .5, y: null, pose: 'stance', lock: 0 };
+      n.onclick = () => strike(r); return r;
+    });
+    if (!active) { active = true; lastY = scrollY; raf = requestAnimationFrame(loop); }
+  }
+  const setPose = (r, p) => { if (r.pose !== p) { r.pose = p; r.img.src = POSE(r.id, p); } };
+  function strike(r, target) {                         // one punch, and whoever it lands on reels
+    const now = performance.now(); r.lock = now + 420; setPose(r, 'punch'); sfx('whoosh', .35);
+    const t = target || runners.filter((o) => o !== r).sort((a, b) => Math.abs(a.x - r.x) - Math.abs(b.x - r.x))[0];
+    if (t) setTimeout(() => { t.lock = performance.now() + 380; setPose(t, 'hit'); sfx(pick(['hit1', 'hit2']), .45);
+      if (!RM) t.n.animate([{ translate: '0 0' }, { translate: `${(t.x > r.x ? 1 : -1) * 4}cqw 0` }, { translate: '0 0' }], { duration: 320, easing: 'ease-out' }); }, 160);
+  }
+  function loop(now) {
+    raf = requestAnimationFrame(loop);
+    const w = well(); if (!w) return;
+    const top = more.offsetTop, span = Math.max(1, more.offsetHeight - innerHeight), p = Math.min(1, Math.max(0, (scrollY - top) / span));
+    const dy = scrollY - lastY; lastY = scrollY; vel = vel * .8 + dy * .2; dist += Math.abs(dy);
+    w.querySelector('.wall').style.backgroundPositionY = `${p * 100}%`;
+    w.querySelector('.floor').textContent = Math.max(0, 5 - Math.floor(p * 6));
+    const moving = Math.abs(vel) > .6;
+    if (moving) { still = now; spar = false; if (dist > 260) { dist = 0; sfx('step', .18); } }
+    else if (!spar && now - still > 450 && now - still < 2000 && runners.length > 1 && (scrollY > top - innerHeight)) { spar = true; strike(pick(runners)); }
+    // the panels are platforms: everyone stands on the top edge of whatever is on screen and jumps between them
+    const box = more.querySelector('.crew').getBoundingClientRect(), ih = innerHeight;
+    const ledges = [...more.querySelectorAll('.brief, .cont')].map((n) => n.getBoundingClientRect());
+    const fr = more.querySelector('.foot').getBoundingClientRect(), solids = [...ledges, { top: fr.top + fr.height * .3, bottom: fr.bottom }];   // credits: they leave the stage
+    const covered = (y) => solids.some((q) => q.top < y - 2 && q.bottom > y);          // an edge inside another panel is not standable
+    const tops = ledges.map((q) => q.top).filter((y) => y > ih * .12 && y < ih * .97 && !covered(y));
+    const floorFree = !solids.some((q) => q.top < ih * .96 && q.bottom > ih * .96);
+    const ground = tops.length ? Math.min(...tops) : floorFree ? ih * .96 : null;      // the highest free ledge keeps them off the buttons
+    runners.forEach((r, i) => {
+      const u = (RM ? 0 : p * 7 * r.sp) + r.ph, f = u % 2, x = 8 + (f < 1 ? f : 2 - f) * 84, dir = f < 1 ? 1 : -1;   // back and forth along the platform
+      const hop = moving ? Math.abs(Math.sin(dist / 38 + i)) * Math.min(18, Math.abs(vel) * 1.5) : 0;
+      const goal = ground == null ? r.y ?? ih : ground - box.top;
+      r.y = r.y == null || RM ? goal : r.y + (goal - r.y) * .22;
+      const air = Math.abs(goal - r.y) > 14;
+      if (air && !r.air && goal < r.y) sfx('jump', .2);
+      if (!air && r.air) sfx('land', .22);
+      r.air = air; r.x = x;
+      r.n.style.opacity = ground == null ? 0 : 1;
+      r.n.style.transform = `translate(${x}cqw, ${r.y - hop}px)`;
+      r.img.classList.toggle('flip', dir * (vel >= 0 ? 1 : -1) < 0);
+      if (now < r.lock) return;
+      setPose(r, air || Math.abs(vel) > 22 ? 'kick' : !moving ? 'stance' : (Math.floor(dist / 70 + i) % 2 ? 'kick' : 'stance'));
+    });
+  }
+  function stop() { active = false; cancelAnimationFrame(raf); }
+  return { start, stop };
+})();
 
 // ---------- UI ----------
 function showCredits() {
   if (document.getElementById('credits')) return;
-  const box = el('div', '', `<h3>קרדיטים</h3>
-    <p>הדמויות מבוססות על צילומים מוויקישיתוף, ועובדו לקריקטורות סאטיריות באמצעות AI. רישיונות: CC BY ו־CC BY‑SA.</p>
-    <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li>${NAME[id]}: <bdi>${who}</bdi> (<bdi>${lic}</bdi>)</li>`).join('')}</ul>
-    <p>תפאורה, מוזיקה ואפקטים: נוצרו ב־AI. כל הדמיון למציאות מקרי לחלוטין, חוץ מכל השאר.</p>`);
-  box.id = 'credits'; const x = el('button', 'ui', 'סגירה'); x.style.cssText = 'position:sticky;top:0;float:left'; x.onclick = () => box.remove();
+  const box = el('div', '', `<h3>${C.credits.title}</h3><p>${C.credits.intro}</p>${creditList()}<p>${C.credits.outro}</p>`);
+  box.id = 'credits'; const x = el('button', 'ui', C.ui.close); x.style.cssText = 'position:sticky;top:0;float:left'; x.onclick = () => box.remove();
   box.prepend(x); stage.append(box);
 }
 const uiBtn = (id, txt, fn) => { const b = el('button', 'ui', txt); b.id = id; b.type = 'button'; b.onclick = fn; stage.append(b); return b; };
-let sndBtn = null, skipBtn = null, againBtn = null;
-const paintSnd = () => { if (!sndBtn) return; sndBtn.textContent = soundOn ? '🔊 סאונד פועל' : '🔇 סאונד כבוי'; sndBtn.setAttribute('aria-pressed', String(soundOn)); };
-const showSnd = () => { if (!sndBtn) sndBtn = uiBtn('snd', '', () => { soundOn = !soundOn; if (soundOn) unlock(); else stopAll(); paintSnd(); }); paintSnd(); };
-const unlock = () => Object.values(SND).forEach((a) => { const v = a.volume; a.muted = true; a.play().then(() => { a.pause(); a.currentTime = 0; a.muted = false; a.volume = v; }).catch(() => { a.muted = false; }); });
+let sndBtn = null, skipBtn = null, againBtn = null, downBtn = null;
+const paintSnd = () => { if (!sndBtn) return; sndBtn.textContent = soundOn ? C.ui.sound_on : C.ui.sound_off; sndBtn.setAttribute('aria-pressed', String(soundOn)); };
+const showSnd = () => { if (!sndBtn) sndBtn = uiBtn('snd', '', () => { soundOn = !soundOn; if (soundOn) unlock(); if (bus) bus.master.gain.setTargetAtTime(soundOn ? .8 : 0, AC.currentTime, .05); paintSnd(); }); paintSnd(); };
 
 function reset() { timers.forEach(clearTimeout); timers = []; FX.clear(); stopAll(); cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = ''; cam.style.opacity = 1;
-  document.getElementById('credits')?.remove(); skipBtn?.remove(); againBtn?.remove(); skipBtn = againBtn = null; }
+  cam.classList.remove('glitching'); document.body.classList.remove('done'); CREW.stop();
+  document.getElementById('credits')?.remove(); [skipBtn, againBtn, downBtn].forEach((b) => b?.remove()); skipBtn = againBtn = downBtn = null; }
 
-// 1. DiMax ident (silent: the page has had no tap yet)  2. arcade start screen  3. the trailer  4. text last
-function boot() { reset(); soundOn = false; rollStyles(false); rollFighters(); ident(); at(7700, startScreen); }
+// 1. DiMax ident (silent: the page has had no tap yet)  2. arcade start screen  3. the trailer  4. text last  5. scroll for details
+function boot() { reset(); soundOn = false; rollStyles(false); rollThreshold(); rollFighters(); ident(); at(7700, startScreen); }
 function startScreen() {
   reset(); cam.style.background = 'radial-gradient(ellipse at 50% 35%, #1a2140, #05060b 75%)';
   const ghosts = el('div', 'ghosts');
   [[P1, 72, 'g1'], [P2, 28, 'g2']].forEach(([id, x, cls]) => { const g = new Image(); g.src = IMG(id); g.alt = ''; g.style.left = `${x}%`; g.className = cls; ghosts.append(g); });
-  const s = el('div', 'start', `
-    <div class="press" dir="ltr">INSERT VOTE</div>
-    <div class="press-he">הכניסו פתק כדי להתחיל</div>
+  const S = C.start, s = el('div', 'start', `
+    <div class="press" dir="ltr">${S.press}</div>
+    <div class="press-he">${S.sub}</div>
     <div class="btns">
-      <button type="button" id="goSnd" class="arc a1">🔊 עם סאונד</button>
-      <button type="button" id="goMute" class="arc a2">🔇 בשקט, יש לי שכנים</button>
+      <button type="button" id="goSnd" class="arc a1">${S.sound}</button>
+      <button type="button" id="goMute" class="arc a2">${S.mute}</button>
     </div>
-    <div class="credit">פתקים: 1</div>`);
+    <div class="credit">${S.credits}</div>`);
   cam.append(ghosts, s);
   A(s, [{ opacity: 0 }, { opacity: 1 }], { duration: 400 });
-  const go = (withSound) => { soundOn = withSound; if (withSound) { unlock(); sfx('lock', .9); } flash(.5, 140); shake(6); setTimeout(trailer, 350); };
+  const go = (withSound) => { track(withSound ? 'start_sound' : 'start_mute'); soundOn = withSound; if (withSound) { unlock(); sfx('ballot', .7, false); } flash(.5, 140); shake(6); setTimeout(trailer, 350); };
   s.querySelector('#goSnd').onclick = () => go(true);
   s.querySelector('#goMute').onclick = () => go(false);
 }
-function end() { skipBtn?.remove(); skipBtn = null; againBtn = uiBtn('again', '↻ שוב', trailer); }
+function end() {
+  skipBtn?.remove(); skipBtn = null; document.body.classList.add('done'); CREW.start(); track('finish');
+  againBtn = uiBtn('again', C.ui.again, () => { track('again'); C = resolve(RAW); rollFighters(); trailer(); });
+  downBtn = uiBtn('down', `${C.details.scroll} ${ICON.down}`, () => track('scroll_btn') || more.scrollIntoView({ behavior: 'smooth' }));
+}
 function trailer() {
   reset(); showSnd();
-  skipBtn = uiBtn('skip', 'דלגו ⏭', () => { reset(); poster(false); if (soundOn) { SND.idle.volume = .45; SND.idle.play().catch(() => {}); } end(); });
-  select();
-  at(10900, () => poster(true));
-  at(10900 + 3300, end);
+  skipBtn = uiBtn('skip', C.ui.skip, () => { track('skip'); reset(); poster(false); mix('fin'); music('fin'); end(); });
+  const s = select();
+  at(s + 500, () => { const d = fight(); at(d, () => poster(true)); at(d + 3300, end); });
 }
 
-Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('40px "Secular One"')]).catch(() => {}).finally(() => {
-  if (location.hash === '#poster') { reset(); rollStyles(true); poster(false); } else boot();
-});
+Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('40px "Secular One"')]).catch(() => {})
+  .then(() => fetch('copy.json', { cache: 'no-cache' })).then((r) => r.json()).then((j) => {
+    RAW = j; C = resolve(RAW); Object.assign(NAME, C.names); computePower(); buildMore(); track('load');
+    if (location.hash === '#poster') { reset(); rollStyles(true); poster(false); } else boot();
+  });
 </script>
-
-</body>
-</html>

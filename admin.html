@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>מצב מפעיל · בחירות 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:ital,wdth,wght@1,100..125,800&family=Secular+One&family=Assistant:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* The arcade cabinet's hidden operator menu: same night palette as the game, lit buttons for switched-on options.
+   Type steps: Display (Saira italic 800, 28px) / Heading (Secular One 20px) / Body (Assistant 400 16px) / Meta (Assistant 700 13px). */
+:root { --ink: #07080d; --panel: #10142a; --line: #262d4d; --fg: #f3f5f8; --muted: #a9b1c6; --p1: #ffc23a; --p2: #3ae0ff; --bad: #ff5a4a; --ok: #5fe08a; color-scheme: dark; }
+* { box-sizing: border-box; }
+html { background: var(--ink); scrollbar-color: #3a4266 var(--ink); }
+select { appearance: none; padding-inline-start: 32px; background: #0a0d1c url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 8l5 5 5-5' fill='none' stroke='%233ae0ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat left 10px center / 14px; }
+summary { list-style: none; cursor: pointer; } summary::-webkit-details-marker { display: none; }
+summary::before { content: ""; display: inline-block; width: 0; height: 0; margin-inline-end: 8px; border-block: 5px solid transparent; border-inline-end: 7px solid currentColor; vertical-align: 1px; transition: rotate .15s; }
+details[open] > summary::before { rotate: -90deg; }
+body { margin: 0; background: radial-gradient(ellipse 120% 60% at 50% 0, #1a2140, var(--ink) 70%) fixed; color: var(--fg); font: 400 16px/1.5 Assistant, "Arial Hebrew", system-ui, sans-serif; min-height: 100vh; }
+::selection { background: var(--p1); color: #111; }
+:focus-visible { outline: 2px solid var(--p2); outline-offset: 2px; }
+button, input, textarea, select { font: inherit; color: inherit; }
+.meta { font: 700 13px/1.3 Assistant, sans-serif; color: var(--muted); }
+
+header { position: sticky; top: 0; z-index: 5; background: var(--ink); border-bottom: 1px solid var(--line); }
+.sub { max-width: 1100px; margin: 0 auto; padding: 10px 16px 0; display: grid; gap: 6px; }
+.bar { max-width: 1100px; margin: 0 auto; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.brand { display: flex; align-items: baseline; gap: 12px; margin-inline-end: auto; }
+.brand b { direction: ltr; font: italic 800 28px/1 Saira, sans-serif; font-stretch: 112%; color: var(--p1); text-shadow: 0 3px 0 #8a3b00, 0 0 18px #ff8a2a66; }
+.brand span { font: 400 20px/1 "Secular One", sans-serif; }
+.save { border: 0; border-radius: 999px; padding: 12px 22px; cursor: pointer; font: 400 20px/1 "Secular One", sans-serif; color: #111; background: linear-gradient(#ffe07a, var(--p1)); box-shadow: 0 5px 0 #0008, inset 0 -4px 0 #0003; transition: transform .08s, box-shadow .08s; }
+.save:active { transform: translateY(4px); box-shadow: 0 1px 0 #0008, inset 0 -4px 0 #0003; }
+.save[data-dirty]::after { content: attr(data-dirty); display: inline-grid; place-items: center; min-width: 22px; height: 22px; margin-inline-start: 8px; border-radius: 999px; background: #111; color: var(--p1); font: 700 13px/1 Assistant, sans-serif; }
+.save:disabled { opacity: .55; cursor: wait; }
+.links { display: flex; gap: 14px; flex-wrap: wrap; }
+.links a { color: var(--p2); text-underline-offset: 3px; }
+#status { width: 100%; margin: 0; min-height: 1.3em; }
+#status.err { color: var(--bad); } #status.ok { color: var(--ok); }
+details.key { width: 100%; }
+details.key summary { cursor: pointer; width: fit-content; }
+.keyrow { display: flex; gap: 8px; margin-top: 8px; } .keyrow input { flex: 1; }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 20px 16px 80px; display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start; }
+nav { position: sticky; top: calc(var(--hh, 64px) + 16px); display: grid; gap: 4px; }
+nav a { display: flex; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px; color: var(--fg); text-decoration: none; }
+nav a:hover { background: #ffffff0d; }
+nav a[aria-current="true"] { background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); color: var(--p1); }
+nav a small { color: var(--muted); font: 700 13px/1.6 Assistant, sans-serif; }
+@media (max-width: 760px) {
+  .wrap { grid-template-columns: 1fr; padding-top: 12px; }
+  nav { position: sticky; top: var(--hh, 64px); z-index: 4; display: flex; overflow-x: auto; background: var(--ink); padding: 6px 0; margin: 0 -16px; padding-inline: 16px; scrollbar-width: none; }
+  nav a { white-space: nowrap; flex: none; } nav a small { display: none; }
+}
+
+section.sec { scroll-margin-top: calc(var(--hh, 64px) + 64px); margin-bottom: 28px; }
+section.sec > h2 { margin: 0 0 12px; font: 400 20px/1.2 "Secular One", sans-serif; display: flex; align-items: center; gap: 10px; }
+section.sec > h2 i { width: 10px; height: 10px; border-radius: 2px; background: var(--p1); transform: skewX(-12deg); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 18px; }
+.field { display: grid; gap: 8px; }
+.field > .head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.field > .head label, .field > .head span:first-child { font: 700 13px/1.3 Assistant, sans-serif; color: var(--muted); }
+.count { font: 700 13px/1 Assistant, sans-serif; color: var(--p1); }
+.head .right { display: flex; align-items: center; gap: 10px; }
+.test { border: 0; cursor: pointer; border-radius: 999px; padding: 3px 10px; background: #1a2140; color: var(--p2); font: italic 800 13px/1.4 Saira, sans-serif; letter-spacing: .04em; direction: ltr; }
+.roll { font: 400 20px/1.3 "Secular One", sans-serif; color: #ffd84a; text-shadow: 0 2px 0 #8a3b00; padding: 4px 0; animation: pop .35s cubic-bezier(.2,1.4,.4,1); }
+@keyframes pop { from { transform: scale(1.4); opacity: 0; } }
+.who { display: flex; align-items: center; gap: 10px; } .who select { flex: 1; }
+.count.zero { color: var(--bad); }
+
+/* an option row: the lit arcade button decides whether this option can be picked */
+.opt { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: start; }
+.lit { width: 36px; height: 36px; margin-top: 2px; border-radius: 50%; border: 0; cursor: pointer; background: radial-gradient(circle at 50% 35%, #3a4266, #1a1f36); box-shadow: inset 0 -3px 0 #0006, 0 2px 0 #0008; transition: background .15s, box-shadow .15s; }
+.lit[aria-pressed="true"] { background: radial-gradient(circle at 50% 35%, #fff3b8, var(--p1) 55%, #c98a00); box-shadow: inset 0 -3px 0 #0004, 0 2px 0 #0008, 0 0 16px #ffc23a99; }
+textarea, input[type="text"], input[type="number"], input[type="password"], select { width: 100%; background-color: #0a0d1c; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+select { padding-inline-start: 34px; }
+textarea { resize: none; min-height: 42px; line-height: 1.45; overflow: hidden; }
+.opt.off textarea { color: var(--muted); }
+input[type="number"] { width: 110px; direction: ltr; text-align: center; font-variant-numeric: tabular-nums; }
+.x { border: 0; background: none; cursor: pointer; color: var(--muted); padding: 8px; border-radius: 8px; line-height: 0; }
+.x:hover { color: var(--bad); background: #ff5a4a14; }
+.x svg { width: 18px; height: 18px; }
+.add { justify-self: start; border: 1px dashed #3a4266; background: none; color: var(--p2); border-radius: 999px; padding: 6px 14px; cursor: pointer; font: 700 13px/1.4 Assistant, sans-serif; }
+.add:hover { border-color: var(--p2); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: center; }
+.group { border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 12px; }
+.card .group { border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 16px 0 0; }
+.card > .field > .group:first-of-type, .card > .group:first-child { border-top: 0; padding-top: 0; }
+.group > .gh { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.group > .gh b { font: 400 20px/1.2 "Secular One", sans-serif; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.face { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; object-position: 50% 8%; background: #2a3350; flex: none; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 4px 3px 10px; border-radius: 999px; background: #1a2140; box-shadow: inset 0 0 0 1px var(--line); }
+.chip .x { padding: 2px; } .chip .x svg { width: 14px; height: 14px; }
+.chips select { width: auto; padding: 4px 8px; border-radius: 999px; color: var(--p2); }
+.num { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.num .help { flex: 1 1 200px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.kpi { background: #0a0d1c; border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; }
+.kpi b { direction: ltr; text-align: start; font: italic 800 28px/1.1 Saira, sans-serif; color: var(--p1); font-variant-numeric: tabular-nums; }
+table { width: 100%; border-collapse: collapse; } td, th { text-align: start; padding: 7px 8px; border-bottom: 1px solid var(--line); }
+th { font: 700 13px/1.3 Assistant, sans-serif; color: var(--muted); } td.n { direction: ltr; text-align: end; font-variant-numeric: tabular-nums; }
+.bar2 { height: 8px; border-radius: 4px; background: var(--p2); min-width: 2px; }
+.empty { padding: 40px; text-align: center; color: var(--muted); }
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="brand"><b dir="ltr">SERVICE MODE</b><span>בחירות 2026</span></div>
+  <div class="links"><a href="./" target="_blank" rel="noopener">לאתר</a><a href="./#poster" target="_blank" rel="noopener">פוסטר</a></div>
+  <button type="button" class="save" id="save">שמירה ופרסום</button>
+</div></header>
+<div class="sub"><p id="status" class="meta" role="status"></p>
+  <details class="key"><summary class="meta">מפתח GitHub</summary>
+    <div class="keyrow"><input id="token" type="password" autocomplete="off" placeholder="מדביקים פעם אחת, נשמר רק במכשיר הזה" aria-label="מפתח GitHub"><button type="button" class="add" id="forget">שכח מפתח</button></div></details></div>
+<div class="wrap"><nav id="nav" aria-label="קטגוריות"></nav><main id="form"><p class="empty">טוען…</p></main></div>
+<script>
+const REPO = 'MaxCR86/elections26', FILE = 'copy.json', API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
+const SECTIONS = { ident: 'פתיח DiMax', start: 'מסך התחלה', select: 'בחירת דמויות', glitch: 'באג: אותה קבוצה', versus: 'מסך VS וההמשך', fight: 'הקרב',
+  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים',
+  names: 'שמות הדמויות', moves: 'מהלכים מיוחדים' };
+const LABEL = {
+  presents: 'מתחת ללוגו', line: 'שורה', press: 'הכותרת המהבהבת', sub: 'שורה מתחת', sound: 'כפתור עם סאונד', mute: 'כפתור בלי סאונד', credits: 'שורת פתקים',
+  title: 'כותרת', team_r: 'כותרת הקבוצה הימנית', team_l: 'כותרת הקבוצה השמאלית', stat_1: 'מד ראשון', stat_2: 'מד שני', stat_3: 'מד שלישי', dq: 'חותמת הפסילה',
+  dq_sub: 'מתחת לחותמת', vs_line: 'שורת "מול" ({a} ו־{b} הם השמות)', error: 'הודעת השגיאה', move_label: 'תווית המהלך', booth: 'תא הפרשנים', alarm: 'אזעקת מפלגה חדשה',
+  polls_open: 'לפני הקרב', fight: 'קריאת הקרב', clock: 'שעון', special_label: 'תווית מהלך מיוחד', combo: 'קומבו ({n} = מספר)', block: 'חסימה', ko: 'נוקאאוט', winner: 'ניצחון ({name} = השם)',
+  h1: 'כותרת ראשית', tag: 'שורת התגית', when: 'מתי', where: 'איפה', what: 'מה יש', joke: 'בדיחת הגג', fine: 'אותיות קטנות', credits_btn: 'קישור הקרדיטים',
+  scroll: 'הזמנה לגלול', rows: 'שורות הפרטים', waze: 'כפתור Waze', maps: 'כפתור מפות', calendar: 'כפתור יומן', whatsapp: 'כפתור הוואטסאפ', again: 'כפתור משחק נוסף',
+  intro: 'פתיח', outro: 'סיום', sound_on: 'סאונד פועל', sound_off: 'סאונד כבוי', skip: 'דילוג', close: 'סגירה', address: 'כתובת לניווט', k: 'תווית', v: 'ערך',
+  same_team_pct: 'אחוז קרבות בתוך אותה קבוצה', duos: 'צמדים', win: 'אחוז ניצחון קבוע', tiers: 'דרגות בוס', rank_weights: 'משקל לפי מקום ברשימה (1 = ראש הרשימה)',
+  a: 'דמות', b: 'מושכת את', chance: 'סיכוי (%)', tier: 'דרגה', ids: 'מי בדרגה', hit: 'עוצמת מכה (1 = רגיל)', armor: 'ספיגת נזק (נמוך = קשוח יותר)', appear: 'תדירות הופעה (1 = רגיל)',
+  name: 'שם המפלגה', seats: 'מנדטים צפויים', risk: 'סיכוי לא לעבור את אחוז החסימה (%)', threshold_title: 'כותרת סצנת אחוז החסימה', stats: 'כתובת הסטטיסטיקה', members: 'הדמויות לפי הסדר ברשימה', boss: 'בוס', sub: 'בוס משני', mini: 'מיני־בוס' };
+const HELP = { same_team_pct: 'בשאר הקרבות: קואליציה מול אופוזיציה.', chance: 'כשאחד מהם נבחר, הסיכוי שהשני מצטרף.', win: 'גובר על כל החישובים.',
+  rank_weights: 'כוח הדמות = מנדטים × המשקל של המקום שלה ברשימה.' };
+const OFF = new Set(['_note']);
+let data = null, sha = null, dirty = 0, NAMES = {};
+const $ = (s) => document.querySelector(s);
+const status = (t, cls = '') => { $('#status').textContent = t; $('#status').className = `meta ${cls}`; };
+const tok = () => $('#token').value.trim();
+try { $('#token').value = localStorage.getItem('gh_token') || ''; } catch (e) {}
+$('#token').addEventListener('change', () => { try { localStorage.setItem('gh_token', tok()); } catch (e) {} status(tok() ? 'המפתח נשמר במכשיר הזה.' : ''); });
+$('#forget').onclick = () => { $('#token').value = ''; try { localStorage.removeItem('gh_token'); } catch (e) {} status('המפתח נמחק מהמכשיר.'); };
+const touch = () => { dirty++; $('#save').dataset.dirty = dirty; };
+const b64dec = (s) => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
+const b64enc = (s) => { const b = new TextEncoder().encode(s); let o = ''; for (let i = 0; i < b.length; i += 0x8000) o += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(o); };
+const headers = () => ({ Accept: 'application/vnd.github+json', ...(tok() ? { Authorization: `Bearer ${tok()}` } : {}) });
+
+// a tiny arcade blip for the lit buttons (no files, very quiet)
+let ac = null; const blip = (on) => { try { ac ||= new AudioContext(); const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+  o.type = 'triangle'; o.frequency.setValueAtTime(on ? 660 : 440, t); o.frequency.exponentialRampToValueAtTime(on ? 990 : 330, t + .08);
+  g.gain.setValueAtTime(.05, t); g.gain.exponentialRampToValueAtTime(.0001, t + .12); o.connect(g).connect(ac.destination); o.start(t); o.stop(t + .13); } catch (e) {} };
+
+const h = (tag, attrs = {}, ...kids) => { const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) { if (k.startsWith('on')) n[k] = v; else if (v != null && v !== false) n.setAttribute(k, v === true ? '' : v); }
+  n.append(...kids.flat().filter((k) => k != null)); return n; };
+const X = (fn, label = 'מחיקה') => { const b = h('button', { type: 'button', class: 'x', 'aria-label': label, title: label, onclick: fn }); b.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>'; return b; };
+const area = (val, set, label) => { const t = h('textarea', { rows: Math.max(1, Math.ceil(String(val).length / 55)), dir: 'auto', 'aria-label': label }); t.value = val;
+  t.oninput = () => { set(t.value); t.rows = Math.max(1, Math.ceil(t.value.length / 55)); touch(); }; return t; };
+const STY = ['lego', 'kitsch3d', 'clay'], BADS = new Set(['lapid_clay', 'golan_clay', 'abbas_clay', 'tropper_clay', 'gantz_clay', 'hendel_clay']);
+const face = (id) => h('img', { class: 'face', alt: '', src: `img/${id}_${STY.find((s) => !BADS.has(`${id}_${s}`))}.webp` });
+const isOpts = (v) => Array.isArray(v) && v.length > 0 && v.every((o) => o && typeof o === 'object' && 't' in o);
+const isIds = (v) => Array.isArray(v) && v.every((x) => typeof x === 'string' && x in NAMES);
+const lab = (k) => LABEL[k] || NAMES[k] || k;
+
+// option set: every text field is a list of options; lit ones can be picked (one at random per game)
+function opts(arr, label) {
+  const f = h('div', { class: 'field' }), cnt = h('span', { class: 'count' });
+  const paint = () => { const n = arr.filter((o) => o.on).length; cnt.textContent = n ? (n === 1 ? 'אפשרות אחת פעילה' : `${n} פעילות, נבחרת אחת באקראי`) : 'אין פעילה: תוצג הראשונה'; cnt.classList.toggle('zero', !n); };
+  const draw = () => {
+    const roll = h('div', { class: 'roll', 'aria-live': 'polite', hidden: true });
+    const test = h('button', { type: 'button', class: 'test', title: 'מה ייצא במשחק הבא?', onclick: () => { const on = arr.filter((o) => o.on), o = (on.length ? on : arr)[Math.random() * (on.length || arr.length) | 0];
+      roll.hidden = false; roll.textContent = o ? o.t : ''; roll.style.animation = 'none'; roll.offsetWidth; roll.style.animation = ''; blip(true); } }, 'TEST');
+    f.replaceChildren(h('div', { class: 'head' }, h('span', {}, label), h('span', { class: 'right' }, cnt, test)), roll);
+    arr.forEach((o, i) => {
+      const row = h('div', { class: `opt${o.on ? '' : ' off'}` });
+      const lit = h('button', { type: 'button', class: 'lit', 'aria-pressed': String(!!o.on), 'aria-label': o.on ? 'פעילה. לחיצה מכבה' : 'כבויה. לחיצה מדליקה',
+        onclick: () => { o.on = !o.on; blip(o.on); touch(); draw(); } });
+      row.append(lit, area(o.t, (v) => (o.t = v), label), X(() => { arr.splice(i, 1); touch(); draw(); }, 'מחיקת האפשרות'));
+      f.append(row);
+    });
+    f.append(h('button', { type: 'button', class: 'add', onclick: () => { arr.push({ t: '', on: false }); touch(); draw(); f.querySelectorAll('textarea')[arr.length - 1]?.focus(); } }, '+ אפשרות'));
+    paint();
+  };
+  draw(); return f;
+}
+// character list as name chips, with a picker to add
+function ids(arr, label) {
+  const f = h('div', { class: 'field' });
+  const draw = () => {
+    const chips = h('div', { class: 'chips' }, arr.map((id, i) => h('span', { class: 'chip' }, face(id), NAMES[id] || id, X(() => { arr.splice(i, 1); touch(); draw(); }, `הסרת ${NAMES[id] || id}`))));
+    const sel = h('select', { 'aria-label': 'הוספת דמות', onchange: () => { if (sel.value) { arr.push(sel.value); touch(); draw(); } } },
+      h('option', { value: '' }, '+ דמות'), Object.entries(NAMES).filter(([k]) => !arr.includes(k)).map(([k, v]) => h('option', { value: k }, v)));
+    chips.append(sel); f.replaceChildren(h('div', { class: 'head' }, h('span', {}, label)), chips);
+  };
+  draw(); return f;
+}
+function num(o, k, label) {
+  const i = h('input', { type: 'number', step: 'any', 'aria-label': label }); i.value = o[k]; i.oninput = () => { o[k] = Number(i.value); touch(); };
+  return h('div', { class: 'field' }, h('div', { class: 'head' }, h('label', {}, label)), h('div', { class: 'num' }, i, HELP[k] ? h('span', { class: 'meta help' }, HELP[k]) : null));
+}
+function idSelect(o, k, label) {
+  let f0 = face(o[k]);
+  const s = h('select', { 'aria-label': label, onchange: () => { o[k] = s.value; touch(); const n = face(s.value); f0.replaceWith(n); f0 = n; } }, Object.entries(NAMES).map(([id, n]) => h('option', { value: id, selected: id === o[k] }, n)));
+  return h('div', { class: 'field' }, h('div', { class: 'head' }, h('label', {}, label)), h('div', { class: 'who' }, f0, s));
+}
+function list(arr, label, make) {                        // a list of plain values or records, add/remove
+  const f = h('div', { class: 'field' });
+  const draw = () => {
+    f.replaceChildren(h('div', { class: 'head' }, h('span', {}, label)));
+    arr.forEach((v, i) => { const del = X(() => { arr.splice(i, 1); touch(); draw(); });
+      if (v && typeof v === 'object') f.append(h('div', { class: 'group' }, h('div', { class: 'gh' }, h('b', {}, v.name || NAMES[v.a] && `${NAMES[v.a]} + ${NAMES[v.b]}` || `#${i + 1}`), del), ...Object.keys(v).map((k) => node(v, k))));
+      else f.append(h('div', { class: 'opt', style: 'grid-template-columns: 1fr auto' }, typeof v === 'number' ? (() => { const n = h('input', { type: 'number', step: 'any' }); n.value = v; n.oninput = () => { arr[i] = Number(n.value); touch(); }; return n; })() : area(v, (nv) => (arr[i] = nv), label), del));
+    });
+    f.append(h('button', { type: 'button', class: 'add', onclick: () => { const s = arr[arr.length - 1]; arr.push(make ? make() : s && typeof s === 'object' ? JSON.parse(JSON.stringify(s)) : typeof s === 'number' ? 0 : ''); touch(); draw(); } }, '+ הוספה'));
+  };
+  draw(); return f;
+}
+function node(o, k) {                                    // pick the editor that fits the value
+  const v = o[k], label = lab(k);
+  if (isOpts(v)) return opts(v, label);
+  if (isIds(v) && v.length && (k === 'ids' || k === 'members')) return ids(v, label);
+  if (k === 'ids' || k === 'members') return ids(v, label);
+  if ((k === 'a' || k === 'b') && typeof v === 'string') return idSelect(o, k, label);
+  if (k === 'tier') { const s = h('select', { 'aria-label': label, onchange: () => { o[k] = s.value; touch(); } }, Object.keys(data.game.tiers).map((t) => h('option', { value: t, selected: t === v }, lab(t))));
+    return h('div', { class: 'field' }, h('div', { class: 'head' }, h('label', {}, label)), s); }
+  if (typeof v === 'number') return num(o, k, label);
+  if (typeof v === 'string') return h('div', { class: 'field' }, h('div', { class: 'head' }, h('label', {}, label)), area(v, (nv) => { o[k] = nv; }, label));
+  if (Array.isArray(v)) return list(v, label);
+  if (v && typeof v === 'object') {
+    const g = h('div', { class: 'group' }, h('div', { class: 'gh' }, h('b', {}, label)), ...Object.keys(v).map((kk) => node(v, kk)));
+    if (k === 'win') g.append(h('div', { class: 'chips' }, (() => { const s = h('select', { 'aria-label': 'הוספת דמות עם אחוז ניצחון קבוע', onchange: () => { if (s.value) { v[s.value] = 50; touch(); render(); } } },
+      h('option', { value: '' }, '+ דמות עם אחוז קבוע'), Object.entries(NAMES).filter(([id]) => !(id in v)).map(([id, n]) => h('option', { value: id }, n))); return s; })()));
+    return g;
+  }
+  return h('div');
+}
+// ---------- stats: read-only totals from our own Cloudflare table ----------
+const EV = { load: 'כניסות לאתר', start_sound: 'התחלה עם סאונד', start_mute: 'התחלה בשקט', skip: 'דילוג', finish: 'סיימו את ההופעה', again: 'שוב (כפתור למעלה)',
+  replay: 'משחק נוסף (CONTINUE)', scroll_btn: 'לחצו על "גללו"', saw_details: 'ראו את הפרטים', saw_continue: 'הגיעו ל־CONTINUE', whatsapp: 'הצטרפו לוואטסאפ',
+  waze: 'Waze', maps: 'Google Maps', calendar: 'הוספה ליומן', credits: 'פתחו קרדיטים', fight: 'קרבות' };
+const statsBox = () => {
+  const card = h('div', { class: 'card' }), out = h('div', { style: 'display:grid;gap:18px' });
+  const key = h('input', { type: 'password', autocomplete: 'off', placeholder: 'סיסמת הסטטיסטיקה', 'aria-label': 'סיסמת הסטטיסטיקה' });
+  try { key.value = localStorage.getItem('stats_key') || ''; } catch (e) {}
+  const go = h('button', { type: 'button', class: 'add', onclick: () => load() }, 'רענון');
+  const load = async () => {
+    try { localStorage.setItem('stats_key', key.value.trim()); } catch (e) {}
+    const url = (data.links.stats || '').replace(/\/$/, '');
+    if (!url) return out.replaceChildren(h('p', { class: 'meta' }, 'הסטטיסטיקה עוד לא מחוברת.'));
+    if (!key.value.trim()) return out.replaceChildren(h('p', { class: 'meta' }, 'הדביקו את סיסמת הסטטיסטיקה.'));
+    out.replaceChildren(h('p', { class: 'meta' }, 'טוען…'));
+    try {
+      const r = await fetch(`${url}/stats`, { headers: { 'x-key': key.value.trim() }, cache: 'no-store' });
+      if (r.status === 401) throw new Error('הסיסמה לא נכונה');
+      if (!r.ok) throw new Error(`שגיאה ${r.status}`);
+      const s = await r.json(), n = (ev) => s.events.find((e) => e.ev === ev) || { n: 0, people: 0 };
+      const started = n('start_sound').people + n('start_mute').people;
+      const kpi = (label, v) => h('div', { class: 'kpi' }, h('b', {}, String(v ?? 0)), h('span', { class: 'meta' }, label));
+      const tbl = (cols, rows) => h('table', {}, h('tr', {}, cols.map((c) => h('th', {}, c))), rows.map((r) => h('tr', {}, r.map((c, i) => h('td', { class: i ? 'n' : '' }, c)))));
+      const max = Math.max(1, ...s.events.map((e) => e.people));
+      out.replaceChildren(
+        h('div', { class: 'kpis' }, kpi('אנשים', s.totals.people), kpi('כניסות', s.totals.loads), kpi('התחילו לשחק', started), kpi('הגיעו לפרטים', n('saw_details').people), kpi('הצטרפו לוואטסאפ', n('whatsapp').people), kpi('שיחקו שוב', n('again').people + n('replay').people)),
+        tbl(['כפתור / אירוע', 'פעמים', 'אנשים', ''], s.events.filter((e) => e.ev !== 'fight').map((e) => [EV[e.ev] || e.ev, e.n, e.people, h('div', { class: 'bar2', style: `width:${e.people / max * 100}%` })])),
+        tbl(['מכשיר', 'מערכת', 'כניסות', 'אנשים'], s.devices.map((d) => [({ mobile: 'נייד', tablet: 'טאבלט', desktop: 'מחשב' })[d.dev] || d.dev, d.os, d.loads, d.people])),
+        tbl(['יום', 'כניסות', 'אנשים', 'וואטסאפ'], s.days.map((d) => [d.day, d.loads, d.people, d.whatsapp])),
+        tbl(['הקרבות הנפוצים (מנצח > מפסיד)', 'פעמים'], s.details.filter((d) => d.ev === 'fight').slice(0, 12).map((d) => [d.detail.replace(/[a-z]+/g, (id) => NAMES[id] || id).replace(' same', ' (אותה קבוצה)'), d.n])),
+        h('p', { class: 'meta' }, s.totals.last ? `אירוע אחרון: ${new Date(s.totals.last).toLocaleString('he-IL')}` : 'עוד אין נתונים.'));
+    } catch (e) { out.replaceChildren(h('p', { class: 'meta', style: 'color:var(--bad)' }, `לא הצלחתי לטעון: ${e.message}`)); }
+  };
+  card.append(h('div', { class: 'keyrow', style: 'margin:0' }, key, go), out); if (key.value) load();
+  return h('section', { class: 'sec', id: 's-stats' }, h('h2', {}, h('i'), 'סטטיסטיקה'), card);
+};
+function render() {
+  NAMES = data.names || {};
+  const f = $('#form'), nav = $('#nav'); f.replaceChildren(statsBox()); nav.replaceChildren(h('a', { href: '#s-stats' }, 'סטטיסטיקה'));
+  Object.keys(data).filter((k) => !OFF.has(k)).forEach((k) => {
+    const v = data[k], card = h('div', { class: 'card' });
+    if (k === 'parties') card.append(list(v, 'רשימות', () => ({ name: '', seats: 0, members: [] })));
+    else if (k === 'moves') Object.keys(v).forEach((id) => card.append(list(v[id], NAMES[id] || id)));
+    else if (Array.isArray(v)) card.append(list(v, lab(k)));
+    else Object.keys(v).forEach((kk) => card.append(node(v, kk)));
+    const n = JSON.stringify(v).match(/"on":true/g)?.length;
+    f.append(h('section', { class: 'sec', id: `s-${k}` }, h('h2', {}, h('i'), SECTIONS[k] || k), card));
+    nav.append(h('a', { href: `#s-${k}` }, SECTIONS[k] || k, n ? h('small', {}, `${n} פעילות`) : null));
+  });
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) nav.querySelectorAll('a').forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`))); }), { rootMargin: '-30% 0px -60% 0px' });
+  f.querySelectorAll('section').forEach((s) => io.observe(s));
+}
+
+async function load() {
+  status('טוען…');
+  try {
+    const r = await fetch(`${API}?ref=main&t=${Date.now()}`, { headers: headers(), cache: 'no-store' });
+    if (!r.ok) throw new Error(`GitHub ${r.status}`);
+    const j = await r.json(); sha = j.sha; data = JSON.parse(b64dec(j.content)); status('מוכן. מדליקים, עורכים, ולוחצים "שמירה ופרסום".');
+  } catch (e) {                                       // the published file still lets you look around
+    data = await fetch(`${FILE}?t=${Date.now()}`).then((r) => r.json()); sha = null;
+    status(`לא הצלחתי לקרוא מ־GitHub (${e.message}). מוצגת הגרסה שבאתר; שמירה תעבוד אחרי שהקובץ יעלה ל־GitHub.`, 'err');
+  }
+  dirty = 0; delete $('#save').dataset.dirty; render();
+}
+$('#save').onclick = async () => {
+  if (!tok()) { $('details.key').open = true; $('#token').focus(); return status('צריך להדביק מפתח GitHub כדי לשמור.', 'err'); }
+  if (!sha) return status('אין חיבור לקובץ ב־GitHub. טענו את הדף מחדש.', 'err');
+  $('#save').disabled = true; status('שומר…');
+  try {
+    const r = await fetch(API, { method: 'PUT', headers: { ...headers(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'copy: update from admin', content: b64enc(JSON.stringify(data, null, 2) + '\n'), sha, branch: 'main' }) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(r.status === 409 ? 'מישהו שמר בינתיים. טענו מחדש ונסו שוב.' : r.status === 401 || r.status === 403 ? 'המפתח לא תקין או בלי הרשאת כתיבה.' : j.message);
+    sha = j.content.sha; dirty = 0; delete $('#save').dataset.dirty; blip(true); setTimeout(() => blip(true), 110);
+    status('נשמר. האתר יתעדכן תוך כמה דקות.', 'ok');
+  } catch (e) { status(`השמירה נכשלה: ${e.message}`, 'err'); }
+  $('#save').disabled = false;
+};
+const hh = () => document.documentElement.style.setProperty('--hh', document.querySelector('header').offsetHeight + 'px');
+hh(); addEventListener('resize', hh);
+addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
+load();
+</script>
+</body>
+</html>
