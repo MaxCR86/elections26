@@ -16,9 +16,9 @@ Live at https://elections26.dimaxtlv.com (GitHub Pages, noindex). A Hebrew RTL a
   - Each polling company's latest poll from the last 21 days, plain average.
   - Commits `polls: daily update`.
 - **Stats:** a Cloudflare Worker at `elections26-stats.dimaxtlv.workers.dev`, with a D1 table, on Max's personal Cloudflare account.
-  - `/e` records events, from the production hostname only.
+  - `/e` records events and `/idea` stores the free-text ideas from the box after the victory screen (production hostname only, capped at 10 per visitor and 500 in total per day).
   - `/count` is public (fights and wins).
-  - `/stats` needs the `ADMIN_KEY` secret.
+  - `/stats` needs the `ADMIN_KEY` secret; it also returns the latest 300 ideas, listed in the admin under סטטיסטיקה.
 
 ## Commands
 - Build and deploy, from the source folder: `python3 build_site.py`, then commit and push this repo.
