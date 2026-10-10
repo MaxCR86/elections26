@@ -364,12 +364,14 @@ function rollThreshold() {
     const fail = Math.random() * 100 < p.risk, v = fail ? 1.4 + Math.random() * 1.7 : 3.5 + Math.random() * 2.3;
     RISKY.push({ ids, fail, v }); if (fail) ids.forEach((id) => OUT.add(id)); });
 }
-let CHAMP = null, STREAK = 0, RECENT = [], BENCH = [];   // BENCH: every loser stays out for the rest of the visit; when a team runs short, everyone comes back             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
+let CHAMP = null, STREAK = 0, RECENT = [], BENCH = [], DECIDED = false;   // DECIDED: this run's fight has a result
+try { BENCH = JSON.parse(sessionStorage.getItem('bench')) || []; } catch (e) {}   // a reload keeps the losers out too
+const bench = (ids) => { BENCH = [...new Set([...BENCH, ...ids])]; try { sessionStorage.setItem('bench', JSON.stringify(BENCH)); } catch (e) {} };   // BENCH: every loser stays out for the rest of the visit; when a team runs short, everyone comes back             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
 function rollFighters(champ = null) {
   const pool = (side) => side.map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id));
-  if (pool(R).length < 2 || pool(L).length < 2) BENCH = [];   // a team ran out: new season, the losers are back
+  if (pool(R).length < 2 || pool(L).length < 2) { BENCH = []; bench([]); }   // a team ran out: new season, the losers are back
   const Rs = pool(R), Ls = pool(L);
-  DUO = null; SAME = Math.random() * 100 < C.game.same_team_pct; STREAK = champ && champ === CHAMP ? STREAK + 1 : champ ? 1 : 0; CHAMP = champ;
+  DUO = null; DECIDED = false; SAME = Math.random() * 100 < C.game.same_team_pct; STREAK = champ && champ === CHAMP ? STREAK + 1 : champ ? 1 : 0; CHAMP = champ;
   if (champ) { const home = Rs.includes(champ) ? Rs : Ls, pool = (SAME ? home : home === Rs ? Ls : Rs).filter((id) => id !== champ), fresh = pool.filter((id) => !RECENT.includes(id)), foe = wpick(fresh.length ? fresh : pool);
     RECENT = [...RECENT, foe].slice(-4);
     if (home === Rs) { P1 = champ; P2 = foe; } else { P2 = champ; P1 = foe; } }
@@ -568,7 +570,7 @@ function select() {                                   // returns its length in m
       setTimeout(() => { t.classList.remove('risk'); m.classList.add(r.fail ? 'fail' : 'pass'); if (r.fail) knock(id, true); else { sfx('confirm', .35); A(t, [{ filter: 'brightness(1.6)' }, { filter: 'none' }], { duration: 400 }); setTimeout(() => A(m, [{ opacity: 1 }, { opacity: 0 }], { duration: 400 }), 500); } }, 1450); })); });
     b += 2300 + 300; at(b - 200, () => { info.innerHTML = ''; });
   } else OUT.forEach((id) => tiles[id] && knock(id, false));   // replays: they are already out
-  const wander = (pool) => pool.filter((id) => ![P1, P2, DUO?.id].includes(id) && !OUT.has(id)).sort(() => Math.random() - .5).slice(0, 4);
+  const wander = (pool) => pool.filter((id) => ![P1, P2, DUO?.id].includes(id) && !OUT.has(id) && !BENCH.includes(id)).sort(() => Math.random() - .5).slice(0, 4);
   const intruder = SAME ? (Rs.includes(P1) ? 'p2' : 'p1') : null;   // the cursor that has no business on the other team
   let p1 = [...wander(Rs), ...(intruder === 'p1' ? [] : [P1])], p2 = [...wander(Ls), ...(intruder === 'p2' ? [] : [P2])];
   if (CHAMP === P1) p1 = [P1]; if (CHAMP === P2) p2 = [P2];   // the champion's frame stays locked on the champion
@@ -665,7 +667,7 @@ function fight() {                                     // returns its length in 
   const f1 = fixed(1), f2 = fixed(2);                                    // fixed win rates (e.g. Golan) beat the odds
   const p1 = f1 != null && f2 != null ? f1 / (f1 + f2) : f1 != null ? f1 / 100 : f2 != null ? 1 - f2 / 100 : odds(1) / (odds(1) + odds(2));
   const W = Math.random() < p1 ? 1 : 2, Lz = 3 - W;
-  LAST = [ids[W][0], ids[Lz][0]]; BENCH = [...new Set([...BENCH, ...ids[Lz]])]; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
+  LAST = [ids[W][0], ids[Lz][0]]; bench(ids[Lz]); DECIDED = true; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
   track('fight', `${ids[W].join('+')}>${ids[Lz].join('+')}${SAME ? ' same' : ''}`);
   const dmg = (k) => 20 * Math.min(2.6, Math.max(.35, Math.pow((sp(k) + 2) / (sp(3 - k) + 2), .7) * st(k).hit * st(3 - k).armor));   // more expected seats (and a higher list spot) hit proportionally harder
 
@@ -975,7 +977,7 @@ function end() {
 }
 function trailer() {
   reset(); showSnd();
-  skipBtn = uiBtn('skip', C.ui.skip, () => { track('skip'); reset(); poster(false); mix('fin'); music('fin'); end(); });
+  skipBtn = uiBtn('skip', C.ui.skip, () => { track('skip'); if (!DECIDED) { LAST = [P1, P2]; bench([P2]); DECIDED = true; }   /* skipped before the fight: the shown result counts */ reset(); poster(false); mix('fin'); music('fin'); end(); });
   const s = select();
   at(s + 500, () => { const d = fight(); at(d, () => poster(true)); at(d + 3300, end); });
 }
