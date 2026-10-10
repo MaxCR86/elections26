@@ -48,10 +48,16 @@ nav a { display: flex; justify-content: space-between; gap: 8px; padding: 9px 12
 nav a:hover { background: #ffffff0d; }
 nav a[aria-current="true"] { background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); color: var(--p1); }
 nav a small { color: var(--muted); font: 700 13px/1.6 Assistant, sans-serif; }
+nav details.cat > summary { padding: 9px 12px; border-radius: 10px; font: 400 20px/1.2 "Secular One", sans-serif; }
+nav details.cat.here > summary { color: var(--p1); }
+nav .links { display: grid; gap: 2px; margin-inline-start: 12px; }
 @media (max-width: 760px) {
   .wrap { grid-template-columns: 1fr; padding-top: 12px; }
-  nav { position: sticky; top: var(--hh, 64px); z-index: 4; display: flex; overflow-x: auto; background: var(--ink); padding: 6px 0; margin: 0 -16px; padding-inline: 16px; scrollbar-width: none; }
-  nav a { white-space: nowrap; flex: none; } nav a small { display: none; }
+  nav { position: sticky; top: var(--hh, 64px); z-index: 4; display: flex; flex-wrap: wrap; gap: 6px; background: var(--ink); margin: 0 -16px; padding: 6px 16px; }
+  nav details.cat > summary { white-space: nowrap; font-size: 16px; padding: 8px 12px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); }
+  nav details.cat[open] > summary { color: var(--p2); box-shadow: inset 0 0 0 1px var(--p2); }
+  nav .links { position: absolute; top: 100%; inset-inline: 0; margin: 0; padding: 8px 16px 12px; background: var(--panel); border-bottom: 1px solid var(--line); box-shadow: 0 12px 24px #0009; }
+  nav a { white-space: nowrap; } nav a small { display: none; }
 }
 
 section.sec { scroll-margin-top: calc(var(--hh, 64px) + 64px); margin-bottom: 28px; }
@@ -102,6 +108,11 @@ input[type="number"] { width: 110px; direction: ltr; text-align: center; font-va
 table { width: 100%; border-collapse: collapse; } td, th { text-align: start; padding: 7px 8px; border-bottom: 1px solid var(--line); }
 th { font: 700 13px/1.3 Assistant, sans-serif; color: var(--muted); } td.n { direction: ltr; text-align: end; font-variant-numeric: tabular-nums; }
 .bar2 { height: 8px; border-radius: 4px; background: var(--p2); min-width: 2px; }
+.gate { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: var(--ink); }
+.gate form { display: grid; gap: 14px; justify-items: center; width: min(320px, 90vw); }
+.gate b { font: italic 800 34px/1 Saira, sans-serif; font-stretch: 112%; color: var(--p1); text-shadow: 0 3px 0 #8a3b00; }
+.gate input { text-align: center; font-size: 28px; letter-spacing: .4em; direction: ltr; }
+html.unlocked .gate { display: none; }
 .empty { padding: 40px; text-align: center; color: var(--muted); }
 </style>
 </head>
@@ -114,11 +125,12 @@ th { font: 700 13px/1.3 Assistant, sans-serif; color: var(--muted); } td.n { dir
 <div class="sub"><p id="status" class="meta" role="status"></p>
   <details class="key"><summary class="meta">מפתח GitHub</summary>
     <div class="keyrow"><input id="token" type="password" autocomplete="off" placeholder="מדביקים פעם אחת, נשמר רק במכשיר הזה" aria-label="מפתח GitHub"><button type="button" class="add" id="forget">שכח מפתח</button></div></details></div>
+<div class="gate" id="gate"><form id="gateForm"><b dir="ltr">SERVICE MODE</b><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="קוד" aria-label="קוד כניסה"><button class="save" type="submit">כניסה</button><p class="meta" id="gateMsg" role="status"></p></form></div>
 <div class="wrap"><nav id="nav" aria-label="קטגוריות"></nav><main id="form"><p class="empty">טוען…</p></main></div>
 <script>
 const REPO = 'MaxCR86/elections26', FILE = 'copy.json', API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
 const SECTIONS = { ident: 'פתיח DiMax', start: 'מסך התחלה', select: 'בחירת דמויות', glitch: 'באג: אותה קבוצה', versus: 'מסך VS וההמשך', fight: 'הקרב',
-  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', victory: 'מסך הניצחון (בגלילה)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים',
+  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', victory: 'מסך הניצחון (בגלילה)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים', polls_meta: 'עדכון הסקרים היומי',
   names: 'שמות הדמויות', moves: 'מהלכים מיוחדים' };
 const LABEL = {
   presents: 'מתחת ללוגו', line: 'שורה', press: 'הכותרת המהבהבת', sub: 'שורה מתחת', sound: 'כפתור עם סאונד', mute: 'כפתור בלי סאונד', credits: 'שורת פתקים ({n} = כמה קרבות שוחקו עד עכשיו)',
@@ -130,7 +142,7 @@ const LABEL = {
   quote: 'הציטוט הכללי ({name} = המנצח)', challenger: 'הבזק לפני וואטסאפ', quotes: 'ציטוט לכל דמות (כשהיא מנצחת)', quote_pct: 'אחוז הפעמים שמופיע הציטוט הכללי', intro: 'פתיח', outro: 'סיום', sound_on: 'סאונד פועל', sound_off: 'סאונד כבוי', skip: 'דילוג', close: 'סגירה', address: 'כתובת לניווט', k: 'תווית', v: 'ערך',
   same_team_pct: 'אחוז קרבות בתוך אותה קבוצה', duos: 'צמדים', win: 'אחוז ניצחון קבוע', tiers: 'דרגות בוס', rank_weights: 'משקל לפי מקום ברשימה (1 = ראש הרשימה)',
   a: 'דמות', b: 'מושכת את', chance: 'סיכוי (%)', tier: 'דרגה', ids: 'מי בדרגה', hit: 'עוצמת מכה (1 = רגיל)', armor: 'ספיגת נזק (נמוך = קשוח יותר)', appear: 'תדירות הופעה (1 = רגיל)',
-  name: 'שם המפלגה', seats: 'מנדטים צפויים', risk: 'סיכוי לא לעבור את אחוז החסימה (%)', threshold_title: 'כותרת סצנת אחוז החסימה', stats: 'כתובת הסטטיסטיקה', members: 'הדמויות לפי הסדר ברשימה', boss: 'בוס', sub: 'בוס משני', mini: 'מיני־בוס' };
+  name: 'שם המפלגה', seats: 'מנדטים צפויים', risk: 'סיכוי לא לעבור את אחוז החסימה (%)', lock: 'נעילה: הסקרים היומיים לא ישנו את המפלגה הזאת', polls_meta: 'עדכון סקרים אחרון', threshold_title: 'כותרת סצנת אחוז החסימה', stats: 'כתובת הסטטיסטיקה', members: 'הדמויות לפי הסדר ברשימה', boss: 'בוס', sub: 'בוס משני', mini: 'מיני־בוס' };
 const HELP = { same_team_pct: 'בשאר הקרבות: קואליציה מול אופוזיציה.', chance: 'כשאחד מהם נבחר, הסיכוי שהשני מצטרף.', win: 'גובר על כל החישובים.',
   rank_weights: 'כוח הדמות = מנדטים × המשקל של המקום שלה ברשימה.' };
 const OFF = new Set(['_note']);
@@ -155,8 +167,10 @@ const h = (tag, attrs = {}, ...kids) => { const n = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) { if (k.startsWith('on')) n[k] = v; else if (v != null && v !== false) n.setAttribute(k, v === true ? '' : v); }
   n.append(...kids.flat().filter((k) => k != null)); return n; };
 const X = (fn, label = 'מחיקה') => { const b = h('button', { type: 'button', class: 'x', 'aria-label': label, title: label, onclick: fn }); b.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>'; return b; };
-const area = (val, set, label) => { const t = h('textarea', { rows: Math.max(1, Math.ceil(String(val).length / 55)), dir: 'auto', 'aria-label': label }); t.value = val;
-  t.oninput = () => { set(t.value); t.rows = Math.max(1, Math.ceil(t.value.length / 55)); touch(); }; return t; };
+const fit = (t) => { t.style.height = 'auto'; t.style.height = t.scrollHeight + 2 + 'px'; };   // grow to the text at any width
+const area = (val, set, label) => { const t = h('textarea', { rows: 1, dir: 'auto', 'aria-label': label }); t.value = val;
+  t.oninput = () => { set(t.value); fit(t); touch(); }; requestAnimationFrame(() => fit(t)); return t; };
+addEventListener('resize', () => document.querySelectorAll('textarea').forEach(fit));
 const STY = ['lego', 'kitsch3d', 'clay'], BADS = new Set(['lapid_clay', 'golan_clay', 'abbas_clay', 'tropper_clay', 'gantz_clay', 'hendel_clay']);
 const face = (id) => h('img', { class: 'face', alt: '', src: `img/${id}_${STY.find((s) => !BADS.has(`${id}_${s}`))}.webp` });
 const isOpts = (v) => Array.isArray(v) && v.length > 0 && v.every((o) => o && typeof o === 'object' && 't' in o);
@@ -224,6 +238,8 @@ function node(o, k) {                                    // pick the editor that
   if ((k === 'a' || k === 'b') && typeof v === 'string') return idSelect(o, k, label);
   if (k === 'tier') { const s = h('select', { 'aria-label': label, onchange: () => { o[k] = s.value; touch(); } }, Object.keys(data.game.tiers).map((t) => h('option', { value: t, selected: t === v }, lab(t))));
     return h('div', { class: 'field' }, h('div', { class: 'head' }, h('label', {}, label)), s); }
+  if (typeof v === 'boolean') { const b = h('button', { type: 'button', class: 'lit', 'aria-pressed': String(v), 'aria-label': label, onclick: () => { o[k] = !o[k]; b.setAttribute('aria-pressed', String(o[k])); blip(o[k]); touch(); } });
+    return h('div', { class: 'field' }, h('div', { class: 'head' }, h('label', {}, label)), b); }
   if (typeof v === 'number') return num(o, k, label);
   if (typeof v === 'string') return h('div', { class: 'field' }, h('div', { class: 'head' }, h('label', {}, label)), area(v, (nv) => { o[k] = nv; }, label));
   if (Array.isArray(v)) return list(v, label);
@@ -273,7 +289,13 @@ const statsBox = () => {
 };
 function render() {
   NAMES = data.names || {};
-  const f = $('#form'), nav = $('#nav'); f.replaceChildren(statsBox()); nav.replaceChildren(h('a', { href: '#s-stats' }, 'סטטיסטיקה'));
+  const f = $('#form'), nav = $('#nav'); f.replaceChildren(statsBox()); nav.replaceChildren();
+  const CATS = [['סטטיסטיקה', ['stats']], ['טקסטים במשחק', ['ident', 'start', 'select', 'glitch', 'versus', 'fight']], ['טקסטים בסוף', ['poster', 'details', 'victory', 'credits', 'ui']],
+    ['חוקי המשחק', ['game', 'parties', 'polls_meta', 'moves', 'names']], ['קישורים', ['links']]];
+  const groups = {}, catOf = (k) => (CATS.find(([, ks]) => ks.includes(k)) || CATS[3])[0];
+  CATS.forEach(([name]) => { const d = h('details', { class: 'cat' }, h('summary', {}, name), h('div', { class: 'links' })); d.ontoggle = () => { if (d.open) nav.querySelectorAll('details.cat').forEach((o) => o !== d && (o.open = false)); };
+    groups[name] = d; nav.append(d); });
+  groups['סטטיסטיקה'].lastChild.append(h('a', { href: '#s-stats' }, 'סטטיסטיקה'));
   Object.keys(data).filter((k) => !OFF.has(k)).forEach((k) => {
     const v = data[k], card = h('div', { class: 'card' });
     if (k === 'parties') card.append(list(v, 'רשימות', () => ({ name: '', seats: 0, members: [] })));
@@ -282,9 +304,11 @@ function render() {
     else Object.keys(v).forEach((kk) => card.append(node(v, kk)));
     const n = JSON.stringify(v).match(/"on":true/g)?.length;
     f.append(h('section', { class: 'sec', id: `s-${k}` }, h('h2', {}, h('i'), SECTIONS[k] || k), card));
-    nav.append(h('a', { href: `#s-${k}` }, SECTIONS[k] || k, n ? h('small', {}, `${n} פעילות`) : null));
+    groups[catOf(k)].lastChild.append(h('a', { href: `#s-${k}` }, SECTIONS[k] || k, n ? h('small', {}, `${n} פעילות`) : null));
   });
-  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) nav.querySelectorAll('a').forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`))); }), { rootMargin: '-30% 0px -60% 0px' });
+  Object.values(groups).forEach((d) => d.querySelector('a') || d.remove());
+  nav.addEventListener('click', (e) => { if (e.target.closest('a') && matchMedia('(max-width: 760px)').matches) nav.querySelectorAll('details.cat').forEach((o) => (o.open = false)); });
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) nav.querySelectorAll('a').forEach((a) => { const on = a.hash === `#${e.target.id}`; a.setAttribute('aria-current', String(on)); if (on) a.closest('details').classList.add('here'); else if (!a.closest('details').querySelector('a[aria-current="true"]')) a.closest('details').classList.remove('here'); }); }), { rootMargin: '-30% 0px -60% 0px' });
   f.querySelectorAll('section').forEach((s) => io.observe(s));
 }
 
@@ -317,7 +341,15 @@ $('#save').onclick = async () => {
 const hh = () => document.documentElement.style.setProperty('--hh', document.querySelector('header').offsetHeight + 'px');
 hh(); addEventListener('resize', hh);
 addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
-load();
+// the door: a 4-digit code (stored here only as its SHA-256), remembered on this device
+const PIN = '45bd891a8dc77f546eb5e657a7619711dba80242d7c22d12a7b2b124f9bfb43d';
+const sha256 = async (s) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map((b) => b.toString(16).padStart(2, '0')).join('');
+const enter = () => { document.documentElement.classList.add('unlocked'); load(); };
+let ok0 = false; try { ok0 = localStorage.getItem('admin_ok') === PIN; } catch (e) {}
+if (ok0) enter(); else $('#pin').focus();
+$('#gateForm').onsubmit = async (e) => { e.preventDefault();
+  if (await sha256($('#pin').value.trim()) === PIN) { try { localStorage.setItem('admin_ok', PIN); } catch (e2) {} blip(true); enter(); }
+  else { $('#gateMsg').textContent = 'קוד שגוי'; $('#gateMsg').style.color = 'var(--bad)'; $('#pin').select(); } };
 </script>
 </body>
 </html>
