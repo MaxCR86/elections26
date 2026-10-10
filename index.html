@@ -110,7 +110,7 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 .blackframe { position: absolute; inset: 0; z-index: 22; background: #000; opacity: 0; pointer-events: none; }
 .ko { position: absolute; inset: 0; z-index: 12; display: grid; place-items: center; direction: ltr; font-family: var(--f-mark); font-style: italic; font-weight: 900; font-stretch: 115%; font-size: 34cqw;
   background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 1cqw 0 #6a2a00) drop-shadow(0 0 5cqw #ff8a2a); opacity: 0; padding-bottom: 20%; }
-.quip { position: absolute; top: 18%; z-index: 13; max-width: 62%; padding: 2.4cqw 3.4cqw; background: #fff; color: #111; border-radius: 3cqw; font: 400 5.6cqw/1.2 var(--f-he); box-shadow: 0 1.5cqw 4cqw #000a; opacity: 0; pointer-events: none; }   /* the winner's catchphrase */
+.quip { position: absolute; top: 40%; z-index: 13; max-width: 62%; padding: 2.4cqw 3.4cqw; background: #fff; color: #111; border-radius: 3cqw; font: 400 5.6cqw/1.2 var(--f-he); box-shadow: 0 1.5cqw 4cqw #000a; opacity: 0; pointer-events: none; }   /* the winner's catchphrase */
 .winner { position: absolute; left: 0; right: 0; top: 56%; z-index: 12; text-align: center; font-family: var(--f-he); font-size: 7cqw; color: #fff; text-shadow: 0 .5cqw 2cqw #000; opacity: 0; }
 .bubble { position: absolute; z-index: 9; background: #fff; color: #111; font-family: var(--f-he); font-size: 4.6cqw; padding: 2cqw 3.2cqw; border-radius: 3cqw; max-width: 48%; opacity: 0; box-shadow: 0 1cqw 3cqw #0008; }
 .booth { position: absolute; left: 50%; bottom: 2%; translate: -50% 0; width: 52%; z-index: 8; background: #000c; border: .3cqw solid #ffd84a55; border-radius: 2cqw; padding: 1.2cqw 2cqw 0; display: grid; grid-template-columns: 1fr 1fr; opacity: 0; }
@@ -204,37 +204,47 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 .title.solo { bottom: 22%; }
 @keyframes nudge { 50% { transform: translateY(.8cqw); } }
 
-/* ---------- after the show: VICTORY → CONTINUE? → credits. Each screen plays its moment once on arrival; nothing follows the scroll.
-   Type steps: Display (Saira italic 900) / Heading (Secular One · Saira italic 800, 9cqw) / Body (Assistant 700, 4.6cqw) / Meta (Assistant 700, 3.4cqw) ---------- */
-#more { display: none; position: relative; width: min(100%, calc(100svh * 9 / 16)); margin: 0 auto; container-type: inline-size; direction: rtl; background: #07080d; }
+/* ---------- CONTINUE? on the stage after every fight: play on, or give up to the results ---------- */
+.cscr { position: absolute; inset: 0; z-index: 30; display: grid; align-content: center; justify-items: center; gap: 3.4cqw; padding: 0 10%; background: radial-gradient(ellipse at 50% 45%, #0b0e1ae6, #000f 75%); text-align: center; }
+.cscr .cq { direction: ltr; font: italic 800 11cqw/1 var(--f-mark); font-stretch: 112%; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 .6cqw 0 #222); }
+.cscr .count { direction: ltr; font: italic 900 40cqw/.9 var(--f-mark); font-stretch: 115%; color: #ffd84a; text-shadow: 0 1.4cqw 0 #8a3b00, 0 0 7cqw #ff8a2a; font-variant-numeric: tabular-nums; }
+.cscr small { font: 700 3.6cqw/1.3 var(--f-ui); color: var(--muted); }
+.cscr .arc { width: 100%; margin-top: 2cqw; } .cscr .arc.dim { margin-top: 0; font: 700 4cqw/1 var(--f-ui); padding: 3.4cqw 0; }
+.arc.dim { background: #1a2140; color: var(--fg); box-shadow: 0 1.4cqw 0 #0008, inset 0 0 0 .4cqw #ffffff33; }
+
+/* ---------- the landing page, after the poster: the winner and the details → the ballot box → the voters → the buttons → the character scoreboard → ideas → DiMax → the polls line.
+   Type: 4 steps, one size and weight each. Display 9cqw Secular One (the winner's name) · Heading 6.4cqw Secular One (section titles, the quote)
+   · Body 4.6cqw Assistant 700 (everything you read or press) · Meta 3.4cqw Assistant 700 (labels, small print).
+   Text colours: white (--fg) to read, gold (--gold) for titles and highlights, grey (--muted) for the secondary. ---------- */
+#more { --gold: #ffd84a; display: none; position: relative; width: min(100%, calc(100svh * 9 / 16)); margin: 0 auto; container-type: inline-size; direction: rtl; background: #07080d; color: var(--fg); font: 700 4.6cqw/1.35 var(--f-ui); }
 body.done #more { display: block; }
 ::selection { background: #ffc23a; color: #111; }
 html { scrollbar-color: #3a4266 #07080d; }
 .nw { white-space: nowrap; }
 .ic { width: 1.1em; height: 1.1em; vertical-align: -.2em; margin-inline-start: .3em; }
-#more .arc { display: block; box-sizing: border-box; width: 100%; text-align: center; text-decoration: none; font: 700 4.6cqw/1 var(--f-ui); padding: 4.4cqw 2cqw; }
+#more h2, #more h3 { margin: 0; text-align: center; font: 400 6.4cqw/1.15 var(--f-he); color: var(--gold); text-shadow: 0 .6cqw 0 #8a3b00; }
+#more small, #more dt, .pollline, .foot .who, .foot .fine, .roll .track p { font: 700 3.4cqw/1.5 var(--f-ui); color: var(--muted); }
+#more .arc { display: flex; align-items: center; justify-content: center; gap: 2cqw; box-sizing: border-box; width: 100%; text-align: center; text-decoration: none; font: 700 4.6cqw/1.2 var(--f-ui); padding: 4.4cqw 3cqw; }
 #more .arc:focus-visible { outline: .6cqw solid #fff; outline-offset: .8cqw; }
-.arc.dim { background: #1a2140; color: var(--fg); box-shadow: 0 1.4cqw 0 #0008, inset 0 0 0 .4cqw #ffffff33; }
 #more [aria-disabled="true"] { opacity: .45; pointer-events: none; }
+#more .msg { min-height: 1.35em; margin: 0; text-align: center; color: var(--gold); } #more .msg.err { color: #ff6a5a; }
+#more input[type=text], #more textarea { box-sizing: border-box; width: 100%; padding: 3.4cqw; font: inherit; color: var(--fg); background: #1a2140; border: .4cqw solid #ffffff33; border-radius: 1.6cqw; }
+#more input::placeholder, #more textarea::placeholder { color: var(--muted); opacity: 1; }
+#more input:focus-visible, #more textarea:focus-visible { outline: .6cqw solid var(--gold); outline-offset: .4cqw; }
+.panel { display: grid; gap: 3cqw; margin: 0 5% 10cqw; padding: 6cqw; background: #0b0e1af2; border: .5cqw solid #ffffff33; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b; }
 
-/* 1. victory screen on the rooftop stage */
+/* 1. the winner on the rooftop, their line, then the details */
 .win { position: relative; display: grid; gap: 4cqw; padding: 6cqw 5% 10cqw; overflow: hidden; background: linear-gradient(#07080d, #07080d00 18%, #07080d00 52%, #07080df2 74%), #000 url("img/bg.jpg") 50% 30% / cover; }
 .arena2 { position: relative; height: 92cqw; margin: 0 -5%; }
 .arena2 img { position: absolute; bottom: 0; object-fit: contain; object-position: bottom; filter: drop-shadow(0 2cqw 2cqw #000c); opacity: 0; }
 .arena2 .w { right: 0; width: 82cqw; height: 82cqw; scale: -1 1; }
 .arena2 .l { left: -4cqw; width: 52cqw; height: 52cqw; filter: grayscale(.6) brightness(.6) drop-shadow(0 1cqw 1cqw #000c); }
-.win .wt { margin: -10cqw 0 0; position: relative; text-align: center; font: 400 9cqw/1 var(--f-he); color: #ffd84a; text-shadow: 0 .8cqw 0 #8a3b00, 0 0 4cqw #ff8a2a66; opacity: 0; }
+#more .wt { margin: -10cqw 0 0; position: relative; font-size: 9cqw; line-height: 1.05; text-shadow: 0 .8cqw 0 #8a3b00, 0 0 4cqw #ff8a2a66; opacity: 0; }
 .bubble2 { position: relative; background: #0b0e1af2; border: .5cqw solid #e9edf3; border-radius: 1.6cqw; padding: 5cqw; box-shadow: 0 3cqw 6cqw #000b; opacity: 0; }
 .bubble2::before { content: ""; position: absolute; top: -3.4cqw; right: 22%; width: 5cqw; height: 5cqw; background: #0b0e1a; border: .5cqw solid #e9edf3; border-width: .5cqw 0 0 .5cqw; transform: rotate(45deg); }
-.bubble2 .q { margin: 0 0 4cqw; min-height: 2.6em; font: 400 6cqw/1.3 var(--f-he); color: #fff; }
+.bubble2 .q { margin: 0 0 4cqw; min-height: 2.4em; font: 400 6.4cqw/1.25 var(--f-he); color: #fff; }
 .bubble2 dl { display: grid; grid-template-columns: auto 1fr; gap: 2.6cqw 4cqw; margin: 0; align-items: baseline; }
-.bubble2 dt { font: 700 3.4cqw/1.3 var(--f-ui); color: var(--p2); }
-.bubble2 dd { margin: 0; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); }
-.go { position: relative; display: grid; gap: 3cqw; margin: 0 5% 10cqw; }   /* the other buttons: smaller, quieter */
-.go .trio { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; }
-.go .trio .arc { white-space: nowrap; } .go .trio #ics { grid-column: 1 / -1; white-space: normal; line-height: 1.25; }
-#more .go .arc { font-size: 3.8cqw; padding: 3.4cqw 2cqw; }
-.chal { position: absolute; left: 0; right: 0; top: 0; z-index: 5; background: #d4142a; color: #fff; font: 400 6.6cqw/1 var(--f-he); text-align: center; padding: 3cqw 0; opacity: 0; pointer-events: none; }
+.bubble2 dd { margin: 0; }
 .win.on .arena2 .w { animation: slamIn .5s cubic-bezier(.2,1.3,.4,1) .15s both, winBob .5s ease-in-out .9s 4 alternate; }
 .win.on .arena2 .l { animation: fadeUp .5s ease-out both; }
 .win.on .wt { animation: slamText .45s cubic-bezier(.2,1.5,.4,1) .45s both; }
@@ -244,67 +254,52 @@ html { scrollbar-color: #3a4266 #07080d; }
 @keyframes slamText { from { opacity: 0; transform: scale(1.8); } to { opacity: 1; transform: none; } }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(4cqw); } to { opacity: 1; transform: none; } }
 
-/* 4. last before the logo: drop us an idea for the game */
-.idea { width: 90%; box-sizing: border-box; display: grid; gap: 3cqw; margin: 4cqw 0 12cqw; padding: 6cqw; background: #0b0e1af2; border: .5cqw solid #e9edf3; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b; }
-.idea h3 { margin: 0; text-align: center; font: 400 6cqw/1.2 var(--f-he); color: #ffd84a; }
-.idea textarea { min-height: 26cqw; resize: none; padding: 3.4cqw; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); background: #1a2140; border: .4cqw solid #ffffff33; border-radius: 1.6cqw; }
-.idea textarea::placeholder { color: var(--muted); opacity: 1; }
-.idea textarea:focus-visible { outline: .6cqw solid var(--p2); outline-offset: .4cqw; }
-.idea .msg { min-height: 1.3em; margin: 0; text-align: center; font: 700 4.6cqw/1.3 var(--f-ui); color: var(--p2); }
-.idea .msg.err { color: #ff4a3a; }
-
-/* 1c. RSVP: a name and a slider */
-.rsvp { display: grid; gap: 3cqw; margin: 0 5% 8cqw; padding: 6cqw; background: #0b0e1af2; border: .5cqw solid #ffd84a; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b, 0 0 5cqw #ffd84a33; }
-.rsvp h3 { margin: 0; text-align: center; font: 400 7cqw/1.1 var(--f-he); color: #ffd84a; }
-.rsvp .rec { margin: 0; display: flex; align-items: center; justify-content: center; gap: 3cqw; text-align: center; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); }   /* your record: fights played, or who beat the boss */
+/* 2. the ballot box: a name and a slider; your record on top */
+.rsvp { border-color: var(--gold); box-shadow: 0 3cqw 6cqw #000b, 0 0 5cqw #ffd84a33; }
+.rsvp .rec { margin: 0; display: flex; align-items: center; justify-content: center; gap: 3cqw; text-align: center; }
 .rsvp .rec img { width: 18cqw; height: 18cqw; flex: none; object-fit: contain; object-position: bottom; filter: drop-shadow(0 0 3cqw #ffd84a88); }
 .rsvp .rec:empty { display: none; }
-.rsvp input[type=text] { padding: 3.4cqw; font: 700 4.6cqw/1.3 var(--f-ui); color: var(--fg); background: #1a2140; border: .4cqw solid #ffffff33; border-radius: 1.6cqw; }
-.rsvp input[type=text]::placeholder { color: var(--muted); opacity: 1; }
-.rsvp input:focus-visible { outline: .6cqw solid var(--p2); outline-offset: .4cqw; }
-.rsvp .lk { display: grid; gap: 2cqw; text-align: center; } .rsvp .lk span { font: 700 4.2cqw/1.3 var(--f-ui); color: var(--fg); }
-.rsvp input[type=range] { -webkit-appearance: none; appearance: none; height: 4cqw; border-radius: 2cqw; background: linear-gradient(90deg, #ffd84a var(--v, 70%), #1a2140 var(--v, 70%)); direction: ltr; }
-.rsvp input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 9cqw; height: 9cqw; border-radius: 50%; background: #fff; border: 1cqw solid #ffd84a; box-shadow: 0 0 3cqw #ffd84a; }
-.rsvp input[type=range]::-moz-range-thumb { width: 9cqw; height: 9cqw; border-radius: 50%; background: #fff; border: 1cqw solid #ffd84a; }
-.rsvp .lv { font: 400 5.4cqw/1.2 var(--f-he); color: #ffd84a; }
-.rsvp .msg { min-height: 1.3em; margin: 0; text-align: center; font: 700 4.6cqw/1.3 var(--f-ui); color: var(--p2); } .rsvp .msg.err { color: #ff4a3a; }
-.board { width: 84%; display: grid; gap: 2cqw; padding-top: 8cqw; text-align: center; }   /* the RSVP list as an arcade high-score table */
-.board h3 { margin: 0; font: 400 9cqw/1 var(--f-he); color: #ffd84a; text-shadow: 0 .8cqw 0 #8a3b00; }
-.board .bc { font: 700 3.6cqw/1 var(--f-ui); color: var(--muted); }
-.board ol { margin: 2cqw 0 0; padding: 0; list-style: none; counter-reset: r; display: grid; gap: 1.6cqw; }
-.board li { counter-increment: r; display: flex; gap: 3cqw; align-items: baseline; font: 400 5.4cqw/1.2 var(--f-he); color: var(--fg); border-bottom: .3cqw dashed #ffffff22; padding-bottom: 1.2cqw; }
-.board li::before { content: counter(r); min-width: 9cqw; text-align: start; font: italic 800 5cqw/1 var(--f-mark); color: var(--p2); }
-#more .pollline { margin-top: 4cqw; font: 700 3.4cqw/1.4 var(--f-ui); color: var(--muted); } #more .pollline small { display: block; }
-.pollline a.src { color: var(--p2); text-decoration: underline; pointer-events: auto; }
+.rsvp .lk { display: grid; gap: 2cqw; text-align: center; }
+.rsvp input[type=range] { -webkit-appearance: none; appearance: none; height: 4cqw; border-radius: 2cqw; background: linear-gradient(90deg, var(--gold) var(--v, 70%), #1a2140 var(--v, 70%)); direction: ltr; }
+.rsvp input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 9cqw; height: 9cqw; border-radius: 50%; background: #fff; border: 1cqw solid var(--gold); box-shadow: 0 0 3cqw var(--gold); }
+.rsvp input[type=range]::-moz-range-thumb { width: 9cqw; height: 9cqw; border-radius: 50%; background: #fff; border: 1cqw solid var(--gold); }
+.rsvp .lv { color: var(--gold); }
 
-/* 1b. CONTINUE? a small strip right under the details: the countdown and the main CTA */
-.cont { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 1.6cqw 4cqw; padding: 4cqw 5cqw; background: #0b0e1af2; border: .5cqw solid #ffd84a; border-radius: 1.6cqw; box-shadow: 0 0 5cqw #ffd84a40; opacity: 0; }
-.win.on .cont { animation: fadeUp .4s ease-out 1.2s both; }
-.cont .cq { margin: 0; direction: ltr; display: flex; align-items: baseline; gap: 2cqw; font: italic 800 5cqw/1 var(--f-mark); font-stretch: 112%; color: #e9edf3; }
-.cont .count { display: inline-block; min-width: 1.2em; text-align: center; font: italic 900 9cqw/1 var(--f-mark); color: #ffd84a; text-shadow: 0 .6cqw 0 #8a3b00, 0 0 3cqw #ff8a2a; font-variant-numeric: tabular-nums; }
-.cont .count.over { font-size: 4.6cqw; color: #ff4a3a; text-shadow: none; }
-#more .cont .arc { animation: throb 1.4s ease-in-out infinite; }
-@keyframes throb { 50% { transform: scale(1.04); } }
-.cont small { grid-column: 1 / -1; text-align: center; font: 700 3.4cqw/1 var(--f-ui); color: var(--muted); }
+/* 3. the voters: everyone who registered, most rounds first */
+.lb { display: grid; gap: 2cqw; margin: 0 8% 12cqw; text-align: center; }
+.lb ol { margin: 2cqw 0 0; padding: 0; list-style: none; display: grid; gap: 1.6cqw; }
+.lb li { display: flex; gap: 2.4cqw; align-items: center; padding-bottom: 1.6cqw; border-bottom: .3cqw dashed #ffffff22; text-align: start; }
+.lb li b { flex: 1; font-weight: 700; }
+.lb li img { width: 9cqw; height: 9cqw; border-radius: 50%; object-fit: cover; object-position: 50% 6%; background: #1a2140; box-shadow: 0 0 0 .5cqw var(--gold); }
 
-/* 3. end credits: the photo credits roll once with each character's face, then the DiMax ident one more time */
+/* 4. the buttons: one big replay, then four item tiles */
+.go { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; margin: 0 5% 14cqw; }
+.go .again { grid-column: 1 / -1; }
+#more .go .tile2 { flex-direction: column; gap: 1.6cqw; padding: 4.4cqw 2cqw; border-radius: 2.4cqw; background: #12172b; color: var(--fg); box-shadow: 0 1.4cqw 0 #0008, inset 0 0 0 .5cqw var(--c); }
+.go .tile2 i { font-style: normal; font-size: 9cqw; line-height: 1; filter: drop-shadow(0 0 2.4cqw var(--c)); }
+.go .tile2:active { transform: translateY(.6cqw); box-shadow: 0 .6cqw 0 #0008, inset 0 0 0 .5cqw var(--c); }
+.chal { position: absolute; left: 0; right: 0; top: 0; z-index: 5; background: #d4142a; color: #fff; font: 400 6.4cqw/1 var(--f-he); text-align: center; padding: 3cqw 0; opacity: 0; pointer-events: none; }
+
+/* 5. the scoreboard: every character's wins across all players, top first, rolling once; then ideas, DiMax and the polls line */
 .foot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4cqw; overflow: hidden; padding: 0 0 12cqw; background: linear-gradient(#07080d, #0b1020 72%, #121a30); perspective: 700px; }
-.roll { width: 100%; height: 96cqw; overflow: hidden; -webkit-mask-image: linear-gradient(transparent, #000 16%, #000 84%, transparent); mask-image: linear-gradient(transparent, #000 16%, #000 84%, transparent); }
-.roll .track { padding: 8cqw 8%; font: 700 3.4cqw/1.6 var(--f-ui); color: var(--muted); text-align: center; }
+.roll { width: 100%; height: 110cqw; overflow: hidden; -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); }
+.roll .track { padding: 8cqw 8%; text-align: center; }
 .roll ul { list-style: none; margin: 6cqw 0; padding: 0; display: grid; gap: 6cqw; }
-.roll h3 { margin: 0 0 3cqw; font: 400 9cqw/1 var(--f-he); color: #ffd84a; text-shadow: 0 .8cqw 0 #8a3b00; }
 .roll li { display: grid; justify-items: center; gap: .8cqw; text-align: center; }
-.roll li em { font-style: normal; color: var(--p1); }
 .roll li img { width: 16cqw; height: 16cqw; border-radius: 50%; object-fit: cover; object-position: 50% 6%; background: #1a2140; flex: none; }
-.roll li b { color: var(--fg); font: 400 4.6cqw/1.1 var(--f-he); }
+.roll li .wins { font-style: normal; color: var(--gold); }
+.roll li span { font: 700 3.4cqw/1.5 var(--f-ui); color: var(--muted); }
+.idea { width: 90%; box-sizing: border-box; margin: 4cqw 0 12cqw; }
+.idea textarea { min-height: 26cqw; resize: none; }
 .markbox { display: grid; justify-items: center; gap: 4cqw; margin-top: 2cqw; }
 .foot .mark { position: relative; left: auto; top: auto; translate: none; font-size: 27cqw; transition: transform .25s ease-out; z-index: 2; }
 .foot .glow { position: absolute; left: 10%; right: 10%; bottom: 22%; height: 26%; background: radial-gradient(closest-side, #8fb0ff40, transparent); opacity: 0; pointer-events: none; }
 .foot .drl { opacity: .15; bottom: 2.4cqw; }
-.foot .who { font: 700 3.4cqw/1 var(--f-ui); color: var(--muted); letter-spacing: .5em; padding-inline-start: .5em; }
-.foot .fine { margin: 6cqw 8% 0; position: relative; z-index: 2; text-align: center; font: 700 3.4cqw/1.6 var(--f-ui); color: #8f97a6; }
+.foot .who { letter-spacing: .5em; padding-inline-start: .5em; }
+.foot .fine, .foot .pollline { margin: 4cqw 8% 0; position: relative; z-index: 2; text-align: center; }
+.pollline a.src { color: var(--gold); text-decoration: underline; pointer-events: auto; }
 @media (prefers-reduced-motion: reduce) {
-  .win .arena2 img, .win .wt, .bubble2, .cont, .cont .arc { opacity: 1 !important; animation: none !important; }
+  .win .arena2 img, .win .wt, .bubble2 { opacity: 1 !important; animation: none !important; }
   .roll { height: auto; -webkit-mask-image: none; mask-image: none; } }
 </style>
 
@@ -337,7 +332,9 @@ const resolve = (v) => { if (isOpts(v)) { const on = v.filter((o) => o.on); retu
   if (Array.isArray(v)) return v.map(resolve);
   return v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, resolve(x)])) : v; };
 let LAST = null, FIGHTS = null, WINS = {};                         // FIGHTS: total fights played by everyone (stats table)
-const paintWins = () => document.querySelectorAll('.roll li[data-id]').forEach((li) => { const n = WINS[li.dataset.id] || 0; li.querySelector('.wins').textContent = n ? fmt(C.credits.wins, { n }) : ''; });
+const paintWins = () => { const ul = document.querySelector('.roll ul'); if (!ul) return; const lis = [...ul.querySelectorAll('li[data-id]')], w = (li) => WINS[li.dataset.id] || 0;   // the scoreboard: most wins first
+  lis.forEach((li) => { li.querySelector('.wins').textContent = w(li) ? fmt(C.credits.wins, { n: w(li) }) : ''; }); lis.sort((a, b) => w(b) - w(a)).forEach((li) => ul.append(li)); };
+const HEAD = (id) => `img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp`;
 // "the game is real": when the strengths were last updated from the polls, and which ones (polls_meta, written daily by the poll job)
 const OUTLET = { 'Kan 11': 'כאן 11', 'Kan': 'כאן 11', 'HaHadashot 12': 'חדשות 12', 'Channel 12': 'חדשות 12', 'Channel 13': 'חדשות 13', 'Channel 14': 'ערוץ 14', 'i24 News': 'i24NEWS',
   'Maariv': 'מעריב', 'Walla': 'וואלה', 'Israel Hayom': 'ישראל היום', 'Zman Yisrael': 'זמן ישראל', 'Channel 16': 'ערוץ 16', 'Ynet': 'ynet', 'Haaretz': 'הארץ' };
@@ -788,6 +785,8 @@ function fight() {                                     // returns its length in 
 
   const kw = next(W), fin = finisher(kw, FT[Lz][0], D(W)), m = { hits: [fin.impact] };   // the winner's own signature finisher, named in the callout right before the KO
   at(t, () => { sfx('special', .6); duck(.3, .6); const c = el('div', `callout ${W === 1 ? 'c1' : 'c2'}`, `<small>${C.fight.special_label}</small><b>${fin.name.replace(/[!?.]$/, '')}!</b>`); cam.append(c);
+    const line = C.catchphrase?.[kw.id]; if (line) { const q = el('div', 'quip', line); q.style[W === 1 ? 'right' : 'left'] = '5%'; cam.append(q); sfx(`say_${kw.id}`, 1, false); duck(.15, 2.4);   // the war cry: their own voice where we have the clip
+      A(q, [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'none', offset: .12 }, { opacity: 1, offset: .88 }, { opacity: 0 }], { duration: 2400, easing: 'ease-out' }).finished.then(() => q.remove()); }
     A(c, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'none', offset: .2 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: 1500, easing: 'ease-out' }); });
   t += 650;
   // KO: slow zoom, the finisher, impact frames, the loser drops
@@ -805,10 +804,7 @@ function fight() {                                     // returns its length in 
     A(win, [{ opacity: 0, transform: 'translateY(30%)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 700 });
     FT[W].forEach((f) => f.bob.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-7%) scale(1.06)' }], { duration: 380, delay: 900, direction: 'alternate', iterations: 4, easing: 'ease-out' }));
   });
-  const wid = ids[W][0], line = C.catchphrase?.[wid];   // the winner's famous line, in their own voice where we have the clip
-  if (line) at(t + m.hits[0] + 1000, () => { const q = el('div', 'quip', line); q.style[X[W] > 50 ? 'right' : 'left'] = '5%'; cam.append(q); sfx(`say_${wid}`, 1, false); duck(.2, 2.6);
-    A(q, [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'none', offset: .1 }, { opacity: 1, offset: .9 }, { opacity: 0 }], { duration: 2600, easing: 'ease-out' }).finished.then(() => q.remove()); });
-  return t + m.hits[0] + (line ? 3600 : 2600);
+  return t + m.hits[0] + 2600;
 }
 
 // ---------- signature finishers: each fighter's own prop, used as intended ----------
@@ -903,18 +899,14 @@ const ICON = { replay: '<svg class="ic" viewBox="0 0 20 20" aria-hidden="true"><
 // 1. VICTORY: this run's winner and beaten loser on the rooftop, the win quote is the invitation. 2. CONTINUE? 9…0. 3. Rolling credits + DiMax.
 const onSeen = (n, fn, threshold = .45) => { const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) fn(); }, { threshold }); io.observe(n); return io; };
 function buildMore() {
-  const d = C.details, v = C.victory, q = encodeURIComponent(C.links.address), wa = C.links.whatsapp;
+  const d = C.details, v = C.victory, q = encodeURIComponent(C.links.address), wa = C.links.whatsapp, K = C.credits;
   more.innerHTML = `
     <section class="win" aria-label="${d.title}">
       <div class="arena2" aria-hidden="true"><img class="l" alt=""><img class="w" alt=""></div>
       <h2 class="wt"></h2>
-      <div class="bubble2"><p class="q" aria-live="off"></p><dl>${d.rows.map((r) => `<dt>${r.k}</dt><dd>${chunks(r.v)}</dd>`).join('')}</dl>${pollLine()}</div>
-      <section class="cont" aria-label="CONTINUE?">
-        <p class="cq" dir="ltr">CONTINUE? <b class="count" aria-hidden="true">9</b></p>
-        <button class="arc a1" type="button" id="again2" data-t="replay">${d.again} ${ICON.replay}</button><small class="ballots">${ballots()}</small>
-      </section>
+      <div class="bubble2"><p class="q" aria-live="off"></p><dl>${d.rows.map((r) => `<dt>${r.k}</dt><dd>${chunks(r.v)}</dd>`).join('')}</dl></div>
     </section>
-    <section class="rsvp" aria-label="${C.rsvp.title}">
+    <section class="panel rsvp" aria-label="${C.rsvp.title}">
       <h3>${C.rsvp.title}</h3>
       <p class="rec"></p>
       <input type="text" maxlength="40" autocomplete="name" placeholder="${C.rsvp.name_ph}" aria-label="${C.rsvp.name_ph}">
@@ -922,21 +914,20 @@ function buildMore() {
       <button class="arc a1" type="button" id="rsvpGo" data-t="rsvp">${C.rsvp.send}</button>
       <p class="msg" role="status"></p>
     </section>
+    <section class="lb board" aria-label="${C.rsvp.board_title}"><h3>${C.rsvp.board_title}</h3><small class="bc"></small><ol></ol></section>
     <section class="go" aria-label="${d.title}">
-      <a class="arc a2 join" data-t="whatsapp" ${wa ? `href="${wa}" target="_blank" rel="noopener"` : 'aria-disabled="true"'}>${d.whatsapp}</a>
-      <div class="trio">
-        <a class="arc dim" data-t="waze" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">${d.waze}</a>
-        <a class="arc dim" data-t="maps" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">${d.maps}</a>
-        <button class="arc dim" type="button" id="ics" data-t="calendar">${d.calendar}</button>
-      </div>
+      <button class="arc a1 again" type="button" data-t="replay">🥊 ${C.cont.again}</button>
+      <a class="arc tile2 join" style="--c:#3ae07a" data-t="whatsapp" ${wa ? `href="${wa}" target="_blank" rel="noopener"` : 'aria-disabled="true"'}><i aria-hidden="true">💬</i>${d.whatsapp}</a>
+      <button class="arc tile2" style="--c:#ff3aa8" type="button" id="ics" data-t="calendar"><i aria-hidden="true">📅</i>${d.calendar}</button>
+      <a class="arc tile2" style="--c:#3ae0ff" data-t="waze" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener"><i aria-hidden="true">🚗</i>${d.waze}</a>
+      <a class="arc tile2" style="--c:#ffd84a" data-t="maps" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener"><i aria-hidden="true">🗺️</i>${d.maps}</a>
       <div class="chal" aria-hidden="true">${v.challenger}</div>
     </section>
     <footer class="foot">
-      <div class="board"><h3>${C.rsvp.board_title}</h3><small class="bc"></small><ol></ol></div>
-      <div class="roll" aria-label="${C.credits.title}"><div class="track"><h3>${C.credits.title}</h3><p>${C.credits.intro}</p>
-        <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li data-id="${id}"><img src="img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp" alt=""><b>${FULL(id)}</b><em class="wins"></em><span><bdi>${who}</bdi> · <bdi>${lic}</bdi></span></li>`).join('')}</ul>
-        <p>${C.credits.outro}</p></div></div>
-      <section class="idea" aria-label="${C.idea.or}">
+      <div class="roll" aria-label="${K.score_title}"><div class="track"><h3>${K.score_title}</h3>
+        <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li data-id="${id}"><img src="${HEAD(id)}" alt=""><b>${FULL(id)}</b><em class="wins"></em><span><bdi>${who}</bdi> · <bdi>${lic}</bdi></span></li>`).join('')}</ul>
+        <p>${K.intro}</p><p>${K.outro}</p></div></div>
+      <section class="panel idea" aria-label="${C.idea.or}">
         <h3>${C.idea.or}</h3>
         <textarea maxlength="500" placeholder="${C.idea.placeholder}" aria-label="${C.idea.or}"></textarea>
         <button class="arc dim" type="button" id="send">${C.idea.send}</button>
@@ -948,7 +939,7 @@ function buildMore() {
     const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DiMax//elections26//HE', 'BEGIN:VEVENT', 'UID:elections26@dimaxtlv.com', 'DTSTAMP:20261010T000000Z',
       'DTSTART:20261027T180000Z', 'DTEND:20261028T000000Z', `SUMMARY:${C.poster.h1}`, `LOCATION:${C.links.address}`, 'URL:https://elections26.dimaxtlv.com', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
     Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), download: 'elections26.ics' }).click(); };
-  more.querySelectorAll('#again2').forEach((b) => (b.onclick = () => { sfx('ballot', .7, false); scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); C = resolve(RAW); rollStyles(false); rollFighters(LAST?.[0]);   /* every run: fresh clay / LEGO / 3D mix */ setTimeout(trailer, RM ? 0 : 450); }));
+  more.querySelector('.again').onclick = () => { sfx('ballot', .7, false); scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); setTimeout(playOn, RM ? 0 : 450); };
 
   // RSVP: a name (shown on the board) and a slider (only the admin sees it); one per visitor, sending again updates it
   const rs = more.querySelector('.rsvp'), rn = rs.querySelector('input[type=text]'), rr = rs.querySelector('input[type=range]'), rl = rs.querySelector('.lv'), rg = rs.querySelector('#rsvpGo'), rm = rs.querySelector('.msg');
@@ -957,8 +948,8 @@ function buildMore() {
   rr.oninput = () => { lvl(); if (rr.value % 20 === 0) blip(); }; lvl();
   rg.onclick = async () => { const name = rn.value.replace(/\s+/g, ' ').trim(); if (name.length < 2) return rn.focus();
     rg.setAttribute('aria-disabled', 'true'); rm.className = 'msg'; rm.textContent = '';
-    try { const r = await fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { method: 'POST', body: JSON.stringify({ vid: VID, dev: DEV, name, p: +rr.value }) });   // text/plain: no CORS preflight
-      if (!r.ok) throw 0; try { localStorage.setItem('rsvp', JSON.stringify({ name, p: +rr.value })); } catch (e) {}
+    try { const r = await fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { method: 'POST', body: JSON.stringify({ vid: VID, dev: DEV, name, p: +rr.value, games: REC().n, boss: REC().boss }) });   // text/plain: no CORS preflight
+      if (!r.ok) throw 0; try { localStorage.setItem('rsvp', JSON.stringify({ name, p: +rr.value, games: REC().n, boss: REC().boss })); } catch (e) {}
       rm.textContent = C.rsvp.thanks; rg.textContent = C.rsvp.update; sfx('confirm', .6); flash(.25, 120); loadBoard();
     } catch (e) { rm.className = 'msg err'; rm.textContent = C.rsvp.error; }
     rg.removeAttribute('aria-disabled'); };
@@ -979,7 +970,7 @@ function buildMore() {
     A(chal, [{ opacity: 0, transform: 'scaleY(0)' }, { opacity: 1, transform: 'none', offset: .2 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: 750 });
     setTimeout(() => { location.href = wa; }, 650); });
 
-  // 1. VICTORY: the winner slams in, the loser is down, the quote types out, then the details
+  // 1. the winner slams in, the loser is down, the quote types out, then the details
   const win = more.querySelector('.win'); let played = false, iv = null;
   more.resetWin = () => { played = false; clearInterval(iv); win.classList.remove('on'); win.querySelector('.q').textContent = ''; };   // every run: this run's winner and their own line
   onSeen(win, () => { if (played) return; played = true; track('saw_details'); void win.offsetWidth; win.classList.add('on'); 
@@ -987,18 +978,10 @@ function buildMore() {
     if (RM) { qn.textContent = text; return; }
     setTimeout(() => { sfx('confirm', .5); iv = setInterval(() => { qn.textContent = text.slice(0, ++i); if (i % 3 === 0) blip(); if (i >= text.length) clearInterval(iv); }, 32); }, 650); });
 
-  // 2. CONTINUE? counts down while on screen; at zero: GAME OVER, and it stays over
-  const cont = more.querySelector('.cont'), cnt = cont.querySelector('.count'); let n = 9, tick = null, seenC = false;
-  const step = () => { if (n === 0) { cnt.textContent = C.select.dq; cnt.classList.add('over'); sfx('dq', .5); clearInterval(tick); n = -1; return; }
-    if (n < 0) return; cnt.textContent = n; sfx('tick', .35); if (!RM) A(cnt, [{ transform: 'scale(1.35)', opacity: .4 }, { transform: 'none', opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.2,1.4,.4,1)' }); n--; };
-  new IntersectionObserver(([e]) => { clearInterval(tick); tick = null; if (!e.isIntersecting) return; if (!seenC) { seenC = true; track('saw_continue'); cont.classList.add('on'); }
-    if (n >= 0) { step(); tick = setInterval(step, 1000); } }, { threshold: .6 }).observe(cont);
-  more.resetCont = () => { n = 9; cnt.textContent = '9'; cnt.classList.remove('over'); };
-
-  // 3. credits roll once, then DiMax: the ballot-dot drops in, the high beams flash, the metal catches the light
+  // 5. the scoreboard rolls once, then DiMax: the ballot-dot drops in, the high beams flash, the metal catches the light
   const foot = more.querySelector('.foot'), m = markEl(), dl = el('div', 'drl'), dr = el('div', 'drl'), mk = el('div', 'markbox');
   dl.style.left = '14%'; dr.style.right = '14%'; mk.append(m, el('div', 'who', C.ident.presents));
-  foot.append(mk, dl, dr, el('div', 'fine', C.poster.fine));
+  foot.append(mk, dl, dr, el('div', 'fine', C.poster.fine)); foot.insertAdjacentHTML('beforeend', pollLine());   // the polls line, last thing on the page
   let lit = false;
   let rolled = false; const roll = foot.querySelector('.roll'), track2 = roll.querySelector('.track');
   onSeen(roll, () => { if (rolled || RM) return; rolled = true; const dist = track2.scrollHeight - roll.clientHeight;
@@ -1014,17 +997,25 @@ const saveRec = (o) => { try { localStorage.setItem('rec', JSON.stringify({ ...R
 const paintRec = () => { const r = more.querySelector('.rsvp .rec'); if (!r) return; const { n, boss } = REC(); r.replaceChildren();
   if (boss) { const i = new Image(); i.alt = ''; i.src = POSE(boss, 'stance'); r.append(i, fmt(C.rsvp.rec_boss, { name: FULL(boss) })); }
   else if (n) r.append(fmt(n === 1 ? C.rsvp.rec_one : C.rsvp.rec_games, { n })); };
-const loadBoard = () => { const b = more.querySelector('.board'); if (!b || !C.links.stats) return;   // everyone who RSVP'd, oldest first; names only
-  fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { cache: 'no-store' }).then((r) => r.json()).then(({ names = [] }) => {
-    b.querySelector('.bc').textContent = names.length ? fmt(C.rsvp.board_count, { n: names.length }) : C.rsvp.board_empty;
-    b.querySelector('ol').replaceChildren(...names.map((n) => Object.assign(document.createElement('li'), { textContent: n }))); }).catch(() => {}); };
+const loadBoard = () => { const b = more.querySelector('.board'); if (!b || !C.links.stats) return;   // everyone who RSVP'd, most rounds first: name, rounds, and the face they beat Sarah with
+  fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { cache: 'no-store' }).then((r) => r.json()).then(({ rows, names = [] }) => { rows = rows || names.map((name) => ({ name, games: 0 }));
+    b.querySelector('.bc').textContent = rows.length ? fmt(C.rsvp.board_count, { n: rows.length }) : C.rsvp.board_empty;
+    b.querySelector('ol').replaceChildren(...rows.map((r) => { const li = document.createElement('li'), nm = document.createElement('b'), g = document.createElement('small');
+      nm.textContent = r.name; g.textContent = r.games ? fmt(r.games === 1 ? C.rsvp.board_one : C.rsvp.board_rounds, { n: r.games }) : C.rsvp.board_zero; li.append(nm);
+      if (r.boss && NAME[r.boss]) { const i = new Image(); i.src = HEAD(r.boss); i.alt = fmt(C.rsvp.board_boss, { name: NAME[r.boss] }); i.title = i.alt; li.append(i); }
+      li.append(g); return li; })); }).catch(() => {}); };
+// a registered visitor's score follows them: their remembered name (this device) is updated with the rounds they played
+const syncRsvp = () => { let m = null; try { m = JSON.parse(localStorage.getItem('rsvp')); } catch (e) {} const { n, boss } = REC();
+  if (!m || !C.links.stats || (m.games === n && (m.boss || null) === (boss || null))) return;
+  fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { method: 'POST', body: JSON.stringify({ vid: VID, dev: DEV, name: m.name, p: m.p, games: n, boss }) })
+    .then((r) => { if (!r.ok) return; try { localStorage.setItem('rsvp', JSON.stringify({ ...m, games: n, boss })); } catch (e) {} loadBoard(); }).catch(() => {}); };
 const VICTOR = () => LAST || [P1, P2];                 // [winner, loser]; a skipped show uses the drawn pair
 function fillMore() {                                  // this run's winner and loser, and a fresh countdown
   const [w, l] = VICTOR();
   more.querySelectorAll('.w').forEach((n) => (n.src = POSE(w, 'stance')));
   more.querySelector('.arena2 .l').src = POSE(l, 'hit');
   more.querySelector('.wt').textContent = fmt(C.fight.winner, { name: FULL(w) });
-  more.resetWin?.(); more.resetCont?.(); paintRec(); more.querySelector('.ballots').textContent = ballots();
+  more.resetWin?.(); paintRec(); paintWins(); loadBoard();
 }
 
 // ---------- UI ----------
@@ -1065,9 +1056,8 @@ function startScreen() {
   s.querySelector('#goSnd').onclick = () => go(true);
   s.querySelector('#goMute').onclick = () => go(false);
 }
-function end() {
-  skipBtn?.remove(); skipBtn = null; document.body.classList.add('done'); fillMore(); track('finish');
-  againBtn = uiBtn('again', `${C.ui.again} ${ICON.replay}`, () => { track('again'); C = resolve(RAW); rollStyles(false); rollFighters(LAST?.[0]);   /* every run: fresh clay / LEGO / 3D mix */ trailer(); });
+function end() {   // the landing page: the poster on the stage with the arrow only, the page below
+  skipBtn?.remove(); skipBtn = null; document.body.classList.add('done'); fillMore(); syncRsvp(); track('finish');
   downBtn = uiBtn('down', ICON.down, () => track('scroll_btn') || more.scrollIntoView({ behavior: 'smooth' })); downBtn.setAttribute('aria-label', C.details.scroll);
 }
 function trailer() {
@@ -1077,7 +1067,22 @@ function trailer() {
   const s = select();
   at(s + 500, () => { const d = fight();
     if (ALIVE().length < 2 && C.game.boss?.on !== false) at(d, () => finale(LAST[0]));   // that was the last match: confetti… and then her
-    else { at(d, () => poster(true)); at(d + 3300, end); } });
+    else at(d, contScreen); });
+}
+const playOn = () => { C = resolve(RAW); rollStyles(false); rollFighters(LAST?.[0]); trailer(); };   // every run: fresh clay / LEGO / 3D mix
+const results = () => { reset(); mix('fin'); music('fin'); poster(true); at(3300, end); };
+// after each fight: CONTINUE? counts down (game.continue_s, default 5). Play on, or give up (tap or time) to the results
+function contScreen() {
+  skipBtn?.remove(); skipBtn = null; let n = Math.max(1, C.game.continue_s ?? 5);
+  const s = el('div', 'cscr', `<div class="cq">CONTINUE?</div><b class="count" aria-live="off">${n}</b><small>${fmt(C.select.left, { n: LEFT() })}</small>
+    <button type="button" class="arc a1" data-t="again">${C.cont.again}</button><button type="button" class="arc dim" data-t="results">${C.cont.results}</button>`);
+  cam.append(s); A(s, [{ opacity: 0 }, { opacity: 1 }], { duration: 300 }); sfx('vs', .5);
+  const cnt = s.querySelector('.count'), iv = setInterval(() => { if (--n < 0) { clearInterval(iv); track('cont_timeout'); return results(); }
+    cnt.textContent = n; sfx('tick', .4); A(cnt, [{ transform: 'scale(1.35)', opacity: .4 }, { transform: 'none', opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.2,1.4,.4,1)' }); }, 1000);
+  timers.push(iv);   // reset() clears it
+  const [ag, rs] = s.querySelectorAll('button');
+  ag.onclick = () => { clearInterval(iv); sfx('ballot', .7, false); playOn(); };
+  rs.onclick = () => { clearInterval(iv); results(); };
 }
 
 Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('40px "Secular One"')]).catch(() => {})

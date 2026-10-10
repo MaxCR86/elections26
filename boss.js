@@ -170,13 +170,13 @@ function finale(hero, o = {}) {
         const n = el('div', 'prop'); n.style.cssText = 'width:9cqw;height:9cqw;margin:-4.5cqw 0 0 -4.5cqw;--c:#9dff3a'; n.append(Object.assign(new Image(), { src: BIMG('bottle'), alt: '' })); cam.append(n);
         const x = who.x - 12 + Math.random() * 26; A(n, [{ left: `${x}%`, top: '-5%', transform: 'rotate(0)' }, { left: `${x + (Math.random() - .5) * 8}%`, top: '64%', transform: `rotate(${(Math.random() - .5) * 900}deg)` }], { duration: 520, easing: 'ease-in' }).finished.then(() => n.remove());
         setTimeout(() => { sfx('tick', .7); if (i % 3 === 0) { pose(who, 'hit', 300); hitFx(who, 100, 18); if (who === H) setHP(1, st(i / 3)); } }, 520); }, i * 110); }],
-    tape: [3200, (who, v) => { if (form !== 'f3') pose(boss, 'punch', 1600); sfx('blast', .8); shake(12, 900); duck(.3, 1);   // the tape: her own words as a shockwave
+    tape: [3200, (who, v) => { if (form !== 'f3') pose(boss, 'punch', 1600); sfx('blast', .8); sfx('say_sarah', 1, false);   // her war cry: the tape itself shake(12, 900); duck(.3, 1);   // the tape: her own words as a shockwave
       const ws = T.shout.split(/[\s-]+/).filter(Boolean), st = steps(v, ws.length), [fx, fy] = from();
       ws.forEach((w, i) => setTimeout(() => { if (!who.img.isConnected) return; const n = el('div', 'fz-word', w); n.style.cssText = `--c:#ff3aa8;font-size:${8 + i}cqw;left:${fx};top:${44 + (i % 3) * 6}%`; cam.append(n);
         A(n, [{ left: fx, opacity: 0, transform: 'scale(.5)' }, { opacity: 1, offset: .15 }, { left: `${who.x + 2}%`, opacity: 1, transform: 'scale(1.2)', offset: .85 }, { left: `${who.x + 10}%`, opacity: 0 }], { duration: 700, easing: 'ease-in' }).finished.then(() => n.remove());
         const r = el('div', 'ring'); r.style.cssText = `left:${fx};top:58%;--c:#ff3aa8`; cam.append(r); A(r, [{ transform: 'scale(.2)', opacity: 1 }, { transform: 'scale(2.6)', opacity: 0 }], { duration: 600, easing: 'ease-out' }).finished.then(() => r.remove());
         setTimeout(() => { pose(who, 'hit', 300); hitFx(who, 330, 20); if (who === H) setHP(1, st(i)); }, 600); }, i * 260)); }],
-    blast: [1500, (who, v) => { sfx('blast', .9); flash(.6, 150); shake(14, 500); FX.burst(.4, .42, 110, { s0: 250, s1: 800, g: 200, life: .7, h: 320 });   // the giant's own beam
+    blast: [1500, (who, v) => { sfx('blast', .9); if (Math.random() < .5) { sfx('say_sarah', 1, false); duck(.2, 2.5); } flash(.6, 150); shake(14, 500); FX.burst(.4, .42, 110, { s0: 250, s1: 800, g: 200, life: .7, h: 320 });   // the giant's own beam
       const r = el('div', 'ring'); r.style.cssText = 'left:40%;top:42%;--c:#ff3aa8'; cam.append(r); A(r, [{ transform: 'scale(.2)', opacity: 1 }, { transform: 'scale(3.2)', opacity: 0 }], { duration: 500 }).finished.then(() => r.remove());
       setTimeout(() => struck(who, v, 320, 40), 380); }],
   };
