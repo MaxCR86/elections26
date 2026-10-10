@@ -827,7 +827,7 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 22,
+      "seats": 22.2,
       "members": [
         "netanyahu",
         "levin",
@@ -838,26 +838,29 @@
         "saar",
         "gotliv"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "ישר!",
-      "seats": 22,
+      "seats": 21.8,
       "members": [
         "eisenkot",
         "tropper"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "ביחד",
-      "seats": 12,
+      "seats": 12.1,
       "members": [
         "bennett",
         "lapid",
         "kahana"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "הדמוקרטים",
@@ -865,49 +868,55 @@
       "members": [
         "golan"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "ש״ס",
-      "seats": 8,
+      "seats": 7.6,
       "members": [
         "deri"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "ישראל ביתנו",
-      "seats": 8,
+      "seats": 7.9,
       "members": [
         "liberman"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "עוצמה יהודית",
-      "seats": 7,
+      "seats": 7.9,
       "members": [
         "bengvir"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "יהדות התורה",
-      "seats": 7,
+      "seats": 7.8,
       "members": [
         "goldknopf",
         "gafni"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "חד״ש-תע״ל",
-      "seats": 7,
+      "seats": 7.8,
       "members": [
         "tibi",
         "jabareen"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     },
     {
       "name": "הציונות הדתית",
@@ -915,32 +924,36 @@
       "members": [
         "smotrich"
       ],
-      "risk": 30
+      "risk": 12,
+      "lock": false
     },
     {
       "name": "רע״מ",
-      "seats": 5,
+      "seats": 5.1,
       "members": [
         "abbas"
       ],
-      "risk": 25
+      "risk": 24,
+      "lock": false
     },
     {
       "name": "המילואימניקים",
-      "seats": 4,
+      "seats": 2.1,
       "members": [
         "hendel"
       ],
-      "risk": 45
+      "risk": 85,
+      "lock": false
     },
     {
       "name": "וינטר",
-      "seats": 3,
+      "seats": 2.8,
       "members": [
         "winter",
         "haskel"
       ],
-      "risk": 0
+      "risk": 85,
+      "lock": false
     },
     {
       "name": "כחול לבן",
@@ -948,7 +961,8 @@
       "members": [
         "gantz"
       ],
-      "risk": 85
+      "risk": 85,
+      "lock": false
     },
     {
       "name": "אחרים",
@@ -956,9 +970,48 @@
       "members": [
         "edelstein"
       ],
-      "risk": 0
+      "risk": 0,
+      "lock": false
     }
   ],
+  "polls_meta": {
+    "updated": "2026-10-10",
+    "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
+    "polls": [
+      {
+        "pollster": "Yossi Tatika / Zman Yisrael",
+        "date": "2026-10-08"
+      },
+      {
+        "pollster": "LRI+P4A / Maariv",
+        "date": "2026-10-08"
+      },
+      {
+        "pollster": "Kantar / Israel Hayom",
+        "date": "2026-10-08"
+      },
+      {
+        "pollster": "Direct Polls / i24 News",
+        "date": "2026-10-07"
+      },
+      {
+        "pollster": "SF+ND / Channel 14",
+        "date": "2026-10-07"
+      },
+      {
+        "pollster": "MP+TM+SN+A / Channel 13",
+        "date": "2026-10-07"
+      },
+      {
+        "pollster": "Midgam R&C / HaHadashot 12",
+        "date": "2026-10-05"
+      },
+      {
+        "pollster": "Maagar Mochot / Channel 16",
+        "date": "2026-09-29"
+      }
+    ]
+  },
   "names": {
     "netanyahu": "נתניהו",
     "bengvir": "בן גביר",
