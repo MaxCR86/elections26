@@ -54,7 +54,7 @@ function bossAllies(hero) {
 
 function finale(hero, o = {}) {
   reset(); FX.clear(); cam.style.background = '#000'; document.body.classList.remove('done');
-  const B = { sarah_win: 60, ...(C.game.boss || {}) }, T = C.boss, nm = NAME[hero], d = -1;   // the hero stands right and attacks leftwards
+  const B = { sarah_win: 60, ...(C.game.boss || {}) }, T = C.boss, nm = FULL(hero), d = -1;   // the hero stands right and attacks leftwards
   const sarahWins = hero === 'netanyahu' || Math.random() * 100 < B.sarah_win;
   const cand = bossAllies(hero), team = cand.slice(0, 2), traitor = team[1];
   [1, 2, 3].forEach((f) => { new Image().src = BIMG(`f${f}`); }); ['f1', 'f2'].forEach((f) => ['stance', 'punch', 'kick', 'hit'].forEach((p) => { new Image().src = BIMG(`${f}_${p}`); }));
@@ -90,7 +90,7 @@ function finale(hero, o = {}) {
   const sat = el('div', 'bz-sat', T.satire);
 
   // ---------- act 0: the fake ending (skipped on a rematch) ----------
-  const conf = el('div', 'bz-conf'), roll = el('div', 'bz-roll', `<b>${C.credits.title}</b>${[hero, ...cand.slice(0, 6)].map((id) => `<span>${NAME[id]}</span>`).join('')}<span><bdi>DiMax</bdi></span>`);
+  const conf = el('div', 'bz-conf'), roll = el('div', 'bz-roll', `<b>${C.credits.title}</b>${[hero, ...cand.slice(0, 6)].map((id) => `<span>${FULL(id)}</span>`).join('')}<span><bdi>DiMax</bdi></span>`);
   const confetti = (n, gold) => { for (let i = 0; i < n; i++) { const p = el('i'); p.style.left = `${Math.random() * 100}%`;
     p.style.background = gold ? pick(['#ffd84a', '#ffe9a0', '#f2a400', '#fff']) : pick(['#ffd84a', '#3ae0ff', '#ff3aa8', '#9dff3a', '#fff']); conf.append(p);
     A(p, [{ transform: `translateY(0) rotate(0deg)` }, { transform: `translate(${(Math.random() - .5) * 30}cqw, ${190 + Math.random() * 30}cqw) rotate(${(Math.random() - .5) * 1440}deg)` }], { duration: 2600 + Math.random() * 2600, delay: Math.random() * 2200, easing: 'linear', iterations: Infinity }); } };

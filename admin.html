@@ -132,7 +132,7 @@ html.unlocked .gate { display: none; }
 const REPO = 'MaxCR86/elections26', FILE = 'copy.json', API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
 const SECTIONS = { ident: 'פתיח DiMax', start: 'מסך התחלה', select: 'בחירת דמויות', glitch: 'באג: אותה קבוצה', versus: 'מסך VS וההמשך', fight: 'הקרב', boss: 'הבוס הסודי (שרה)',
   poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', loot: 'מה להביא (ציוד לסיבוב)', rsvp: 'אישור הגעה ורשימת המגיעים', victory: 'מסך הניצחון (בגלילה)', idea: 'תיבת הרעיונות (אחרי הניצחון)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים', polls_meta: 'עדכון הסקרים היומי',
-  names: 'שמות הדמויות', moves: 'מהלכים מיוחדים' };
+  names: 'שמות הדמויות (קצרים)', full_names: 'שמות מלאים ותארים', moves: 'מהלכים מיוחדים' };
 const LABEL = {
   name_ph: 'טקסט בתוך שדה השם', likely: 'השאלה מעל הסליידר', levels: 'מה כתוב ליד הסליידר (0–19, 20–39, 40–59, 60–79, 80–100)', update: 'הכפתור אחרי שנרשמו', board_title: 'כותרת רשימת המגיעים', board_empty: 'כשאין עוד נרשמים', board_count: 'כמה נרשמו ({n})', polls_link: 'קישור לסקרים',
   bout: 'כוח המכות (סימולציה)', exp: 'כמה כוח מהסקרים משפיע על המכה (נמוך = יותר הפתעות)', spread: 'מזל בכל מכה (0–1)', tier: 'כמה הבוסים חזקים (0–1)',
@@ -313,7 +313,7 @@ function render() {
   NAMES = data.names || {};
   const f = $('#form'), nav = $('#nav'); f.replaceChildren(statsBox()); nav.replaceChildren();
   const CATS = [['סטטיסטיקה', ['stats']], ['טקסטים במשחק', ['ident', 'start', 'select', 'glitch', 'versus', 'fight', 'boss']], ['טקסטים בסוף', ['poster', 'details', 'loot', 'rsvp', 'victory', 'idea', 'credits', 'ui']],
-    ['חוקי המשחק', ['game', 'parties', 'polls_meta', 'moves', 'names']], ['קישורים', ['links']]];
+    ['חוקי המשחק', ['game', 'parties', 'polls_meta', 'moves', 'names', 'full_names']], ['קישורים', ['links']]];
   const groups = {}, catOf = (k) => (CATS.find(([, ks]) => ks.includes(k)) || CATS[3])[0];
   CATS.forEach(([name]) => { const d = h('details', { class: 'cat' }, h('summary', {}, name), h('div', { class: 'links' })); d.ontoggle = () => { if (d.open) nav.querySelectorAll('details.cat').forEach((o) => o !== d && (o.open = false)); };
     groups[name] = d; nav.append(d); });

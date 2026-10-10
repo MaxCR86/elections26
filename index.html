@@ -60,7 +60,7 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 /* ---------- select screen ---------- */
 .hud { position: absolute; left: 5%; right: 5%; z-index: 6; text-align: center; font-family: var(--f-he); color: #fff; }
 .hud h2 { margin: 0; font-weight: 400; font-size: 8.5cqw; letter-spacing: .02em; text-shadow: 0 0 4cqw #ff8a2a88; }
-.teams { position: absolute; left: 4%; right: 4%; top: 10.5%; display: flex; gap: 3.5cqw; z-index: 4; }
+.teams { position: absolute; left: 4%; right: 4%; top: 13%; display: flex; gap: 3.5cqw; z-index: 4; }
 .team { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqw; padding: 1.6cqw; border-radius: 1.8cqw; align-content: start; }
 .team h3 { grid-column: 1 / -1; margin: 0 0 .4cqw; font: 400 4.4cqw/1.1 var(--f-he); text-align: center; }
 .team.tr { background: linear-gradient(#ffc23a2e, #ffc23a08); border: .4cqw solid #ffc23a80; } .team.tr h3 { color: var(--p1); }
@@ -194,7 +194,7 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
   100% { transform: none; filter: none; clip-path: none; } }
 .glitch { position: absolute; left: 6%; right: 6%; top: 40%; z-index: 13; display: grid; gap: 1.4cqw; padding: 3cqw; background: #000e; border: .4cqw solid #ff2a4a; text-align: center; opacity: 0; }
 .glitch b { font: 700 5.4cqw/1 ui-monospace, "SF Mono", Menlo, monospace; color: #ff2a4a; letter-spacing: .04em; }
-.hud .left { display: block; margin-top: 1cqw; font: 700 3.6cqw/1 var(--f-ui); color: var(--muted); }
+.hud .left { display: block; margin-top: .6cqw; font: 700 3.6cqw/1 var(--f-ui); color: var(--muted); }
 .glitch.prim { border-color: #ffd84a; } .glitch.prim b { font: 400 9cqw/1 var(--f-he); color: #ffd84a; letter-spacing: 0; }
 .glitch span { font-family: var(--f-he); font-size: 5cqw; color: #fff; }
 @media (prefers-reduced-motion: reduce) { .cam.glitching, #down { animation: none; } }
@@ -591,11 +591,13 @@ function ident() {                                   // high-beams ident, ~5.6s
 
 // ---------- select → (glitch) → VS → challenger → FIGHT ----------
 const seeded = (s) => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return (Math.abs(h) % 1000) / 1000; };
-const stats = (id) => `<b style="font-weight:400;font-size:6.4cqw">${NAME[id]}</b><div class="bars">
+const stats = (id) => `<b style="font-weight:400;font-size:6.4cqw">${FULL(id)}</b><div class="bars">
   <div>${C.select.stat_1}<span data-w="${45 + seeded(id + 'a') * 55}"></span></div>
   <div>${C.select.stat_2}<span data-w="${3 + seeded(id + 'b') * 10}"></span></div>
   <div>${C.select.stat_3}<span data-w="${15 + seeded(id + 'c') * 80}"></span></div></div>`;
 const fillBars = (n) => requestAnimationFrame(() => requestAnimationFrame(() => n.querySelectorAll('[data-w]').forEach((s) => (s.style.width = s.dataset.w + '%'))));
+const FULL = (id) => C.full_names?.[id] || NAME[id];   // full name with title, where there's room; NAME stays short for tiles and HP bars
+const sideFull = (k) => [k === 1 ? P1 : P2, DUO?.k === k ? DUO.id : null].filter(Boolean).map(FULL).join(' + ');
 const sideNames = (k) => [k === 1 ? P1 : P2, DUO?.k === k ? DUO.id : null].filter(Boolean).map((id) => NAME[id]).join(' + ');
 function ch([id, label, x, y, h], z = 2) {
   const w = h * (2 / 3) * (16 / 9), d = el('div', 'ch'); d.dataset.id = id;
@@ -669,7 +671,7 @@ function select() {                                   // returns its length in m
     tiles[P1].append(el('div', 'stamp', 'P1')); tiles[P2].append(el('div', 'stamp', 'P2'));
     if (DUO) { const t = tiles[DUO.id]; t.classList.add(`p${DUO.k}`); t.append(el('div', 'stamp', `P${DUO.k}+`)); setTimeout(() => sfx('duo', .6), 260); }
     sfx('confirm', .6); flash(.4, 120); shake(6);
-    info.innerHTML = `<b style="font-weight:400;font-size:6.4cqw">${fmt(C.select.vs_line, { a: sideNames(1), b: sideNames(2) })}</b>`;
+    info.innerHTML = `<b style="font-weight:400;font-size:6.4cqw">${fmt(C.select.vs_line, { a: sideFull(1), b: sideFull(2) })}</b>`;
   });
   const g = b + c + (SAME ? 1500 : 0);                 // threshold beat + the crossing + time to read the glitch
   at(4900 + g, () => {                                 // VS screen
@@ -680,7 +682,7 @@ function select() {                                   // returns its length in m
     A(b, [{ transform: 'translateX(-120%)' }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,1.2,.4,1)' });
     const vs = el('div', 'vs', 'VS'); cam.append(vs); slam(vs, 420);
     setTimeout(() => { sfx('vs', .9); duck(.5); shake(12); FX.burst(.5, .44, 90, { s0: 200, s1: 800 }); }, 450);
-    const plateOf = (id, cls) => el('div', `move ${cls}`, `<b>${NAME[id]}</b><small>${C.versus.move_label}</small><i>${pick(C.moves[id] || [''])}</i>`);
+    const plateOf = (id, cls) => el('div', `move ${cls}`, `<b>${FULL(id)}</b><small>${C.versus.move_label}</small><i>${pick(C.moves[id] || [''])}</i>`);
     const m1 = plateOf(P1, 'm1'), m2 = plateOf(P2, 'm2'); cam.append(m1, m2);
     A(m1, [{ opacity: 0, transform: 'translateX(30%)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 900, easing: 'cubic-bezier(.2,1.3,.4,1)' });
     A(m2, [{ opacity: 0, transform: 'translateX(-30%)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 1500, easing: 'cubic-bezier(.2,1.3,.4,1)' });
@@ -809,7 +811,7 @@ function fight() {                                     // returns its length in 
       A(f.mv, [rest, { transform: `translate(${D(W) * 30}cqw, 6cqw) rotate(${D(W) * 82}deg)`, opacity: .85 }], { duration: 1000, delay: 120 + i * 120, easing: 'cubic-bezier(.3,0,.6,1)' }); });
     const ko = el('div', 'ko', C.fight.ko); cam.append(ko);
     A(ko, [{ opacity: 0, transform: 'scale(2.4)' }, { opacity: 1, transform: 'none' }], { duration: 360, delay: 220, easing: 'cubic-bezier(.2,1.5,.4,1)' });
-    const win = el('div', 'winner', fmt(C.fight.winner, { name: sideNames(W) })); cam.append(win);
+    const win = el('div', 'winner', fmt(C.fight.winner, { name: sideFull(W) })); cam.append(win);
     A(win, [{ opacity: 0, transform: 'translateY(30%)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 700 });
     FT[W].forEach((f) => f.bob.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-7%) scale(1.06)' }], { duration: 380, delay: 900, direction: 'alternate', iterations: 4, easing: 'ease-out' }));
   });
@@ -898,7 +900,7 @@ function poster(animate) {
 }
 
 // ---------- after the show: the scroll-down page ----------
-const creditList = () => `<ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li>${NAME[id]}: <bdi>${who}</bdi> (<bdi>${lic}</bdi>)</li>`).join('')}</ul>`;
+const creditList = () => `<ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li>${FULL(id)}: <bdi>${who}</bdi> (<bdi>${lic}</bdi>)</li>`).join('')}</ul>`;
 const chunks = (v) => { const p = String(v).split(' · '); let out = p[0];   // glue each "· part" to the word before it so date and time never part
   for (let i = 1; i < p.length; i++) { const k = out.endsWith('</span>') ? -1 : out.lastIndexOf(' ');
     out = k < 0 ? `${out}<span class="nw"> · ${p[i]}</span>` : `${out.slice(0, k + 1)}<span class="nw">${out.slice(k + 1)} · ${p[i]}</span>`; }
@@ -945,7 +947,7 @@ function buildMore() {
     <footer class="foot">
       <div class="board"><h3>${C.rsvp.board_title}</h3><small class="bc"></small><ol></ol></div>
       <div class="roll" aria-label="${C.credits.title}"><div class="track"><h3>${C.credits.title}</h3><p>${C.credits.intro}</p>
-        <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li data-id="${id}"><img src="img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp" alt=""><b>${NAME[id]}</b><em class="wins"></em><span><bdi>${who}</bdi> · <bdi>${lic}</bdi></span></li>`).join('')}</ul>
+        <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li data-id="${id}"><img src="img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp" alt=""><b>${FULL(id)}</b><em class="wins"></em><span><bdi>${who}</bdi> · <bdi>${lic}</bdi></span></li>`).join('')}</ul>
         <p>${C.credits.outro}</p></div></div>
       <div class="glow"></div>
     </footer>`;
@@ -988,7 +990,7 @@ function buildMore() {
   const win = more.querySelector('.win'); let played = false, iv = null;
   more.resetWin = () => { played = false; clearInterval(iv); win.classList.remove('on'); win.querySelector('.q').textContent = ''; };   // every run: this run's winner and their own line
   onSeen(win, () => { if (played) return; played = true; track('saw_details'); void win.offsetWidth; win.classList.add('on'); if (!RM) [1300, 1550, 1800].forEach((ms) => setTimeout(() => sfx('confirm', .35), ms));
-    const qn = win.querySelector('.q'), own = C.victory.quotes?.[VICTOR()[0]], text = fmt(own && Math.random() * 100 >= (v.quote_pct ?? 10) ? own : v.quote, { name: NAME[VICTOR()[0]] }); let i = 0;   // each winner has their own line; the general one comes up quote_pct% of the time
+    const qn = win.querySelector('.q'), own = C.victory.quotes?.[VICTOR()[0]], text = fmt(own && Math.random() * 100 >= (v.quote_pct ?? 10) ? own : v.quote, { name: FULL(VICTOR()[0]) }); let i = 0;   // each winner has their own line; the general one comes up quote_pct% of the time
     if (RM) { qn.textContent = text; return; }
     setTimeout(() => { sfx('confirm', .5); iv = setInterval(() => { qn.textContent = text.slice(0, ++i); if (i % 3 === 0) blip(); if (i >= text.length) clearInterval(iv); }, 32); }, 650); });
 
@@ -1022,7 +1024,7 @@ function fillMore() {                                  // this run's winner and 
   const [w, l] = VICTOR();
   more.querySelectorAll('.w').forEach((n) => (n.src = POSE(w, 'stance')));
   more.querySelector('.arena2 .l').src = POSE(l, 'hit'); more.querySelector('.pair .l').src = POSE(l, 'hit'); more.querySelector('.pair .w').src = POSE(w, 'punch');
-  more.querySelector('.wt').textContent = fmt(C.fight.winner, { name: NAME[w] });
+  more.querySelector('.wt').textContent = fmt(C.fight.winner, { name: FULL(w) });
   more.resetWin?.(); more.resetCont?.(); more.querySelector('.ballots').textContent = ballots();
 }
 
