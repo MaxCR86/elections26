@@ -131,9 +131,10 @@ html.unlocked .gate { display: none; }
 <script>
 const REPO = 'MaxCR86/elections26', FILE = 'copy.json', API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
 const SECTIONS = { ident: 'פתיח DiMax', start: 'מסך התחלה', select: 'בחירת דמויות', glitch: 'באג: אותה קבוצה', versus: 'מסך VS וההמשך', fight: 'הקרב',
-  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', victory: 'מסך הניצחון (בגלילה)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים', polls_meta: 'עדכון הסקרים היומי',
+  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', victory: 'מסך הניצחון (בגלילה)', idea: 'תיבת הרעיונות (אחרי הניצחון)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים', polls_meta: 'עדכון הסקרים היומי',
   names: 'שמות הדמויות', moves: 'מהלכים מיוחדים' };
 const LABEL = {
+  or: 'כותרת התיבה', placeholder: 'טקסט אפור בתוך השדה', send: 'כפתור השליחה', thanks: 'אחרי שליחה',
   presents: 'מתחת ללוגו', line: 'שורה', press: 'הכותרת המהבהבת', sub: 'שורה מתחת', sound: 'כפתור עם סאונד', mute: 'כפתור בלי סאונד', credits: 'שורת פתקים ({n} = כמה קרבות שוחקו עד עכשיו)',
   title: 'כותרת', team_r: 'כותרת הקבוצה הימנית', team_l: 'כותרת הקבוצה השמאלית', stat_1: 'מד ראשון', stat_2: 'מד שני', stat_3: 'מד שלישי', dq: 'חותמת הפסילה',
   dq_sub: 'מתחת לחותמת', vs_line: 'שורת "מול" ({a} ו־{b} הם השמות)', error: 'הודעת השגיאה', move_label: 'תווית המהלך', booth: 'תא הפרשנים', alarm: 'אזעקת מפלגה חדשה',
@@ -254,7 +255,7 @@ function node(o, k) {                                    // pick the editor that
 }
 // ---------- stats: read-only totals from our own Cloudflare table ----------
 const EV = { load: 'כניסות לאתר', start_sound: 'התחלה עם סאונד', start_mute: 'התחלה בשקט', skip: 'דילוג', finish: 'סיימו את ההופעה', again: 'שוב (כפתור למעלה)',
-  replay: 'משחק נוסף (CONTINUE)', scroll_btn: 'לחצו על "גללו"', saw_details: 'ראו את הפרטים', saw_continue: 'הגיעו ל־CONTINUE', whatsapp: 'הצטרפו לוואטסאפ',
+  replay: 'משחק נוסף (CONTINUE)', replay_idea: 'משחק נוסף (תיבת הרעיונות)', idea: 'שלחו רעיון', scroll_btn: 'לחצו על "גללו"', saw_details: 'ראו את הפרטים', saw_continue: 'הגיעו ל־CONTINUE', whatsapp: 'הצטרפו לוואטסאפ',
   waze: 'Waze', maps: 'Google Maps', calendar: 'הוספה ליומן', credits: 'פתחו קרדיטים', fight: 'קרבות' };
 const statsBox = () => {
   const card = h('div', { class: 'card' }), out = h('div', { style: 'display:grid;gap:18px' });
@@ -282,6 +283,7 @@ const statsBox = () => {
         tbl(['מכשיר', 'מערכת', 'כניסות', 'אנשים'], s.devices.map((d) => [({ mobile: 'נייד', tablet: 'טאבלט', desktop: 'מחשב' })[d.dev] || d.dev, d.os, d.loads, d.people])),
         tbl(['יום', 'כניסות', 'אנשים', 'וואטסאפ'], s.days.map((d) => [d.day, d.loads, d.people, d.whatsapp])),
         tbl(['הקרבות הנפוצים (מנצח > מפסיד)', 'פעמים'], s.details.filter((d) => d.ev === 'fight').slice(0, 12).map((d) => [d.detail.replace(/[a-z]+/g, (id) => NAMES[id] || id).replace(' same', ' (אותה קבוצה)'), d.n])),
+        tbl([`רעיונות מהשחקנים (${(s.ideas || []).length})`, 'מתי'], (s.ideas || []).map((i) => [h('span', { style: 'white-space:pre-wrap;font-weight:400' }, i.text), new Date(i.ts).toLocaleString('he-IL', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })])),
         h('p', { class: 'meta' }, s.totals.last ? `אירוע אחרון: ${new Date(s.totals.last).toLocaleString('he-IL')}` : 'עוד אין נתונים.'));
     } catch (e) { out.replaceChildren(h('p', { class: 'meta', style: 'color:var(--bad)' }, `לא הצלחתי לטעון: ${e.message}`)); }
   };
@@ -291,7 +293,7 @@ const statsBox = () => {
 function render() {
   NAMES = data.names || {};
   const f = $('#form'), nav = $('#nav'); f.replaceChildren(statsBox()); nav.replaceChildren();
-  const CATS = [['סטטיסטיקה', ['stats']], ['טקסטים במשחק', ['ident', 'start', 'select', 'glitch', 'versus', 'fight']], ['טקסטים בסוף', ['poster', 'details', 'victory', 'credits', 'ui']],
+  const CATS = [['סטטיסטיקה', ['stats']], ['טקסטים במשחק', ['ident', 'start', 'select', 'glitch', 'versus', 'fight']], ['טקסטים בסוף', ['poster', 'details', 'victory', 'idea', 'credits', 'ui']],
     ['חוקי המשחק', ['game', 'parties', 'polls_meta', 'moves', 'names']], ['קישורים', ['links']]];
   const groups = {}, catOf = (k) => (CATS.find(([, ks]) => ks.includes(k)) || CATS[3])[0];
   CATS.forEach(([name]) => { const d = h('details', { class: 'cat' }, h('summary', {}, name), h('div', { class: 'links' })); d.ontoggle = () => { if (d.open) nav.querySelectorAll('details.cat').forEach((o) => o !== d && (o.open = false)); };
