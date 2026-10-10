@@ -366,6 +366,7 @@ function rollThreshold() {
 }
 let CHAMP = null, STREAK = 0, RECENT = [], BENCH = [], DECIDED = false;   // DECIDED: this run's fight has a result
 try { BENCH = JSON.parse(sessionStorage.getItem('bench')) || []; } catch (e) {}   // a reload keeps the losers out too
+const LEFT = () => Math.max(1, [...R, ...L].filter(([id]) => !OUT.has(id) && !BENCH.includes(id)).length - 1);   // matches still to play until the last man standing, this one included
 const bench = (ids) => { BENCH = [...new Set([...BENCH, ...ids])]; try { sessionStorage.setItem('bench', JSON.stringify(BENCH)); } catch (e) {} };   // BENCH: every loser stays out for the rest of the visit; when a team runs short, everyone comes back             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
 function rollFighters(champ = null) {
   const pool = (side) => side.map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id));
@@ -639,7 +640,7 @@ function fight() {                                     // returns its length in 
   FX.paint = null; cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = ''; cam.style.background = '#000'; mix('fight');
   const bg = el('div', 'bgp'); bg.style.filter = 'brightness(.5) saturate(1.15)'; cam.append(bg, el('div', 'arena'));
   const ids = { 1: [P1], 2: [P2] }; if (DUO) ids[DUO.k].push(DUO.id);
-  const hud = el('div', 'fhud', `<div class="hp p1"><b>${sideNames(1)}</b><span><em></em><i></i></span></div><div class="clock" dir="ltr">${C.fight.clock}</div><div class="hp p2"><b>${sideNames(2)}</b><span><em></em><i></i></span></div>`);
+  const hud = el('div', 'fhud', `<div class="hp p1"><b>${sideNames(1)}</b><span><em></em><i></i></span></div><div class="clock" dir="ltr">${fmt(C.fight.clock, { n: LEFT() })}</div><div class="hp p2"><b>${sideNames(2)}</b><span><em></em><i></i></span></div>`);
   cam.append(hud);
   if (SAME) { const c = hud.querySelector('.clock');                     // the bug leaks into the HUD
     A(c, [{ opacity: 1 }, { opacity: 1, offset: .46 }, { opacity: .2, offset: .5 }, { opacity: 1, offset: .54 }], { duration: 1700, iterations: Infinity }); }
@@ -729,12 +730,11 @@ function fight() {                                     // returns its length in 
   let t = 1000;
   plan.forEach((p) => { t += attack(p, t) + 200 + Math.random() * 240; });
 
-  const mvName = pick(C.moves[ids[W][0]] || ['']);     // the winner's special move, called out right before the KO
-  at(t, () => { sfx('special', .6); duck(.3, .6); const c = el('div', `callout ${W === 1 ? 'c1' : 'c2'}`, `<small>${C.fight.special_label}</small><b>${mvName}!</b>`); cam.append(c);
+  const kw = next(W), fin = finisher(kw, FT[Lz][0], D(W)), m = { hits: [fin.impact] };   // the winner's own signature finisher, named in the callout right before the KO
+  at(t, () => { sfx('special', .6); duck(.3, .6); const c = el('div', `callout ${W === 1 ? 'c1' : 'c2'}`, `<small>${C.fight.special_label}</small><b>${fin.name.replace(/[!?.]$/, '')}!</b>`); cam.append(c);
     A(c, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'none', offset: .2 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: 1500, easing: 'ease-out' }); });
   t += 650;
   // KO: slow zoom, the finisher, impact frames, the loser drops
-  const kw = next(W), fin = finisher(kw, FT[Lz][0], D(W)), m = { hits: [fin.impact] };   // the winner's own signature finisher
   at(t, () => { cam.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }], { duration: 900, fill: 'forwards', easing: 'ease-in' }); fin.run(); });
   at(t + m.hits[0], () => {
     sfx('ko', 1); duck(.05, null); setTimeout(() => sfx('kovoice', .85), 450); setTimeout(() => sfx('crowd', .35), 1300);
@@ -759,7 +759,10 @@ const FIN = {   // kind: throw | spear | boomerang | plane | slam | swarm | beam
   karhi: ['tvoff', '#3ae0ff'], goldknopf: ['slam', '#c9a26b'], eisenkot: ['throw', '#3a8bff'], bennett: ['beam', '#3ae0ff'], lapid: ['throw', '#ff3a3a'],
   liberman: ['throw', '#e9f3ff'], golan: ['waves', '#ff3aa8'], tibi: ['throw', '#3aff8a'], abbas: ['throw', '#ffd84a'], jabareen: ['spear', '#3aff8a'],
   kahana: ['plane', '#e9f3ff'], tropper: ['throw', '#3a8bff'] };
-function finisher(f, def, d) {
+function finisher(f, def, d) {   // finishers.js: three per fighter, one at random (window.FORCE_FIN = 0|1|2 pins one for testing); else the simple kinds below
+  const set = typeof FINISHERS !== 'undefined' && FINISHERS[f.id], i = set ? (window.FORCE_FIN ?? Math.random() * set.length | 0) % set.length : 0;
+  const name = (set ? C.moves[f.id]?.[i] : pick(C.moves[f.id] || [''])) || '';
+  if (set && !RM) { const r = set[i](f, def, d); return { ...r, name: name || r.name }; }
   const [kind, c, extra] = FIN[f.id] || ['throw', '#ffd84a'], ax = f.x + d * 8, dx = def.x - d * 2;
   const prop = (size = 22) => { const n = el('div', 'prop'); n.style.cssText = `width:${size}cqw;height:${size}cqw;margin:${-size / 2}cqw 0 0 ${-size / 2}cqw;--c:${c}`;
     n.append(Object.assign(new Image(), { src: `img/props/${f.id}.webp`, alt: '' })); if (d < 0) n.firstChild.style.scale = '-1 1'; cam.append(n); return n; };
@@ -789,7 +792,7 @@ function finisher(f, def, d) {
         A(r, [pt(ax, 60, 'scale(.3)'), { ...pt(dx, 60, 'scale(1.4)'), opacity: 0 }], { duration: 600, delay: 100 + i * 110, easing: 'ease-out' }).finished.then(() => r.remove()); } }],
   };
   const [impact, run] = K[kind] || K.throw;
-  return { impact, run: () => { f.img.src = POSE(f.id, 'punch'); setTimeout(() => { if (f.img.isConnected) f.img.src = POSE(f.id, 'stance'); }, impact + 500); run(); } };
+  return { impact, name, run: () => { f.img.src = POSE(f.id, 'punch'); setTimeout(() => { if (f.img.isConnected) f.img.src = POSE(f.id, 'stance'); }, impact + 500); run(); } };
 }
 
 // ---------- poster ----------
@@ -989,3 +992,4 @@ Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('
     if (location.hash === '#poster') { reset(); rollStyles(true); poster(false); } else boot();
   });
 </script>
+<script src="finishers.js"></script>
