@@ -197,15 +197,8 @@ body.done #more { display: block; }
 ::selection { background: #ffc23a; color: #111; }
 html { scrollbar-color: #3a4266 #07080d; }
 .well { position: sticky; top: 0; height: 100dvh; overflow: hidden; z-index: 0; }
-.well .wall { position: absolute; inset: -2% 0; background: url("img/stairs.jpg") 50% 0 / auto 165% no-repeat; filter: saturate(1.1) brightness(.78); will-change: background-position; }
+.well .wall { position: absolute; inset: -2% 0; background: url("img/stairs.jpg") 50% 40% / cover no-repeat; filter: saturate(1.1) brightness(.7); }
 .well::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(#07080d 0, transparent 14%, transparent 80%, #07080dcc); }
-.well .floor { position: absolute; top: 9%; inset-inline-end: 5%; direction: ltr; font: italic 900 52cqw/.8 var(--f-mark); font-stretch: 115%; color: #ffffff26; -webkit-text-stroke: .35cqw #ffffff59; mix-blend-mode: screen; pointer-events: none; }
-.crew { position: sticky; top: 0; height: 100dvh; margin-bottom: -100dvh; z-index: 2; pointer-events: none !important; }
-.run { pointer-events: auto; transition: opacity .25s; }
-.run { position: absolute; left: 0; top: 0; width: 30cqw; height: 30cqw; margin: -29cqw 0 0 -15cqw; will-change: transform; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.run img { width: 100%; height: 100%; object-fit: contain; object-position: bottom; filter: drop-shadow(0 2cqw 1.5cqw #000c); pointer-events: none; }
-.run img.flip { scale: -1 1; }
-.run::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: -1cqw; height: 3cqw; border-radius: 50%; background: radial-gradient(closest-side, #000a, transparent); z-index: -1; }
 .lvls { position: relative; z-index: 1; margin-top: -100dvh; pointer-events: none; }
 .lvls > * { pointer-events: auto; }
 .gap { height: 42dvh; pointer-events: none !important; }
@@ -499,13 +492,13 @@ function select() {                                   // returns its length in m
   if (!DQ_SHOWN && RISKY.length) {
     DQ_SHOWN = true; info.innerHTML = `<b style="font-weight:400;font-size:6.4cqw">${C.select.threshold_title}</b>`;
     b = 900;
-    RISKY.forEach((r) => { at(b, () => r.ids.forEach((id) => {
+    RISKY.forEach((r) => { at(b, () => r.ids.forEach((id) => {   // all at-risk parties count at the same time
       const t = tiles[id], m = el('div', `vm`, '<s></s><i></i><b dir="ltr">0.0%</b>'); t.classList.add('risk'); t.append(m); sfx('bar', .4);
       const fill = m.querySelector('i'), num = m.querySelector('b'), t0 = performance.now(), cap = 6;
       A(fill, [{ width: '0%' }, { width: `${r.v / cap * 100}%` }], { duration: 1300, easing: r.fail ? 'cubic-bezier(.2,.8,.4,1)' : 'ease-in-out' });
       const iv = setInterval(() => { const k = Math.min(1, (performance.now() - t0) / 1300); num.textContent = (r.v * k).toFixed(1) + '%'; if (k >= 1) clearInterval(iv); }, 40);
-      setTimeout(() => { t.classList.remove('risk'); m.classList.add(r.fail ? 'fail' : 'pass'); if (r.fail) knock(id, true); else { sfx('confirm', .35); A(t, [{ filter: 'brightness(1.6)' }, { filter: 'none' }], { duration: 400 }); setTimeout(() => A(m, [{ opacity: 1 }, { opacity: 0 }], { duration: 400 }), 500); } }, 1450); })); b += 2300; });
-    b += 300; at(b - 200, () => { info.innerHTML = ''; });
+      setTimeout(() => { t.classList.remove('risk'); m.classList.add(r.fail ? 'fail' : 'pass'); if (r.fail) knock(id, true); else { sfx('confirm', .35); A(t, [{ filter: 'brightness(1.6)' }, { filter: 'none' }], { duration: 400 }); setTimeout(() => A(m, [{ opacity: 1 }, { opacity: 0 }], { duration: 400 }), 500); } }, 1450); })); });
+    b += 2300 + 300; at(b - 200, () => { info.innerHTML = ''; });
   } else OUT.forEach((id) => tiles[id] && knock(id, false));   // replays: they are already out
   const wander = (pool) => pool.filter((id) => ![P1, P2, DUO?.id].includes(id) && !OUT.has(id)).sort(() => Math.random() - .5).slice(0, 4);
   const intruder = SAME ? (Rs.includes(P1) ? 'p2' : 'p1') : null;   // the cursor that has no business on the other team
@@ -731,8 +724,8 @@ const ICON = { replay: '<svg class="ic" viewBox="0 0 20 20" aria-hidden="true"><
 function buildMore() {
   const d = C.details, q = encodeURIComponent(C.links.address), wa = C.links.whatsapp;
   more.innerHTML = `
-    <div class="well" aria-hidden="true"><div class="wall"></div><b class="floor">5</b></div>
-    <div class="lvls"><div class="crew"></div>
+    <div class="well" aria-hidden="true"><div class="wall"></div></div>
+    <div class="lvls">
       <div class="gap"></div>
       <section class="brief" aria-label="${d.title}"><h2>${d.title}</h2>
         <dl>${d.rows.map((r) => `<dt>${r.k}</dt><dd>${chunks(r.v)}</dd>`).join('')}</dl>
@@ -777,66 +770,6 @@ function buildMore() {
   new IntersectionObserver(([e]) => { clearInterval(tick); tick = null; if (e.isIntersecting) { step(); tick = setInterval(step, 1000); } }, { threshold: .6 }).observe(cont);
 }
 
-// The stairwell crew: scroll is the joystick. Scrolling runs them down the stairs, flinging fast makes them fly-kick,
-// stopping makes them square up and trade a hit. Tap one to make it punch.
-const CREW = (() => {
-  let runners = [], raf = 0, lastY = 0, vel = 0, dist = 0, still = 0, spar = false, active = false;
-  const well = () => more.querySelector('.well');
-  function start() {
-    const crew = more.querySelector('.crew'), pool = [...R, ...L].map((r) => r[0]);
-    const ids = [...new Set([...(LAST || []), ...pool.sort(() => Math.random() - .5)])].slice(0, 5);
-    crew.innerHTML = '';
-    runners = ids.map((id, i) => {
-      const n = el('div', 'run'), img = Object.assign(new Image(), { src: POSE(id, 'stance'), alt: '' }); n.append(img); crew.append(n);
-      const r = { id, n, img, ph: i * .37 + Math.random() * .2, sp: .8 + Math.random() * .5, y: null, pose: 'stance', lock: 0 };
-      n.onclick = () => strike(r); return r;
-    });
-    if (!active) { active = true; lastY = scrollY; raf = requestAnimationFrame(loop); }
-  }
-  const setPose = (r, p) => { if (r.pose !== p) { r.pose = p; r.img.src = POSE(r.id, p); } };
-  function strike(r, target) {                         // one punch, and whoever it lands on reels
-    const now = performance.now(); r.lock = now + 420; setPose(r, 'punch'); sfx('whoosh', .35);
-    const t = target || runners.filter((o) => o !== r).sort((a, b) => Math.abs(a.x - r.x) - Math.abs(b.x - r.x))[0];
-    if (t) setTimeout(() => { t.lock = performance.now() + 380; setPose(t, 'hit'); sfx(pick(['hit1', 'hit2']), .45);
-      if (!RM) t.n.animate([{ translate: '0 0' }, { translate: `${(t.x > r.x ? 1 : -1) * 4}cqw 0` }, { translate: '0 0' }], { duration: 320, easing: 'ease-out' }); }, 160);
-  }
-  function loop(now) {
-    raf = requestAnimationFrame(loop);
-    const w = well(); if (!w) return;
-    const top = more.offsetTop, span = Math.max(1, more.offsetHeight - innerHeight), p = Math.min(1, Math.max(0, (scrollY - top) / span));
-    const dy = scrollY - lastY; lastY = scrollY; vel = vel * .8 + dy * .2; dist += Math.abs(dy);
-    w.querySelector('.wall').style.backgroundPositionY = `${p * 100}%`;
-    w.querySelector('.floor').textContent = Math.max(0, 5 - Math.floor(p * 6));
-    const moving = Math.abs(vel) > .6;
-    if (moving) { still = now; spar = false; if (dist > 260) { dist = 0; sfx('step', .18); } }
-    else if (!spar && now - still > 450 && now - still < 2000 && runners.length > 1 && (scrollY > top - innerHeight)) { spar = true; strike(pick(runners)); }
-    // the panels are platforms: everyone stands on the top edge of whatever is on screen and jumps between them
-    const box = more.querySelector('.crew').getBoundingClientRect(), ih = innerHeight;
-    const ledges = [...more.querySelectorAll('.brief, .cont')].map((n) => n.getBoundingClientRect());
-    const fr = more.querySelector('.foot').getBoundingClientRect(), solids = [...ledges, { top: fr.top + fr.height * .3, bottom: fr.bottom }];   // credits: they leave the stage
-    const covered = (y) => solids.some((q) => q.top < y - 2 && q.bottom > y);          // an edge inside another panel is not standable
-    const tops = ledges.map((q) => q.top).filter((y) => y > ih * .12 && y < ih * .97 && !covered(y));
-    const floorFree = !solids.some((q) => q.top < ih * .96 && q.bottom > ih * .96);
-    const ground = tops.length ? Math.min(...tops) : floorFree ? ih * .96 : null;      // the highest free ledge keeps them off the buttons
-    runners.forEach((r, i) => {
-      const u = (RM ? 0 : p * 7 * r.sp) + r.ph, f = u % 2, x = 8 + (f < 1 ? f : 2 - f) * 84, dir = f < 1 ? 1 : -1;   // back and forth along the platform
-      const hop = moving ? Math.abs(Math.sin(dist / 38 + i)) * Math.min(18, Math.abs(vel) * 1.5) : 0;
-      const goal = ground == null ? r.y ?? ih : ground - box.top;
-      r.y = r.y == null || RM ? goal : r.y + (goal - r.y) * .22;
-      const air = Math.abs(goal - r.y) > 14;
-      if (air && !r.air && goal < r.y) sfx('jump', .2);
-      if (!air && r.air) sfx('land', .22);
-      r.air = air; r.x = x;
-      r.n.style.opacity = ground == null ? 0 : 1;
-      r.n.style.transform = `translate(${x}cqw, ${r.y - hop}px)`;
-      r.img.classList.toggle('flip', dir * (vel >= 0 ? 1 : -1) < 0);
-      if (now < r.lock) return;
-      setPose(r, air || Math.abs(vel) > 22 ? 'kick' : !moving ? 'stance' : (Math.floor(dist / 70 + i) % 2 ? 'kick' : 'stance'));
-    });
-  }
-  function stop() { active = false; cancelAnimationFrame(raf); }
-  return { start, stop };
-})();
 
 // ---------- UI ----------
 function showCredits() {
@@ -851,11 +784,12 @@ const paintSnd = () => { if (!sndBtn) return; sndBtn.textContent = soundOn ? C.u
 const showSnd = () => { if (!sndBtn) sndBtn = uiBtn('snd', '', () => { soundOn = !soundOn; if (soundOn) unlock(); if (bus) bus.master.gain.setTargetAtTime(soundOn ? .8 : 0, AC.currentTime, .05); paintSnd(); }); paintSnd(); };
 
 function reset() { timers.forEach(clearTimeout); timers = []; FX.clear(); stopAll(); cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = ''; cam.style.opacity = 1;
-  cam.classList.remove('glitching'); document.body.classList.remove('done'); CREW.stop();
+  cam.classList.remove('glitching'); document.body.classList.remove('done');
   document.getElementById('credits')?.remove(); [skipBtn, againBtn, downBtn].forEach((b) => b?.remove()); skipBtn = againBtn = downBtn = null; }
 
 // 1. DiMax ident (silent: the page has had no tap yet)  2. arcade start screen  3. the trailer  4. text last  5. scroll for details
-function boot() { reset(); soundOn = false; rollStyles(false); rollThreshold(); rollFighters(); ident(); at(7700, startScreen); }
+function boot() { reset(); soundOn = false; rollStyles(false); rollThreshold(); rollFighters(); ident(); at(7700, startScreen);
+  skipBtn = uiBtn('skip', C.ui.skip, () => { track('skip_logo'); startScreen(); }); }   // startScreen's reset() removes the chip
 function startScreen() {
   reset(); cam.style.background = 'radial-gradient(ellipse at 50% 35%, #1a2140, #05060b 75%)';
   const ghosts = el('div', 'ghosts');
@@ -875,7 +809,7 @@ function startScreen() {
   s.querySelector('#goMute').onclick = () => go(false);
 }
 function end() {
-  skipBtn?.remove(); skipBtn = null; document.body.classList.add('done'); CREW.start(); track('finish');
+  skipBtn?.remove(); skipBtn = null; document.body.classList.add('done'); track('finish');
   againBtn = uiBtn('again', `${C.ui.again} ${ICON.replay}`, () => { track('again'); C = resolve(RAW); rollFighters(); trailer(); });
   downBtn = uiBtn('down', `${C.details.scroll} ${ICON.down}`, () => track('scroll_btn') || more.scrollIntoView({ behavior: 'smooth' }));
 }
