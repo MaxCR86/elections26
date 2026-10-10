@@ -173,7 +173,7 @@ const FINISHERS = {
     // 3. satire: he goes down, the lives counter says 0, it glitches to ∞, he rises and teleports in
     FZ(2300, 'הישרדות נצחית', (k, f, def, d) => { const { dx } = k;
       k.pose(0, 'punch', def); k.go(0, def, [fzM(), { ...fzM(-d * 14), offset: .45 }, fzM()], 600); k.at(0, () => sfx('whoosh', .6));
-      k.pose(180, 'hit'); k.at(180, () => { sfx('hit1', 1); shake(9, 220); f.img.animate([{ filter: 'brightness(3) saturate(0)' }, { filter: 'none' }], { duration: 180 }); });
+      k.pose(180, 'hit'); k.at(180, () => { hitSfx('smash', 1); shake(9, 220); f.img.animate([{ filter: 'brightness(3) saturate(0)' }, { filter: 'none' }], { duration: 180 }); });
       k.burst(180, f.x, 62, 50, { s0: 150, s1: 500, g: 500, life: .5 }); k.pose(650, 'stance', def);
       k.go(180, f, [fzM(), { ...fzM(-d * 10, 5, -d * 72), offset: .2, easing: 'ease-in' }, { ...fzM(-d * 10, 5, -d * 72), offset: .66 }, { ...fzM(0, -6, 0), offset: .82 }, fzM()], 1320, 'cubic-bezier(.4,0,.4,1)');
       k.wash(300, 1150, '#1b1b1b', .7); k.at(300, () => sfx('glitch', .6));
@@ -232,7 +232,7 @@ const FINISHERS = {
       k.pose(2050, 'punch'); k.go(2050, f, [fzM(-d * 6), { ...fzM(d * 22), offset: .3 }, { ...fzM(d * 22), offset: .75 }, fzM()], 800); k.ghosts(2055, -d * 6, d * 22, 4, 380);
       k.at(2050, () => { sfx('whoosh', .9); g && A(g, [{ transform: fzT(ax - d * 9, 59, `rotate(${-d * 15}deg) scale(1.9)`) }, { transform: fzT(dx - d * 6, 61, `rotate(${d * 8}deg) scale(2.5)`) }], { duration: 200, easing: 'cubic-bezier(.6,0,1,.6)' }); });
       k.lines(2050, 2500, dx, 61, 'h');
-      k.hurt(2255, 4); k.burst(2255, dx, 61, 60, { s0: 200, s1: 700, g: 300, life: .6, h: 0 }); k.at(2255, () => { sfx('hit2', 1); shake(12, 200); });
+      k.hurt(2255, 4); k.burst(2255, dx, 61, 60, { s0: 200, s1: 700, g: 300, life: .6, h: 0 }); k.at(2255, () => { hitSfx('smash', 1); shake(12, 200); });
       k.freeze(2260, 200); k.inv(2260, 110); k.shock(2470, dx, 61, 3, '#fff', 2.6); k.crack(2470, dx, 58); }),
     // 3. satire: the news opener; the anchor punches out of his own broadcast
     FZ(2300, 'פתיח של מהדורה', (k, f, def, d) => { const { dx } = k;

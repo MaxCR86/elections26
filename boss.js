@@ -128,11 +128,11 @@ function finale(hero, o = {}) {
 
   // exchanges: [who attacks, damage to the other]. The hero gets her to 40%, then she stops the super with one hand.
   const heroHit = (dmg, kind = 'punch') => { sfx('step', .45); pose(H, kind, 380); go(H, [rest, { ...tx(d * 22), offset: .45 }, { ...tx(d * 22), offset: .6 }, rest], 760);
-    setTimeout(() => { if (!boss.img.isConnected) return; sfx(pick(['hit1', 'hit2']), .9); open(); shake(7, 200); pose(boss, 'hit', 420); hitFx(boss, 330); setHP(2, hp[2] - dmg); go(boss, [rest, tx(-6, 0, -5), rest], 380, 'ease-out'); }, 360); };
+    setTimeout(() => { if (!boss.img.isConnected) return; hitSfx(pick(['jab', 'kick', 'upper'])); open(); shake(7, 200); pose(boss, 'hit', 420); hitFx(boss, 330); setHP(2, hp[2] - dmg); go(boss, [rest, tx(-6, 0, -5), rest], 380, 'ease-out'); }, 360); };
   const throwAt = (prop, size, hue, dmg, spin = 720, ms = 520, sound = 'whoosh') => { pose(boss, 'punch', 600); sfx(sound, .6);
     const n = el('div', 'prop'); n.style.cssText = `width:${size}cqw;height:${size}cqw;margin:${-size / 2}cqw 0 0 ${-size / 2}cqw;--c:hsl(${hue} 100% 60%)`; n.append(Object.assign(new Image(), { src: BIMG(prop), alt: '' })); cam.append(n);
     A(n, [{ left: '36%', top: '60%', transform: 'scale(.6)' }, { left: '53%', top: '44%', transform: `rotate(${spin / 2}deg)`, offset: .5 }, { left: '68%', top: '62%', transform: `rotate(${spin}deg) scale(1.1)` }], { duration: ms, delay: 120, easing: 'ease-in' }).finished.then(() => n.remove());
-    setTimeout(() => { if (!H.img.isConnected) return; sfx(pick(['hit1', 'hit2']), .9); shake(8, 220); pose(H, 'hit', 420); hitFx(H, hue, 60); setHP(1, hp[1] - dmg); go(H, [rest, tx(7, 0, 5), rest], 380, 'ease-out'); }, ms + 120); };
+    setTimeout(() => { if (!H.img.isConnected) return; hitSfx(pick(['jab', 'kick', 'upper'])); shake(8, 220); pose(H, 'hit', 420); hitFx(H, hue, 60); setHP(1, hp[1] - dmg); go(H, [rest, tx(7, 0, 5), rest], 380, 'ease-out'); }, ms + 120); };
   beat(2200, () => throwAt('icecream', 16, 100, 14));                       // pistachio ice cream, lobbed like a grenade
   beat(1500, () => heroHit(16));
   beat(1300, () => heroHit(14, 'kick'));
@@ -188,7 +188,7 @@ function finale(hero, o = {}) {
     sfx('duo', .8); setHP(1, 35); });
   beat(900, () => { pose(boss, 'punch', 600); sfx('blast', .7); setTimeout(() => { sfx('block', 1); flash(.5, 120); allies.forEach((a) => a.img.animate([{ filter: 'brightness(1.8) drop-shadow(0 0 2cqw #3ae0ff)' }, { filter: 'none' }], { duration: 300 })); }, 400); });
   const allyHit = (a, dmg, kind) => { sfx('step', .4); pose(a, kind, 380); go(a, [rest, { ...tx(d * (a.x - 40)), offset: .45 }, { ...tx(d * (a.x - 40)), offset: .6 }, rest], 760);
-    setTimeout(() => { if (!boss.img.isConnected) return; sfx(pick(['hit1', 'hit2']), .9); shake(7, 200); pose(boss, 'hit', 420); hitFx(boss, 200); setHP(2, hp[2] - dmg); }, 360); };
+    setTimeout(() => { if (!boss.img.isConnected) return; hitSfx(pick(['jab', 'kick', 'upper'])); shake(7, 200); pose(boss, 'hit', 420); hitFx(boss, 200); setHP(2, hp[2] - dmg); }, 360); };
   beat(1000, () => allyHit(allies[0], 22, 'punch'));
   beat(600, () => allyHit(allies[1], 22, 'kick'));
   beat(600, () => heroHit(22));
@@ -235,7 +235,7 @@ function finale(hero, o = {}) {
         A(bust, [{ transform: 'none', filter: 'none' }, { transform: 'translateY(110%) rotate(-6deg)', filter: 'brightness(3) saturate(0)' }], { duration: 1800, easing: 'ease-in', fill: 'forwards' });
         const ko = el('div', 'ko', C.fight.ko); cam.append(ko); A(ko, [{ opacity: 0, transform: 'scale(2.4)' }, { opacity: 1, transform: 'none' }], { duration: 360, delay: 220, easing: 'cubic-bezier(.2,1.5,.4,1)' }); });
       at(3400, () => { conf.replaceChildren(); cam.append(conf); confetti(90, true); mix('fin'); music('fin'); sfx('crowd', .8); go(H, [tx(-38, -28), rest], 700, 'ease-out');
-        const ttl = el('div', 'bz-title', fmt(T.true_win, { name: nm })); cam.append(ttl); A(ttl, [{ opacity: 0, transform: 'scale(2)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,1.5,.4,1)' }); track('boss_win', hero); });
+        const ttl = el('div', 'bz-title', fmt(T.true_win, { name: nm })); cam.append(ttl); A(ttl, [{ opacity: 0, transform: 'scale(2)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,1.5,.4,1)' }); track('boss_win', hero); saveRec({ boss: hero }); });
       at(8600, () => afterBoss());
     } else {            // she blows the ballots away. GAME OVER, CONTINUE?
       sfx('blast', 1); shake(18, 900); flash(.8, 200); FX.burst(.7, .6, 160, { s0: 300, s1: 900, g: 200, life: 1, h: 330 }); say({ x: 30 }, T.laugh, 1600);

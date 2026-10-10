@@ -229,37 +229,23 @@ html { scrollbar-color: #3a4266 #07080d; }
 .bubble2 dl { display: grid; grid-template-columns: auto 1fr; gap: 2.6cqw 4cqw; margin: 0; align-items: baseline; }
 .bubble2 dt { font: 700 3.4cqw/1.3 var(--f-ui); color: var(--p2); }
 .bubble2 dd { margin: 0; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); }
-.win .join, .win .trio { opacity: 0; }
-.loot { display: grid; gap: 3cqw; text-align: center; }   /* the bring-list as item pickups */
-.loot h3 { margin: 0; font: 400 6cqw/1 var(--f-he); color: #ffd84a; text-shadow: 0 .6cqw 0 #8a3b00; }
-.loot ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4cqw; }
-.loot li { position: relative; display: grid; justify-items: center; align-content: start; gap: 1cqw; padding: 3cqw 1.6cqw; background: #0b0e1af2; border: .4cqw solid #ffd84a80; border-radius: 1.6cqw; opacity: 0; }
-.loot li img { width: 20cqw; height: 20cqw; object-fit: contain; filter: drop-shadow(0 0 3cqw #ffd84a66); }
-.loot li b { font: 400 4.6cqw/1.1 var(--f-he); color: #fff; } .loot li small { font: 700 3.4cqw/1.3 var(--f-ui); color: var(--muted); }
-.loot li::after { content: "+1"; position: absolute; top: 1cqw; left: 2cqw; font: italic 800 4.6cqw/1 var(--f-mark); color: #9dff3a; opacity: 0; }
-.loot p { margin: 0; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); }
-.win.on .loot li { animation: pickup .5s cubic-bezier(.2,1.4,.4,1) both; } .win.on .loot li:nth-child(1) { animation-delay: 1.3s; } .win.on .loot li:nth-child(2) { animation-delay: 1.55s; } .win.on .loot li:nth-child(3) { animation-delay: 1.8s; }
-.win.on .loot li::after { animation: plus1 .9s ease-out both; animation-delay: inherit; }
-@keyframes pickup { from { opacity: 0; transform: translateY(6cqw) scale(.6); } to { opacity: 1; transform: none; } }
-@keyframes plus1 { 0% { opacity: 0; transform: none; } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6cqw); } }
-.win .trio { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; }
-.win .trio .arc { white-space: nowrap; } .win .trio .dim { grid-column: 1 / -1; white-space: normal; line-height: 1.25; }
-.chal { position: absolute; left: 0; right: 0; top: 40%; z-index: 5; background: #d4142a; color: #fff; font: 400 6.6cqw/1 var(--f-he); text-align: center; padding: 3cqw 0; opacity: 0; pointer-events: none; }
+.go { position: relative; display: grid; gap: 3cqw; margin: 0 5% 10cqw; }   /* the other buttons: smaller, quieter */
+.go .trio { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; }
+.go .trio .arc { white-space: nowrap; } .go .trio #ics { grid-column: 1 / -1; white-space: normal; line-height: 1.25; }
+#more .go .arc { font-size: 3.8cqw; padding: 3.4cqw 2cqw; }
+.chal { position: absolute; left: 0; right: 0; top: 0; z-index: 5; background: #d4142a; color: #fff; font: 400 6.6cqw/1 var(--f-he); text-align: center; padding: 3cqw 0; opacity: 0; pointer-events: none; }
 .win.on .arena2 .w { animation: slamIn .5s cubic-bezier(.2,1.3,.4,1) .15s both, winBob .5s ease-in-out .9s 4 alternate; }
 .win.on .arena2 .l { animation: fadeUp .5s ease-out both; }
 .win.on .wt { animation: slamText .45s cubic-bezier(.2,1.5,.4,1) .45s both; }
 .win.on .bubble2 { animation: fadeUp .4s ease-out .6s both; }
-.win.on .join { animation: fadeUp .4s ease-out 1.9s both, nudge 1.4s ease-in-out 2.6s infinite; }
-.win.on .trio { animation: fadeUp .4s ease-out 2.1s both; }
 @keyframes slamIn { from { opacity: 0; transform: translateX(-30%) scale(1.15); } to { opacity: 1; transform: none; } }
 @keyframes winBob { to { transform: translateY(-3%); } }
 @keyframes slamText { from { opacity: 0; transform: scale(1.8); } to { opacity: 1; transform: none; } }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(4cqw); } to { opacity: 1; transform: none; } }
-@keyframes nudge { 50% { transform: translateY(.8cqw); } }
 
-/* 1b. right after the victory box: play again, or drop us an idea for the game */
-.idea { display: grid; gap: 3cqw; margin: 0 5% 20cqw; padding: 6cqw; background: #0b0e1af2; border: .5cqw solid #e9edf3; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b; }
-.idea h3 { margin: 2cqw 0 0; text-align: center; font: 400 6cqw/1.2 var(--f-he); color: #ffd84a; }
+/* 4. last before the logo: drop us an idea for the game */
+.idea { width: 90%; box-sizing: border-box; display: grid; gap: 3cqw; margin: 4cqw 0 12cqw; padding: 6cqw; background: #0b0e1af2; border: .5cqw solid #e9edf3; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b; }
+.idea h3 { margin: 0; text-align: center; font: 400 6cqw/1.2 var(--f-he); color: #ffd84a; }
 .idea textarea { min-height: 26cqw; resize: none; padding: 3.4cqw; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); background: #1a2140; border: .4cqw solid #ffffff33; border-radius: 1.6cqw; }
 .idea textarea::placeholder { color: var(--muted); opacity: 1; }
 .idea textarea:focus-visible { outline: .6cqw solid var(--p2); outline-offset: .4cqw; }
@@ -269,6 +255,9 @@ html { scrollbar-color: #3a4266 #07080d; }
 /* 1c. RSVP: a name and a slider */
 .rsvp { display: grid; gap: 3cqw; margin: 0 5% 8cqw; padding: 6cqw; background: #0b0e1af2; border: .5cqw solid #ffd84a; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b, 0 0 5cqw #ffd84a33; }
 .rsvp h3 { margin: 0; text-align: center; font: 400 7cqw/1.1 var(--f-he); color: #ffd84a; }
+.rsvp .rec { margin: 0; display: flex; align-items: center; justify-content: center; gap: 3cqw; text-align: center; font: 700 4.6cqw/1.35 var(--f-ui); color: var(--fg); }   /* your record: fights played, or who beat the boss */
+.rsvp .rec img { width: 18cqw; height: 18cqw; flex: none; object-fit: contain; object-position: bottom; filter: drop-shadow(0 0 3cqw #ffd84a88); }
+.rsvp .rec:empty { display: none; }
 .rsvp input[type=text] { padding: 3.4cqw; font: 700 4.6cqw/1.3 var(--f-ui); color: var(--fg); background: #1a2140; border: .4cqw solid #ffffff33; border-radius: 1.6cqw; }
 .rsvp input[type=text]::placeholder { color: var(--muted); opacity: 1; }
 .rsvp input:focus-visible { outline: .6cqw solid var(--p2); outline-offset: .4cqw; }
@@ -287,19 +276,15 @@ html { scrollbar-color: #3a4266 #07080d; }
 #more .pollline { margin-top: 4cqw; font: 700 3.4cqw/1.4 var(--f-ui); color: var(--muted); } #more .pollline small { display: block; }
 .pollline a.src { color: var(--p2); text-decoration: underline; pointer-events: auto; }
 
-/* 2. CONTINUE? the loser is down, the winner taunts */
-.cont { position: relative; display: grid; justify-items: center; gap: 2cqw; margin: 0 5% 8cqw; padding: 30cqw 6cqw 7cqw; text-align: center; background: #0b0e1af2; border: .5cqw solid #e9edf3; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b; }
-.pair { position: absolute; top: -12cqw; left: 0; right: 0; height: 40cqw; pointer-events: none; }
-.pair img { position: absolute; bottom: 0; height: 100%; aspect-ratio: 1; object-fit: contain; object-position: bottom; filter: drop-shadow(0 1.5cqw 1.5cqw #000c); opacity: 0; }
-.pair .w { right: 2%; scale: -1 1; } .pair .l { left: 2%; height: 72%; filter: grayscale(.6) brightness(.6); }
-.cont.on .pair .w { animation: fadeUp .4s ease-out both, taunt .35s ease-in-out .5s infinite alternate; }
-.cont.on .pair .l { animation: fadeUp .4s ease-out .1s both; }
-@keyframes taunt { to { transform: translateY(-4%) rotate(-3deg); } }
-.cont .cq { margin: 0; direction: ltr; font: italic 800 9cqw/1 var(--f-mark); font-stretch: 112%; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 .6cqw 0 #222); }
-.cont .count { direction: ltr; font: italic 900 38cqw/.9 var(--f-mark); font-stretch: 115%; color: #ffd84a; text-shadow: 0 1.4cqw 0 #8a3b00, 0 0 7cqw #ff8a2a; font-variant-numeric: tabular-nums; min-height: 34cqw; }
-.cont .count.over { font-size: 13cqw; line-height: 2.6; color: #ff4a3a; text-shadow: 0 .8cqw 0 #5a0d0d, 0 0 5cqw #ff4a3a; }
-.cont .arc { margin-top: 2cqw; }
-.cont small { font: 700 3.4cqw/1 var(--f-ui); color: var(--muted); margin-top: 1.6cqw; }
+/* 1b. CONTINUE? a small strip right under the details: the countdown and the main CTA */
+.cont { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 1.6cqw 4cqw; padding: 4cqw 5cqw; background: #0b0e1af2; border: .5cqw solid #ffd84a; border-radius: 1.6cqw; box-shadow: 0 0 5cqw #ffd84a40; opacity: 0; }
+.win.on .cont { animation: fadeUp .4s ease-out 1.2s both; }
+.cont .cq { margin: 0; direction: ltr; display: flex; align-items: baseline; gap: 2cqw; font: italic 800 5cqw/1 var(--f-mark); font-stretch: 112%; color: #e9edf3; }
+.cont .count { display: inline-block; min-width: 1.2em; text-align: center; font: italic 900 9cqw/1 var(--f-mark); color: #ffd84a; text-shadow: 0 .6cqw 0 #8a3b00, 0 0 3cqw #ff8a2a; font-variant-numeric: tabular-nums; }
+.cont .count.over { font-size: 4.6cqw; color: #ff4a3a; text-shadow: none; }
+#more .cont .arc { animation: throb 1.4s ease-in-out infinite; }
+@keyframes throb { 50% { transform: scale(1.04); } }
+.cont small { grid-column: 1 / -1; text-align: center; font: 700 3.4cqw/1 var(--f-ui); color: var(--muted); }
 
 /* 3. end credits: the photo credits roll once with each character's face, then the DiMax ident one more time */
 .foot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4cqw; overflow: hidden; padding: 0 0 12cqw; background: linear-gradient(#07080d, #0b1020 72%, #121a30); perspective: 700px; }
@@ -318,7 +303,7 @@ html { scrollbar-color: #3a4266 #07080d; }
 .foot .who { font: 700 3.4cqw/1 var(--f-ui); color: var(--muted); letter-spacing: .5em; padding-inline-start: .5em; }
 .foot .fine { margin: 6cqw 8% 0; position: relative; z-index: 2; text-align: center; font: 700 3.4cqw/1.6 var(--f-ui); color: #8f97a6; }
 @media (prefers-reduced-motion: reduce) {
-  .win .arena2 img, .win .wt, .bubble2, .win .join, .win .trio, .pair img { opacity: 1 !important; animation: none !important; }
+  .win .arena2 img, .win .wt, .bubble2, .cont, .cont .arc { opacity: 1 !important; animation: none !important; }
   .roll { height: auto; -webkit-mask-image: none; mask-image: none; } }
 </style>
 
@@ -507,7 +492,8 @@ const embers = () => { FX.paint = (ctx, W, H, t) => { for (let i = 0; i < 26; i+
 // ---------- sound (Web Audio: music bus → lowpass → duck, SFX bus, limiter) ----------
 // The game leads, the music follows: in the fight the music sits muffled under a lowpass and bursts open on every hit.
 const SFX = ['ballot', 'tick', 'confirm', 'dq', 'vs', 'alarm', 'fight', 'whoosh', 'hit1', 'hit2', 'special', 'ko', 'crowd', 'reveal',
-  'step', 'jump', 'land', 'block', 'blast', 'combo', 'glitch', 'heart', 'kovoice', 'bar', 'duo'];
+  'step', 'jump', 'land', 'block', 'blast', 'combo', 'glitch', 'heart', 'kovoice', 'bar', 'duo',
+  ...['jab', 'kick', 'upper', 'sweep', 'zap', 'smash'].flatMap((k) => [`hit_${k}1`, `hit_${k}2`])];
 let soundOn = false, AC = null, bus = null; const BUF = {};
 try {
   AC = new (window.AudioContext || window.webkitAudioContext)();      // starts suspended; a tap resumes it
@@ -529,6 +515,8 @@ const sfx = (k, g = 1, vary = true) => {
   s.connect(v).connect(bus.sfxG); s.start();
 };
 const blip = () => sfx('tick', .45);
+const hitSfx = (k, g = .9) => sfx(BUF[`hit_${k}1`] ? `hit_${k}${1 + (Math.random() * 2 | 0)}` : pick(['hit1', 'hit2']), g);   // each move lands with its own sound, two takes each
+const HIT_SND = { jab: ['jab'], kick: ['kick'], upper: ['upper'], sweep: ['sweep'], blast: ['zap'], combo: ['jab', 'kick'] };
 const duck = (to = .5, hold = .15) => { if (!AC) return; const t = AC.currentTime, d = bus.duckG.gain;
   d.cancelScheduledValues(t); d.setValueAtTime(d.value, t); d.setTargetAtTime(to, t, .012); if (hold != null) d.setTargetAtTime(1, t + hold, .25); };
 const MIX = { select: [.3, 18000], fight: [.22, 650], fin: [.34, 18000] };   // [music gain, lowpass Hz]
@@ -740,7 +728,7 @@ function fight() {                                     // returns its length in 
   const setHP = (k, v) => { hp[k] = Math.max(0, Math.round(v)); bar[k].querySelector('i').style.width = hp[k] + '%'; setTimeout(() => (bar[k].querySelector('em').style.width = hp[k] + '%'), 380);
     if (hp[k] && hp[k] < 35 && !beat[k]) { beat[k] = 1; setTimeout(() => sfx('heart', .55), 350); } };
   const { W, plan, hpm } = bout(ids), Lz = 3 - W, sp = (k) => sideP(ids[k]), st = (k) => sideT(ids, k);   // the rolled hits decide (fixed rates like Golan's still win)
-  LAST = [ids[W][0], ids[Lz][0]]; bench(ids[Lz]); DECIDED = true; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
+  LAST = [ids[W][0], ids[Lz][0]]; bench(ids[Lz]); DECIDED = true; if (FIGHTS != null) FIGHTS++; saveRec({ n: REC().n + 1 }); ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
   track('fight', `${ids[W].join('+')}>${ids[Lz].join('+')}${SAME ? ' same' : ''}`);
   if (hpm[1] !== hpm[2]) [1, 2].forEach((k) => { bar[k].style.width = `${hpm[k] / Math.max(hpm[1], hpm[2]) * 100}%`; if (k === 2) bar[k].style.marginInlineStart = 'auto'; });   // a longer bar: more HP
   const pose = (f, p, back) => { f.img.src = POSE(f.id, p); if (back) setTimeout(() => { if (f.img.isConnected) f.img.src = POSE(f.id, 'stance'); }, back); };
@@ -781,7 +769,7 @@ function fight() {                                     // returns its length in 
       FT[dk].forEach((g) => react(g, d, m.react, blocked));
       const x = dk === 1 ? .62 : .38;
       if (blocked) { sfx('block', .7); FX.burst(x, .6, 30, { s0: 120, s1: 380, g: 300, life: .4, h: 195 }); pop('blocktxt', C.fight.block, dk); streak = { k: 0, n: 0 }; }
-      else { sfx(pick(['hit1', 'hit2']), .9); duck(.5); open(); shake(8, 200); FX.burst(x, .62, 46, { s0: 160, s1: 520, g: 500, life: .55, h: 30 });
+      else { hitSfx(HIT_SND[kind]?.[j] || 'jab'); if (total > 27) hitSfx('smash', .45); duck(.5); open(); shake(8, 200); FX.burst(x, .62, 46, { s0: 160, s1: 520, g: 500, life: .55, h: 30 });
         streak = streak.k === ak ? { k: ak, n: streak.n + 1 } : { k: ak, n: 1 };
         if (streak.n > 1) { pop('combo', fmt(C.fight.combo, { n: streak.n }), ak); setTimeout(() => sfx('combo', .5), 120); } }
       setHP(dk, Math.max(1, hp[dk] - total / m.hits.length));
@@ -916,46 +904,46 @@ function buildMore() {
       <div class="arena2" aria-hidden="true"><img class="l" alt=""><img class="w" alt=""></div>
       <h2 class="wt"></h2>
       <div class="bubble2"><p class="q" aria-live="off"></p><dl>${d.rows.map((r) => `<dt>${r.k}</dt><dd>${chunks(r.v)}</dd>`).join('')}</dl>${pollLine()}</div>
-      <div class="loot"><h3>${C.loot.title}</h3><ul>${C.loot.items.map((it) => `<li><img src="img/loot/${it.img}.webp" alt=""><b>${it.name}</b><small>${it.cap}</small></li>`).join('')}</ul><p>${C.loot.line}</p></div>
-      <a class="arc a1 join" data-t="whatsapp" ${wa ? `href="${wa}" target="_blank" rel="noopener"` : 'aria-disabled="true"'}>${d.whatsapp}</a>
-      <div class="trio">
-        <a class="arc a2" data-t="waze" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">${d.waze}</a>
-        <a class="arc a2" data-t="maps" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">${d.maps}</a>
-        <button class="arc dim" type="button" id="ics" data-t="calendar">${d.calendar}</button>
-      </div>
-      <div class="chal" aria-hidden="true">${v.challenger}</div>
+      <section class="cont" aria-label="CONTINUE?">
+        <p class="cq" dir="ltr">CONTINUE? <b class="count" aria-hidden="true">9</b></p>
+        <button class="arc a1" type="button" id="again2" data-t="replay">${d.again} ${ICON.replay}</button><small class="ballots">${ballots()}</small>
+      </section>
     </section>
     <section class="rsvp" aria-label="${C.rsvp.title}">
       <h3>${C.rsvp.title}</h3>
+      <p class="rec"></p>
       <input type="text" maxlength="40" autocomplete="name" placeholder="${C.rsvp.name_ph}" aria-label="${C.rsvp.name_ph}">
       <label class="lk"><span>${C.rsvp.likely}</span><input type="range" min="0" max="100" step="5" value="70"><b class="lv" aria-live="polite"></b></label>
       <button class="arc a1" type="button" id="rsvpGo" data-t="rsvp">${C.rsvp.send}</button>
       <p class="msg" role="status"></p>
     </section>
-    <section class="idea" aria-label="${C.idea.or}">
-      <button class="arc a1" type="button" data-again data-t="replay_idea">${d.again} ${ICON.replay}</button>
-      <h3>${C.idea.or}</h3>
-      <textarea maxlength="500" placeholder="${C.idea.placeholder}" aria-label="${C.idea.or}"></textarea>
-      <button class="arc a2" type="button" id="send">${C.idea.send}</button>
-      <p class="msg" role="status"></p>
-    </section>
-    <section class="cont" aria-label="CONTINUE?">
-      <div class="pair" aria-hidden="true"><img class="l" alt=""><img class="w" alt=""></div>
-      <p class="cq" dir="ltr">CONTINUE?</p><b class="count" aria-hidden="true">9</b>
-      <button class="arc a1" type="button" id="again2" data-t="replay">${d.again} ${ICON.replay}</button><small class="ballots">${ballots()}</small>
+    <section class="go" aria-label="${d.title}">
+      <a class="arc a2 join" data-t="whatsapp" ${wa ? `href="${wa}" target="_blank" rel="noopener"` : 'aria-disabled="true"'}>${d.whatsapp}</a>
+      <div class="trio">
+        <a class="arc dim" data-t="waze" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">${d.waze}</a>
+        <a class="arc dim" data-t="maps" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">${d.maps}</a>
+        <button class="arc dim" type="button" id="ics" data-t="calendar">${d.calendar}</button>
+      </div>
+      <div class="chal" aria-hidden="true">${v.challenger}</div>
     </section>
     <footer class="foot">
       <div class="board"><h3>${C.rsvp.board_title}</h3><small class="bc"></small><ol></ol></div>
       <div class="roll" aria-label="${C.credits.title}"><div class="track"><h3>${C.credits.title}</h3><p>${C.credits.intro}</p>
         <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li data-id="${id}"><img src="img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp" alt=""><b>${FULL(id)}</b><em class="wins"></em><span><bdi>${who}</bdi> · <bdi>${lic}</bdi></span></li>`).join('')}</ul>
         <p>${C.credits.outro}</p></div></div>
+      <section class="idea" aria-label="${C.idea.or}">
+        <h3>${C.idea.or}</h3>
+        <textarea maxlength="500" placeholder="${C.idea.placeholder}" aria-label="${C.idea.or}"></textarea>
+        <button class="arc dim" type="button" id="send">${C.idea.send}</button>
+        <p class="msg" role="status"></p>
+      </section>
       <div class="glow"></div>
     </footer>`;
   more.querySelector('#ics').onclick = () => {        // 20:00–02:00 Israel time (UTC+2 after the clocks change on 25.10)
     const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DiMax//elections26//HE', 'BEGIN:VEVENT', 'UID:elections26@dimaxtlv.com', 'DTSTAMP:20261010T000000Z',
       'DTSTART:20261027T180000Z', 'DTEND:20261028T000000Z', `SUMMARY:${C.poster.h1}`, `LOCATION:${C.links.address}`, 'URL:https://elections26.dimaxtlv.com', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
     Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), download: 'elections26.ics' }).click(); };
-  more.querySelectorAll('#again2, [data-again]').forEach((b) => (b.onclick = () => { sfx('ballot', .7, false); scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); C = resolve(RAW); rollStyles(false); rollFighters(LAST?.[0]);   /* every run: fresh clay / LEGO / 3D mix */ setTimeout(trailer, RM ? 0 : 450); }));
+  more.querySelectorAll('#again2').forEach((b) => (b.onclick = () => { sfx('ballot', .7, false); scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); C = resolve(RAW); rollStyles(false); rollFighters(LAST?.[0]);   /* every run: fresh clay / LEGO / 3D mix */ setTimeout(trailer, RM ? 0 : 450); }));
 
   // RSVP: a name (shown on the board) and a slider (only the admin sees it); one per visitor, sending again updates it
   const rs = more.querySelector('.rsvp'), rn = rs.querySelector('input[type=text]'), rr = rs.querySelector('input[type=range]'), rl = rs.querySelector('.lv'), rg = rs.querySelector('#rsvpGo'), rm = rs.querySelector('.msg');
@@ -989,7 +977,7 @@ function buildMore() {
   // 1. VICTORY: the winner slams in, the loser is down, the quote types out, then the details
   const win = more.querySelector('.win'); let played = false, iv = null;
   more.resetWin = () => { played = false; clearInterval(iv); win.classList.remove('on'); win.querySelector('.q').textContent = ''; };   // every run: this run's winner and their own line
-  onSeen(win, () => { if (played) return; played = true; track('saw_details'); void win.offsetWidth; win.classList.add('on'); if (!RM) [1300, 1550, 1800].forEach((ms) => setTimeout(() => sfx('confirm', .35), ms));
+  onSeen(win, () => { if (played) return; played = true; track('saw_details'); void win.offsetWidth; win.classList.add('on'); 
     const qn = win.querySelector('.q'), own = C.victory.quotes?.[VICTOR()[0]], text = fmt(own && Math.random() * 100 >= (v.quote_pct ?? 10) ? own : v.quote, { name: FULL(VICTOR()[0]) }); let i = 0;   // each winner has their own line; the general one comes up quote_pct% of the time
     if (RM) { qn.textContent = text; return; }
     setTimeout(() => { sfx('confirm', .5); iv = setInterval(() => { qn.textContent = text.slice(0, ++i); if (i % 3 === 0) blip(); if (i >= text.length) clearInterval(iv); }, 32); }, 650); });
@@ -1015,6 +1003,12 @@ function buildMore() {
     setTimeout(() => { sfx('ballot', .5, false); [dl, dr].forEach((b) => A(b, [{ opacity: .15 }, { opacity: 1 }, { opacity: .3 }, { opacity: 1 }], { duration: 320 }));
       A(foot.querySelector('.glow'), [{ opacity: 0 }, { opacity: 1 }, { opacity: .55 }], { duration: 900 }); sweep(m, 1300); }, 900); }, .6);
 }
+// this visitor's record, shown over the ballot box: fights played, or the character they beat the boss with
+const REC = () => { try { return { n: 0, ...JSON.parse(localStorage.getItem('rec')) }; } catch (e) { return { n: 0 }; } };
+const saveRec = (o) => { try { localStorage.setItem('rec', JSON.stringify({ ...REC(), ...o })); } catch (e) {} };
+const paintRec = () => { const r = more.querySelector('.rsvp .rec'); if (!r) return; const { n, boss } = REC(); r.replaceChildren();
+  if (boss) { const i = new Image(); i.alt = ''; i.src = POSE(boss, 'stance'); r.append(i, fmt(C.rsvp.rec_boss, { name: FULL(boss) })); }
+  else if (n) r.append(fmt(n === 1 ? C.rsvp.rec_one : C.rsvp.rec_games, { n })); };
 const loadBoard = () => { const b = more.querySelector('.board'); if (!b || !C.links.stats) return;   // everyone who RSVP'd, oldest first; names only
   fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { cache: 'no-store' }).then((r) => r.json()).then(({ names = [] }) => {
     b.querySelector('.bc').textContent = names.length ? fmt(C.rsvp.board_count, { n: names.length }) : C.rsvp.board_empty;
@@ -1023,9 +1017,9 @@ const VICTOR = () => LAST || [P1, P2];                 // [winner, loser]; a ski
 function fillMore() {                                  // this run's winner and loser, and a fresh countdown
   const [w, l] = VICTOR();
   more.querySelectorAll('.w').forEach((n) => (n.src = POSE(w, 'stance')));
-  more.querySelector('.arena2 .l').src = POSE(l, 'hit'); more.querySelector('.pair .l').src = POSE(l, 'hit'); more.querySelector('.pair .w').src = POSE(w, 'punch');
+  more.querySelector('.arena2 .l').src = POSE(l, 'hit');
   more.querySelector('.wt').textContent = fmt(C.fight.winner, { name: FULL(w) });
-  more.resetWin?.(); more.resetCont?.(); more.querySelector('.ballots').textContent = ballots();
+  more.resetWin?.(); more.resetCont?.(); paintRec(); more.querySelector('.ballots').textContent = ballots();
 }
 
 // ---------- UI ----------
