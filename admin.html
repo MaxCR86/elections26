@@ -130,10 +130,14 @@ html.unlocked .gate { display: none; }
 <div class="wrap"><nav id="nav" aria-label="קטגוריות"></nav><main id="form"><p class="empty">טוען…</p></main></div>
 <script>
 const REPO = 'MaxCR86/elections26', FILE = 'copy.json', API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
-const SECTIONS = { ident: 'פתיח DiMax', start: 'מסך התחלה', select: 'בחירת דמויות', glitch: 'באג: אותה קבוצה', versus: 'מסך VS וההמשך', fight: 'הקרב',
+const SECTIONS = { ident: 'פתיח DiMax', start: 'מסך התחלה', select: 'בחירת דמויות', glitch: 'באג: אותה קבוצה', versus: 'מסך VS וההמשך', fight: 'הקרב', boss: 'הבוס הסודי (שרה)',
   poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', victory: 'מסך הניצחון (בגלילה)', idea: 'תיבת הרעיונות (אחרי הניצחון)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים', polls_meta: 'עדכון הסקרים היומי',
   names: 'שמות הדמויות', moves: 'מהלכים מיוחדים' };
 const LABEL = {
+  left: 'כמה קרבות נשארו ({n} = מספר)', primaries: 'כשהצד השני נגמר (פריימריז)', subtitle: 'מתחת לשם', win_title: 'הקונפטי לפני שהיא מגיעה ({name} = המנצח)', secret: 'הקיצור הסודי ({name} = הדמות)',
+  warning: 'האזהרה', satire: 'שורת הסאטירה', taunt1: 'המשפט הראשון שלה', bibi_line: 'נתניהו כשהוא רואה אותה', laugh: 'הצחוק שלה', form2: 'לפני הצורה השנייה', arena: 'שלט הזירה',
+  shout: 'שיחת הצעקות (מילה מעופפת לכל מילה)', backup: 'קריאה לגיבוי', form3: 'הצורה הסופית', defector: 'כשבן ברית ערק', sacrifice: 'בן הברית שמקריב', ballots: 'הפתקים ({n} = כמה קרבות שוחקו)',
+  true_win: 'ניצחון עליה ({name})', lose: 'כשהיא מנצחת', retry: 'כפתור עוד ניסיון', sarah_win: 'כמה אחוז מהפעמים היא מנצחת (נתניהו תמיד מפסיד)', affiliates: 'מפלגות קרובות (מאיפה מגיעים בני הברית)', on: 'פעיל',
   or: 'כותרת התיבה', placeholder: 'טקסט אפור בתוך השדה', send: 'כפתור השליחה', thanks: 'אחרי שליחה',
   presents: 'מתחת ללוגו', line: 'שורה', press: 'הכותרת המהבהבת', sub: 'שורה מתחת', sound: 'כפתור עם סאונד', mute: 'כפתור בלי סאונד', credits: 'שורת פתקים ({n} = כמה קרבות שוחקו עד עכשיו)',
   title: 'כותרת', team_r: 'כותרת הקבוצה הימנית', team_l: 'כותרת הקבוצה השמאלית', stat_1: 'מד ראשון', stat_2: 'מד שני', stat_3: 'מד שלישי', dq: 'חותמת הפסילה',
@@ -293,7 +297,7 @@ const statsBox = () => {
 function render() {
   NAMES = data.names || {};
   const f = $('#form'), nav = $('#nav'); f.replaceChildren(statsBox()); nav.replaceChildren();
-  const CATS = [['סטטיסטיקה', ['stats']], ['טקסטים במשחק', ['ident', 'start', 'select', 'glitch', 'versus', 'fight']], ['טקסטים בסוף', ['poster', 'details', 'victory', 'idea', 'credits', 'ui']],
+  const CATS = [['סטטיסטיקה', ['stats']], ['טקסטים במשחק', ['ident', 'start', 'select', 'glitch', 'versus', 'fight', 'boss']], ['טקסטים בסוף', ['poster', 'details', 'victory', 'idea', 'credits', 'ui']],
     ['חוקי המשחק', ['game', 'parties', 'polls_meta', 'moves', 'names']], ['קישורים', ['links']]];
   const groups = {}, catOf = (k) => (CATS.find(([, ks]) => ks.includes(k)) || CATS[3])[0];
   CATS.forEach(([name]) => { const d = h('details', { class: 'cat' }, h('summary', {}, name), h('div', { class: 'links' })); d.ontoggle = () => { if (d.open) nav.querySelectorAll('details.cat').forEach((o) => o !== d && (o.open = false)); };

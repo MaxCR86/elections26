@@ -194,6 +194,8 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
   100% { transform: none; filter: none; clip-path: none; } }
 .glitch { position: absolute; left: 6%; right: 6%; top: 40%; z-index: 13; display: grid; gap: 1.4cqw; padding: 3cqw; background: #000e; border: .4cqw solid #ff2a4a; text-align: center; opacity: 0; }
 .glitch b { font: 700 5.4cqw/1 ui-monospace, "SF Mono", Menlo, monospace; color: #ff2a4a; letter-spacing: .04em; }
+.hud .left { display: block; margin-top: 1cqw; font: 700 3.6cqw/1 var(--f-ui); color: var(--muted); }
+.glitch.prim { border-color: #ffd84a; } .glitch.prim b { font: 400 9cqw/1 var(--f-he); color: #ffd84a; letter-spacing: 0; }
 .glitch span { font-family: var(--f-he); font-size: 5cqw; color: #fff; }
 @media (prefers-reduced-motion: reduce) { .cam.glitching, #down { animation: none; } }
 #down { bottom: 4%; left: 50%; translate: -50% 0; width: 16cqw; height: 16cqw; padding: 0; display: grid; place-items: center; border-radius: 50%; background: #ffc23a; color: #111; border: 0; box-shadow: 0 1.4cqw 0 #8a3b00, 0 0 6cqw #ff8a2a88; animation: nudge 1.2s ease-in-out infinite; }
@@ -364,19 +366,23 @@ function rollThreshold() {
     const fail = Math.random() * 100 < p.risk, v = fail ? 1.4 + Math.random() * 1.7 : 3.5 + Math.random() * 2.3;
     RISKY.push({ ids, fail, v }); if (fail) ids.forEach((id) => OUT.add(id)); });
 }
-let CHAMP = null, STREAK = 0, RECENT = [], BENCH = [], DECIDED = false;   // DECIDED: this run's fight has a result
+let CHAMP = null, STREAK = 0, RECENT = [], BENCH = [], DECIDED = false, PRIM = false, FINALE = false;   // PRIM: primaries (the other camp is empty); FINALE: the boss is next   // DECIDED: this run's fight has a result
 try { BENCH = JSON.parse(sessionStorage.getItem('bench')) || []; } catch (e) {}   // a reload keeps the losers out too
+const ALIVE = () => [...R, ...L].map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id));
 const LEFT = () => Math.max(1, [...R, ...L].filter(([id]) => !OUT.has(id) && !BENCH.includes(id)).length - 1);   // matches still to play until the last man standing, this one included
 const bench = (ids) => { BENCH = [...new Set([...BENCH, ...ids])]; try { sessionStorage.setItem('bench', JSON.stringify(BENCH)); } catch (e) {} };   // BENCH: every loser stays out for the rest of the visit; when a team runs short, everyone comes back             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
-function rollFighters(champ = null) {
+function rollFighters(champ = null) {   // the run plays down to the last man standing; when the other camp is empty, it's primaries against your own
   const pool = (side) => side.map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id));
-  if (pool(R).length < 2 || pool(L).length < 2) { BENCH = []; bench([]); }   // a team ran out: new season, the losers are back
+  if (ALIVE().length < 2) { if (C.game.boss?.on !== false) { FINALE = true; return; } BENCH = []; bench([]); champ = null; }   // boss off: a new season
   const Rs = pool(R), Ls = pool(L);
-  DUO = null; DECIDED = false; SAME = Math.random() * 100 < C.game.same_team_pct; STREAK = champ && champ === CHAMP ? STREAK + 1 : champ ? 1 : 0; CHAMP = champ;
-  if (champ) { const home = Rs.includes(champ) ? Rs : Ls, pool = (SAME ? home : home === Rs ? Ls : Rs).filter((id) => id !== champ), fresh = pool.filter((id) => !RECENT.includes(id)), foe = wpick(fresh.length ? fresh : pool);
+  if (champ && !Rs.includes(champ) && !Ls.includes(champ)) champ = null;
+  DUO = null; DECIDED = false; PRIM = !Rs.length || !Ls.length; SAME = PRIM || Math.random() * 100 < C.game.same_team_pct;
+  STREAK = champ && champ === CHAMP ? STREAK + 1 : champ ? 1 : 0; CHAMP = champ;
+  if (champ) { const home = Rs.includes(champ) ? Rs : Ls; if (home.length < 2) SAME = false;
+    const pool = (SAME ? home : home === Rs ? Ls : Rs).filter((id) => id !== champ), fresh = pool.filter((id) => !RECENT.includes(id)), foe = wpick(fresh.length ? fresh : pool);
     RECENT = [...RECENT, foe].slice(-4);
     if (home === Rs) { P1 = champ; P2 = foe; } else { P2 = champ; P1 = foe; } }
-  else if (SAME) { const pool = Math.random() < .5 ? Rs : Ls; P1 = wpick(pool); P2 = wpick(pool.filter((id) => id !== P1)); }
+  else if (SAME) { const pool = Rs.length < 2 ? Ls : Ls.length < 2 ? Rs : Math.random() < .5 ? Rs : Ls; P1 = wpick(pool); P2 = wpick(pool.filter((id) => id !== P1)); }
   else { P1 = wpick(Rs); P2 = wpick(Ls); }
   for (const d of [...C.game.duos].sort(() => Math.random() - .5)) for (const k of [1, 2]) {
     const lead = k === 1 ? P1 : P2, mate = lead === d.a ? d.b : lead === d.b ? d.a : null;
@@ -535,6 +541,10 @@ function ch([id, label, x, y, h], z = 2) {
   d.style.cssText = `left:${x - w / 2}%;top:${y - h}%;width:${w}%;height:${h}%;z-index:${z}`;
   d.append(Object.assign(new Image(), { src: IMG(id), alt: NAME[id] })); cam.append(d); return d;
 }
+function primaries() {                                // the other camp is gone: everyone left fights their own
+  sfx('alarm', .6); shake(8); const g = el('div', 'glitch prim', `<b>${C.select.primaries}</b>`); cam.append(g);
+  A(g, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'none', offset: .1 }, { opacity: 1, offset: .9 }, { opacity: 0 }], { duration: 2000 });
+}
 function glitch() {                                   // the "bug" that lets two teammates fight
   sfx('glitch', .55); duck(.3, .6);
   const g = el('div', 'glitch', `<b dir="ltr">${C.glitch.error}</b><span>${C.glitch.line}</span>`); cam.append(g);
@@ -546,7 +556,7 @@ function glitch() {                                   // the "bug" that lets two
 function select() {                                   // returns its length in ms (ends on FIGHT)
   FX.paint = null; cam.getAnimations().forEach((a) => a.cancel()); cam.innerHTML = '';
   cam.style.background = 'radial-gradient(ellipse at 50% 30%, #1a2140, #05060b 75%)'; A(cam, [{ opacity: 0 }, { opacity: 1 }], { duration: 300 });
-  const head = el('div', 'hud', `<h2>${C.select.title}</h2>`); head.style.top = '3.5%'; cam.append(head);
+  const head = el('div', 'hud', `<h2>${C.select.title}</h2><small class="left">${fmt(C.select.left, { n: LEFT() })}</small>`); head.style.top = '3.5%'; cam.append(head);
   const grid = el('div', 'teams'), tr = el('div', 'team tr', `<h3>${C.select.team_r}</h3>`), tl = el('div', 'team tl', `<h3>${C.select.team_l}</h3>`);
   grid.append(tr, tl); cam.append(grid);                // RTL: the coalition panel sits on the right
   const Rs = R.map((r) => r[0]), Ls = L.map((r) => r[0]), tiles = {};
@@ -572,7 +582,7 @@ function select() {                                   // returns its length in m
     b += 2300 + 300; at(b - 200, () => { info.innerHTML = ''; });
   } else OUT.forEach((id) => tiles[id] && knock(id, false));   // replays: they are already out
   const wander = (pool) => pool.filter((id) => ![P1, P2, DUO?.id].includes(id) && !OUT.has(id) && !BENCH.includes(id)).sort(() => Math.random() - .5).slice(0, 4);
-  const intruder = SAME ? (Rs.includes(P1) ? 'p2' : 'p1') : null;   // the cursor that has no business on the other team
+  const intruder = SAME && !PRIM ? (Rs.includes(P1) ? 'p2' : 'p1') : null;   // the cursor that has no business on the other team
   let p1 = [...wander(Rs), ...(intruder === 'p1' ? [] : [P1])], p2 = [...wander(Ls), ...(intruder === 'p2' ? [] : [P2])];
   if (CHAMP === P1) p1 = [P1]; if (CHAMP === P2) p2 = [P2];   // the champion's frame stays locked on the champion
   const hop = (cls, id) => { Object.values(tiles).forEach((t) => t.classList.remove(cls)); tiles[id].classList.add(cls); blip(); };
@@ -594,7 +604,7 @@ function select() {                                   // returns its length in m
   path.forEach(({ id, cross }, i) => at(L0 + i * 260, () => { hop(intruder, id); tiles[id].classList.add('bad');
     if (cross) { sfx('glitch', .35); cam.classList.add('glitching'); setTimeout(() => cam.classList.remove('glitching'), 220); } }));
   at(L0 + c, () => {
-    if (SAME) glitch();
+    if (PRIM) primaries(); else if (SAME) glitch();
     tiles[P1].append(el('div', 'stamp', 'P1')); tiles[P2].append(el('div', 'stamp', 'P2'));
     if (DUO) { const t = tiles[DUO.id]; t.classList.add(`p${DUO.k}`); t.append(el('div', 'stamp', `P${DUO.k}+`)); setTimeout(() => sfx('duo', .6), 260); }
     sfx('confirm', .6); flash(.4, 120); shake(6);
@@ -642,6 +652,10 @@ function fight() {                                     // returns its length in 
   const ids = { 1: [P1], 2: [P2] }; if (DUO) ids[DUO.k].push(DUO.id);
   const hud = el('div', 'fhud', `<div class="hp p1"><b>${sideNames(1)}</b><span><em></em><i></i></span></div><div class="clock" dir="ltr">${fmt(C.fight.clock, { n: LEFT() })}</div><div class="hp p2"><b>${sideNames(2)}</b><span><em></em><i></i></span></div>`);
   cam.append(hud);
+  { const clk = hud.querySelector('.clock'), need = LEFT(); let taps = 0;   // secret: tap the number as many times as it says, and this fight's winner skips straight to the boss
+    clk.style.pointerEvents = 'auto'; clk.style.cursor = 'pointer';
+    clk.onclick = () => { if (C.game.boss?.on === false) return; if (++taps < need) return clk.animate([{ transform: 'scale(1.3)' }, { transform: 'none' }], { duration: 160 });
+      const hero = LAST[0]; bench(ALIVE().filter((id) => id !== hero)); sfx('glitch', .8); flash(.8, 200); finale(hero, { secret: true }); }; }
   if (SAME) { const c = hud.querySelector('.clock');                     // the bug leaks into the HUD
     A(c, [{ opacity: 1 }, { opacity: 1, offset: .46 }, { opacity: .2, offset: .5 }, { opacity: 1, offset: .54 }], { duration: 1700, iterations: Infinity }); }
   const X = { 1: 70, 2: 30 }, D = (k) => (k === 1 ? -1 : 1);            // P1 stands right and attacks leftwards
@@ -979,10 +993,13 @@ function end() {
   downBtn = uiBtn('down', ICON.down, () => track('scroll_btn') || more.scrollIntoView({ behavior: 'smooth' })); downBtn.setAttribute('aria-label', C.details.scroll);
 }
 function trailer() {
+  if (FINALE) { FINALE = false; return finale(ALIVE()[0] || LAST?.[0]); }   // the last man standing meets the secret boss
   reset(); showSnd();
   skipBtn = uiBtn('skip', C.ui.skip, () => { track('skip'); if (!DECIDED) { LAST = [P1, P2]; bench([P2]); DECIDED = true; }   /* skipped before the fight: the shown result counts */ reset(); poster(false); mix('fin'); music('fin'); end(); });
   const s = select();
-  at(s + 500, () => { const d = fight(); at(d, () => poster(true)); at(d + 3300, end); });
+  at(s + 500, () => { const d = fight();
+    if (ALIVE().length < 2 && C.game.boss?.on !== false) at(d, () => finale(LAST[0]));   // that was the last match: confetti… and then her
+    else { at(d, () => poster(true)); at(d + 3300, end); } });
 }
 
 Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('40px "Secular One"')]).catch(() => {})
@@ -993,3 +1010,4 @@ Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('
   });
 </script>
 <script src="finishers.js"></script>
+<script src="boss.js"></script>
