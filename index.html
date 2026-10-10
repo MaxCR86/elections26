@@ -110,6 +110,7 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 .blackframe { position: absolute; inset: 0; z-index: 22; background: #000; opacity: 0; pointer-events: none; }
 .ko { position: absolute; inset: 0; z-index: 12; display: grid; place-items: center; direction: ltr; font-family: var(--f-mark); font-style: italic; font-weight: 900; font-stretch: 115%; font-size: 34cqw;
   background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 1cqw 0 #6a2a00) drop-shadow(0 0 5cqw #ff8a2a); opacity: 0; padding-bottom: 20%; }
+.quip { position: absolute; top: 18%; z-index: 13; max-width: 62%; padding: 2.4cqw 3.4cqw; background: #fff; color: #111; border-radius: 3cqw; font: 400 5.6cqw/1.2 var(--f-he); box-shadow: 0 1.5cqw 4cqw #000a; opacity: 0; pointer-events: none; }   /* the winner's catchphrase */
 .winner { position: absolute; left: 0; right: 0; top: 56%; z-index: 12; text-align: center; font-family: var(--f-he); font-size: 7cqw; color: #fff; text-shadow: 0 .5cqw 2cqw #000; opacity: 0; }
 .bubble { position: absolute; z-index: 9; background: #fff; color: #111; font-family: var(--f-he); font-size: 4.6cqw; padding: 2cqw 3.2cqw; border-radius: 3cqw; max-width: 48%; opacity: 0; box-shadow: 0 1cqw 3cqw #0008; }
 .booth { position: absolute; left: 50%; bottom: 2%; translate: -50% 0; width: 52%; z-index: 8; background: #000c; border: .3cqw solid #ffd84a55; border-radius: 2cqw; padding: 1.2cqw 2cqw 0; display: grid; grid-template-columns: 1fr 1fr; opacity: 0; }
@@ -493,7 +494,8 @@ const embers = () => { FX.paint = (ctx, W, H, t) => { for (let i = 0; i < 26; i+
 // The game leads, the music follows: in the fight the music sits muffled under a lowpass and bursts open on every hit.
 const SFX = ['ballot', 'tick', 'confirm', 'dq', 'vs', 'alarm', 'fight', 'whoosh', 'hit1', 'hit2', 'special', 'ko', 'crowd', 'reveal',
   'step', 'jump', 'land', 'block', 'blast', 'combo', 'glitch', 'heart', 'kovoice', 'bar', 'duo',
-  ...['jab', 'kick', 'upper', 'sweep', 'zap', 'smash'].flatMap((k) => [`hit_${k}1`, `hit_${k}2`])];
+  ...['jab', 'kick', 'upper', 'sweep', 'zap', 'smash'].flatMap((k) => [`hit_${k}1`, `hit_${k}2`]),
+  ...['abbas', 'golan', 'liberman', 'sarah'].map((id) => `say_${id}`)];   // their own voice, cut from real clips (Max approved the downloads, 10.10)
 let soundOn = false, AC = null, bus = null; const BUF = {};
 try {
   AC = new (window.AudioContext || window.webkitAudioContext)();      // starts suspended; a tap resumes it
@@ -803,7 +805,10 @@ function fight() {                                     // returns its length in 
     A(win, [{ opacity: 0, transform: 'translateY(30%)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 700 });
     FT[W].forEach((f) => f.bob.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-7%) scale(1.06)' }], { duration: 380, delay: 900, direction: 'alternate', iterations: 4, easing: 'ease-out' }));
   });
-  return t + m.hits[0] + 2600;
+  const wid = ids[W][0], line = C.catchphrase?.[wid];   // the winner's famous line, in their own voice where we have the clip
+  if (line) at(t + m.hits[0] + 1000, () => { const q = el('div', 'quip', line); q.style[X[W] > 50 ? 'right' : 'left'] = '5%'; cam.append(q); sfx(`say_${wid}`, 1, false); duck(.2, 2.6);
+    A(q, [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'none', offset: .1 }, { opacity: 1, offset: .9 }, { opacity: 0 }], { duration: 2600, easing: 'ease-out' }).finished.then(() => q.remove()); });
+  return t + m.hits[0] + (line ? 3600 : 2600);
 }
 
 // ---------- signature finishers: each fighter's own prop, used as intended ----------
