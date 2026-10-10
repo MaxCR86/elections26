@@ -79,6 +79,7 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 .vm b { position: absolute; bottom: 160%; left: -20%; right: -20%; text-align: center; font: italic 800 4.4cqw/1 var(--f-mark); color: #fff; text-shadow: 0 .4cqw 0 #000, 0 0 2cqw #000; }
 .vm.fail i { background: #ff4a3a; } .vm.pass i { background: #5fe08a; }
 .stamp { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-mark); font-style: italic; font-weight: 800; font-size: 10cqw; color: #fff; text-shadow: 0 0 2cqw #000; }
+.tile .bn { position: absolute; inset: 0 0 auto; padding: .8cqw 0; background: #000c; color: #ff4a3a; text-align: center; font: 700 3cqw/1 var(--f-ui); }
 .dq { position: absolute; inset: 0; display: grid; place-content: center; gap: .6cqw; background: #b00e1ccc; color: #fff; text-align: center; line-height: 1; opacity: 0; }
 .dq b { font-family: var(--f-mark); font-style: italic; font-weight: 800; font-size: 3.6cqw; } .dq small { font-family: var(--f-ui); font-weight: 700; font-size: 3cqw; }
 .bars { font-family: var(--f-ui); font-size: 3.6cqw; display: grid; gap: 1cqw; margin-top: 1.5cqw; }
@@ -363,9 +364,11 @@ function rollThreshold() {
     const fail = Math.random() * 100 < p.risk, v = fail ? 1.4 + Math.random() * 1.7 : 3.5 + Math.random() * 2.3;
     RISKY.push({ ids, fail, v }); if (fail) ids.forEach((id) => OUT.add(id)); });
 }
-let CHAMP = null, STREAK = 0, RECENT = [], BENCH = [];   // BENCH: last round's losers sit the next one out             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
+let CHAMP = null, STREAK = 0, RECENT = [], BENCH = [];   // BENCH: every loser stays out for the rest of the visit; when a team runs short, everyone comes back             // last game's winner stays on; each extra win in a row makes the next one harder; recent opponents sit out
 function rollFighters(champ = null) {
-  const Rs = R.map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id)), Ls = L.map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id));
+  const pool = (side) => side.map((r) => r[0]).filter((id) => !OUT.has(id) && !BENCH.includes(id));
+  if (pool(R).length < 2 || pool(L).length < 2) BENCH = [];   // a team ran out: new season, the losers are back
+  const Rs = pool(R), Ls = pool(L);
   DUO = null; SAME = Math.random() * 100 < C.game.same_team_pct; STREAK = champ && champ === CHAMP ? STREAK + 1 : champ ? 1 : 0; CHAMP = champ;
   if (champ) { const home = Rs.includes(champ) ? Rs : Ls, pool = (SAME ? home : home === Rs ? Ls : Rs).filter((id) => id !== champ), fresh = pool.filter((id) => !RECENT.includes(id)), foe = wpick(fresh.length ? fresh : pool);
     RECENT = [...RECENT, foe].slice(-4);
@@ -546,6 +549,7 @@ function select() {                                   // returns its length in m
   const Rs = R.map((r) => r[0]), Ls = L.map((r) => r[0]), tiles = {};
   [[Rs, tr], [[...Ls, 'gantz', 'hendel'], tl]].forEach(([ids, box]) => ids.forEach((id) => {
     const t = el('div', 'tile', `<img src="${IMG(id)}" alt=""><i>${NAME[id]}</i>`); faceFit(t.querySelector('img'), id); tiles[id] = t; box.append(t); }));
+  BENCH.forEach((id) => { const t = tiles[id]; if (t) { t.classList.add('out'); t.append(el('div', 'bn', C.select.benched)); } });   // lost earlier this visit
   const info = el('div', 'hud'); info.style.bottom = '4.5%'; cam.append(info);
   A(grid, [{ opacity: 0, transform: 'scale(.92)' }, { opacity: 1, transform: 'none' }], { duration: 400 });
   mix('select'); music('bed');
@@ -661,7 +665,7 @@ function fight() {                                     // returns its length in 
   const f1 = fixed(1), f2 = fixed(2);                                    // fixed win rates (e.g. Golan) beat the odds
   const p1 = f1 != null && f2 != null ? f1 / (f1 + f2) : f1 != null ? f1 / 100 : f2 != null ? 1 - f2 / 100 : odds(1) / (odds(1) + odds(2));
   const W = Math.random() < p1 ? 1 : 2, Lz = 3 - W;
-  LAST = [ids[W][0], ids[Lz][0]]; BENCH = [...ids[Lz]]; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
+  LAST = [ids[W][0], ids[Lz][0]]; BENCH = [...new Set([...BENCH, ...ids[Lz]])]; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
   track('fight', `${ids[W].join('+')}>${ids[Lz].join('+')}${SAME ? ' same' : ''}`);
   const dmg = (k) => 20 * Math.min(2.6, Math.max(.35, Math.pow((sp(k) + 2) / (sp(3 - k) + 2), .7) * st(k).hit * st(3 - k).armor));   // more expected seats (and a higher list spot) hit proportionally harder
 
