@@ -118,7 +118,7 @@ th { font: 700 13px/1.3 Assistant, sans-serif; color: var(--muted); } td.n { dir
 <script>
 const REPO = 'MaxCR86/elections26', FILE = 'copy.json', API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
 const SECTIONS = { ident: 'פתיח DiMax', start: 'מסך התחלה', select: 'בחירת דמויות', glitch: 'באג: אותה קבוצה', versus: 'מסך VS וההמשך', fight: 'הקרב',
-  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים',
+  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', victory: 'מסך הניצחון (בגלילה)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים',
   names: 'שמות הדמויות', moves: 'מהלכים מיוחדים' };
 const LABEL = {
   presents: 'מתחת ללוגו', line: 'שורה', press: 'הכותרת המהבהבת', sub: 'שורה מתחת', sound: 'כפתור עם סאונד', mute: 'כפתור בלי סאונד', credits: 'שורת פתקים',
@@ -127,7 +127,7 @@ const LABEL = {
   polls_open: 'לפני הקרב', fight: 'קריאת הקרב', clock: 'שעון', special_label: 'תווית מהלך מיוחד', combo: 'קומבו ({n} = מספר)', block: 'חסימה', ko: 'נוקאאוט', winner: 'ניצחון ({name} = השם)',
   h1: 'כותרת ראשית', tag: 'שורת התגית', when: 'מתי', where: 'איפה', what: 'מה יש', joke: 'בדיחת הגג', fine: 'אותיות קטנות', credits_btn: 'קישור הקרדיטים',
   scroll: 'הזמנה לגלול', rows: 'שורות הפרטים', waze: 'כפתור Waze', maps: 'כפתור מפות', calendar: 'כפתור יומן', whatsapp: 'כפתור הוואטסאפ', again: 'כפתור משחק נוסף',
-  intro: 'פתיח', outro: 'סיום', sound_on: 'סאונד פועל', sound_off: 'סאונד כבוי', skip: 'דילוג', close: 'סגירה', address: 'כתובת לניווט', k: 'תווית', v: 'ערך',
+  quote: 'הציטוט הכללי ({name} = המנצח)', challenger: 'הבזק לפני וואטסאפ', quotes: 'ציטוט לכל דמות (כשהיא מנצחת)', quote_pct: 'אחוז הפעמים שמופיע הציטוט הכללי', intro: 'פתיח', outro: 'סיום', sound_on: 'סאונד פועל', sound_off: 'סאונד כבוי', skip: 'דילוג', close: 'סגירה', address: 'כתובת לניווט', k: 'תווית', v: 'ערך',
   same_team_pct: 'אחוז קרבות בתוך אותה קבוצה', duos: 'צמדים', win: 'אחוז ניצחון קבוע', tiers: 'דרגות בוס', rank_weights: 'משקל לפי מקום ברשימה (1 = ראש הרשימה)',
   a: 'דמות', b: 'מושכת את', chance: 'סיכוי (%)', tier: 'דרגה', ids: 'מי בדרגה', hit: 'עוצמת מכה (1 = רגיל)', armor: 'ספיגת נזק (נמוך = קשוח יותר)', appear: 'תדירות הופעה (1 = רגיל)',
   name: 'שם המפלגה', seats: 'מנדטים צפויים', risk: 'סיכוי לא לעבור את אחוז החסימה (%)', threshold_title: 'כותרת סצנת אחוז החסימה', stats: 'כתובת הסטטיסטיקה', members: 'הדמויות לפי הסדר ברשימה', boss: 'בוס', sub: 'בוס משני', mini: 'מיני־בוס' };
