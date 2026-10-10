@@ -200,12 +200,19 @@ def apply(doc, seats, used, today):
     for p in doc["parties"]:
         q = {}
         for k, v in p.items():
+            if k == "range":
+                continue
             q[k] = v
+            if k == "seats" and "range" in p:
+                q["range"] = p["range"]
             if k == "risk" and "lock" not in p:
                 q["lock"] = False
         q.setdefault("lock", False)
         if not q["lock"] and q["name"] not in SKIP and q["name"] in seats:
             q["seats"] = seats[q["name"]]
+            vals = [u["seats"].get(q["name"], 0) for u in used]   # lowest to highest poll: the game rolls each hit inside this range
+            q = {k2: v2 for k2, v2 in q.items() if k2 != "range"}
+            q = dict(list(q.items())[:2] + [("range", [min(vals), max(vals)])] + list(q.items())[2:])
             q["risk"] = risk_for(seats[q["name"]])
         parties.append(q)
     old_meta = doc.get("polls_meta", {})

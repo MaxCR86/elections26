@@ -131,9 +131,11 @@ html.unlocked .gate { display: none; }
 <script>
 const REPO = 'MaxCR86/elections26', FILE = 'copy.json', API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
 const SECTIONS = { ident: 'פתיח DiMax', start: 'מסך התחלה', select: 'בחירת דמויות', glitch: 'באג: אותה קבוצה', versus: 'מסך VS וההמשך', fight: 'הקרב', boss: 'הבוס הסודי (שרה)',
-  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', loot: 'מה להביא (ציוד לסיבוב)', victory: 'מסך הניצחון (בגלילה)', idea: 'תיבת הרעיונות (אחרי הניצחון)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים', polls_meta: 'עדכון הסקרים היומי',
+  poster: 'פוסטר הסיום', details: 'הפרטים (בגלילה)', loot: 'מה להביא (ציוד לסיבוב)', rsvp: 'אישור הגעה ורשימת המגיעים', victory: 'מסך הניצחון (בגלילה)', idea: 'תיבת הרעיונות (אחרי הניצחון)', credits: 'קרדיטים', ui: 'כפתורים', links: 'קישורים', game: 'חוקי המשחק', parties: 'מפלגות ומנדטים', polls_meta: 'עדכון הסקרים היומי',
   names: 'שמות הדמויות', moves: 'מהלכים מיוחדים' };
 const LABEL = {
+  name_ph: 'טקסט בתוך שדה השם', likely: 'השאלה מעל הסליידר', levels: 'מה כתוב ליד הסליידר (0–19, 20–39, 40–59, 60–79, 80–100)', update: 'הכפתור אחרי שנרשמו', board_title: 'כותרת רשימת המגיעים', board_empty: 'כשאין עוד נרשמים', board_count: 'כמה נרשמו ({n})', polls_link: 'קישור לסקרים',
+  bout: 'כוח המכות (סימולציה)', exp: 'כמה כוח מהסקרים משפיע על המכה (נמוך = יותר הפתעות)', spread: 'מזל בכל מכה (0–1)', tier: 'כמה הבוסים חזקים (0–1)',
   items: 'הפריטים', img: 'תמונה', cap: 'כיתוב', line: 'שורה', powerup: 'הפחית שנופלת בקרב', powerup_pct: 'כמה אחוז מהקרבות נופלת פחית קולה זירו',
   left: 'כמה קרבות נשארו ({n} = מספר)', primaries: 'כשהצד השני נגמר (פריימריז)', subtitle: 'מתחת לשם', win_title: 'הקונפטי לפני שהיא מגיעה ({name} = המנצח)', secret: 'הקיצור הסודי ({name} = הדמות)',
   challenger: 'הכרזת הכניסה שלה', warning: 'האזהרה', satire: 'שורת הסאטירה', taunt1: 'המשפט הראשון שלה', bibi_line: 'נתניהו כשהוא רואה אותה', laugh: 'הצחוק שלה', form2: 'לפני הצורה השנייה', arena: 'שלט הזירה',
@@ -260,8 +262,19 @@ function node(o, k) {                                    // pick the editor that
 }
 // ---------- stats: read-only totals from our own Cloudflare table ----------
 const EV = { load: 'כניסות לאתר', start_sound: 'התחלה עם סאונד', start_mute: 'התחלה בשקט', skip: 'דילוג', finish: 'סיימו את ההופעה', again: 'שוב (כפתור למעלה)',
-  replay: 'משחק נוסף (CONTINUE)', replay_idea: 'משחק נוסף (תיבת הרעיונות)', idea: 'שלחו רעיון', scroll_btn: 'לחצו על "גללו"', saw_details: 'ראו את הפרטים', saw_continue: 'הגיעו ל־CONTINUE', whatsapp: 'הצטרפו לוואטסאפ',
+  replay: 'משחק נוסף (CONTINUE)', replay_idea: 'משחק נוסף (תיבת הרעיונות)', rsvp: 'שלחו אישור הגעה', polls: 'לחצו על הקישור לסקרים', idea: 'שלחו רעיון', scroll_btn: 'לחצו על "גללו"', saw_details: 'ראו את הפרטים', saw_continue: 'הגיעו ל־CONTINUE', whatsapp: 'הצטרפו לוואטסאפ',
   waze: 'Waze', maps: 'Google Maps', calendar: 'הוספה ליומן', credits: 'פתחו קרדיטים', fight: 'קרבות' };
+// guest analysis: the slider values nobody else sees. Expected = the sum of everyone's own odds.
+const guests = (rs, kpi, tbl) => {
+  if (!rs.length) return [h('p', { class: 'meta' }, 'עוד אין אישורי הגעה.')];
+  const exp = rs.reduce((a, r) => a + r.p, 0) / 100, band = (lo, hi) => rs.filter((r) => r.p >= lo && r.p <= hi);
+  const bands = [['בטוחים (80–100)', band(80, 100)], ['כנראה (60–79)', band(60, 79)], ['חצי-חצי (40–59)', band(40, 59)], ['אולי (20–39)', band(20, 39)], ['בקושי (0–19)', band(0, 19)]];
+  const max = Math.max(1, ...bands.map(([, b]) => b.length));
+  return [h('h3', { style: 'margin:0' }, 'אישורי הגעה'),
+    h('div', { class: 'kpis' }, kpi('נרשמו', rs.length), kpi('צפי מגיעים', Math.round(exp)), kpi('טווח סביר', `${Math.round(Math.max(0, exp - Math.sqrt(rs.reduce((a, r) => a + r.p / 100 * (1 - r.p / 100), 0)) * 2))}–${Math.round(Math.min(rs.length, exp + Math.sqrt(rs.reduce((a, r) => a + r.p / 100 * (1 - r.p / 100), 0)) * 2))}`), kpi('ממוצע סיכוי', `${Math.round(exp / rs.length * 100)}%`)),
+    tbl(['כמה בטוחים', 'אנשים', ''], bands.map(([l, b]) => [l, b.length, h('div', { class: 'bar2', style: `width:${b.length / max * 100}%` })])),
+    tbl(['שם', 'סיכוי', 'מתי'], rs.map((r) => [r.name, `${r.p}%`, new Date(r.ts).toLocaleString('he-IL', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })]))];
+};
 const statsBox = () => {
   const card = h('div', { class: 'card' }), out = h('div', { style: 'display:grid;gap:18px' });
   const key = h('input', { type: 'password', autocomplete: 'off', placeholder: 'סיסמת הסטטיסטיקה', 'aria-label': 'סיסמת הסטטיסטיקה' });
@@ -288,6 +301,7 @@ const statsBox = () => {
         tbl(['מכשיר', 'מערכת', 'כניסות', 'אנשים'], s.devices.map((d) => [({ mobile: 'נייד', tablet: 'טאבלט', desktop: 'מחשב' })[d.dev] || d.dev, d.os, d.loads, d.people])),
         tbl(['יום', 'כניסות', 'אנשים', 'וואטסאפ'], s.days.map((d) => [d.day, d.loads, d.people, d.whatsapp])),
         tbl(['הקרבות הנפוצים (מנצח > מפסיד)', 'פעמים'], s.details.filter((d) => d.ev === 'fight').slice(0, 12).map((d) => [d.detail.replace(/[a-z]+/g, (id) => NAMES[id] || id).replace(' same', ' (אותה קבוצה)'), d.n])),
+        ...guests(s.rsvps || [], kpi, tbl),
         tbl([`רעיונות מהשחקנים (${(s.ideas || []).length})`, 'מתי'], (s.ideas || []).map((i) => [h('span', { style: 'white-space:pre-wrap;font-weight:400' }, i.text), new Date(i.ts).toLocaleString('he-IL', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })])),
         h('p', { class: 'meta' }, s.totals.last ? `אירוע אחרון: ${new Date(s.totals.last).toLocaleString('he-IL')}` : 'עוד אין נתונים.'));
     } catch (e) { out.replaceChildren(h('p', { class: 'meta', style: 'color:var(--bad)' }, `לא הצלחתי לטעון: ${e.message}`)); }
@@ -298,7 +312,7 @@ const statsBox = () => {
 function render() {
   NAMES = data.names || {};
   const f = $('#form'), nav = $('#nav'); f.replaceChildren(statsBox()); nav.replaceChildren();
-  const CATS = [['סטטיסטיקה', ['stats']], ['טקסטים במשחק', ['ident', 'start', 'select', 'glitch', 'versus', 'fight', 'boss']], ['טקסטים בסוף', ['poster', 'details', 'loot', 'victory', 'idea', 'credits', 'ui']],
+  const CATS = [['סטטיסטיקה', ['stats']], ['טקסטים במשחק', ['ident', 'start', 'select', 'glitch', 'versus', 'fight', 'boss']], ['טקסטים בסוף', ['poster', 'details', 'loot', 'rsvp', 'victory', 'idea', 'credits', 'ui']],
     ['חוקי המשחק', ['game', 'parties', 'polls_meta', 'moves', 'names']], ['קישורים', ['links']]];
   const groups = {}, catOf = (k) => (CATS.find(([, ks]) => ks.includes(k)) || CATS[3])[0];
   CATS.forEach(([name]) => { const d = h('details', { class: 'cat' }, h('summary', {}, name), h('div', { class: 'links' })); d.ontoggle = () => { if (d.open) nav.querySelectorAll('details.cat').forEach((o) => o !== d && (o.open = false)); };

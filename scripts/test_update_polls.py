@@ -103,8 +103,10 @@ with tempfile.TemporaryDirectory() as d:
     assert text == json.dumps(new, ensure_ascii=False, indent=2)
     assert list(new) == ["game", "parties", "polls_meta", "names"], list(new)
     by = {p["name"]: p for p in new["parties"]}
-    assert all(list(p) == ["name", "seats", "members", "risk", "lock"] for p in new["parties"])
-    assert by["הליכוד"] == {"name": "הליכוד", "seats": 23, "members": ["n"], "risk": 0, "lock": False}
+    assert all(list(p) in (["name", "seats", "range", "members", "risk", "lock"], ["name", "seats", "members", "risk", "lock"]) for p in new["parties"])
+    assert by["הליכוד"] == {"name": "הליכוד", "seats": 23, "range": [20, 26], "members": ["n"], "risk": 0, "lock": False}
+    assert list(by["הליכוד"]) == ["name", "seats", "range", "members", "risk", "lock"]
+    assert by["וינטר"]["range"] == [0, 4] and "range" not in by["ש״ס"]   # locked parties keep what they had
     assert by["וינטר"]["seats"] == 1.3 and by["וינטר"]["risk"] == 85
     assert by["הציונות הדתית"]["seats"] == 6 and by["הציונות הדתית"]["risk"] == 12
     assert by["ש״ס"] == DOC["parties"][4]                      # locked: untouched

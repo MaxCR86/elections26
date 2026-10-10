@@ -266,6 +266,27 @@ html { scrollbar-color: #3a4266 #07080d; }
 .idea .msg { min-height: 1.3em; margin: 0; text-align: center; font: 700 4.6cqw/1.3 var(--f-ui); color: var(--p2); }
 .idea .msg.err { color: #ff4a3a; }
 
+/* 1c. RSVP: a name and a slider */
+.rsvp { display: grid; gap: 3cqw; margin: 0 5% 8cqw; padding: 6cqw; background: #0b0e1af2; border: .5cqw solid #ffd84a; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b, 0 0 5cqw #ffd84a33; }
+.rsvp h3 { margin: 0; text-align: center; font: 400 7cqw/1.1 var(--f-he); color: #ffd84a; }
+.rsvp input[type=text] { padding: 3.4cqw; font: 700 4.6cqw/1.3 var(--f-ui); color: var(--fg); background: #1a2140; border: .4cqw solid #ffffff33; border-radius: 1.6cqw; }
+.rsvp input[type=text]::placeholder { color: var(--muted); opacity: 1; }
+.rsvp input:focus-visible { outline: .6cqw solid var(--p2); outline-offset: .4cqw; }
+.rsvp .lk { display: grid; gap: 2cqw; text-align: center; } .rsvp .lk span { font: 700 4.2cqw/1.3 var(--f-ui); color: var(--fg); }
+.rsvp input[type=range] { -webkit-appearance: none; appearance: none; height: 4cqw; border-radius: 2cqw; background: linear-gradient(90deg, #ffd84a var(--v, 70%), #1a2140 var(--v, 70%)); direction: ltr; }
+.rsvp input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 9cqw; height: 9cqw; border-radius: 50%; background: #fff; border: 1cqw solid #ffd84a; box-shadow: 0 0 3cqw #ffd84a; }
+.rsvp input[type=range]::-moz-range-thumb { width: 9cqw; height: 9cqw; border-radius: 50%; background: #fff; border: 1cqw solid #ffd84a; }
+.rsvp .lv { font: 400 5.4cqw/1.2 var(--f-he); color: #ffd84a; }
+.rsvp .msg { min-height: 1.3em; margin: 0; text-align: center; font: 700 4.6cqw/1.3 var(--f-ui); color: var(--p2); } .rsvp .msg.err { color: #ff4a3a; }
+.board { width: 84%; display: grid; gap: 2cqw; padding-top: 8cqw; text-align: center; }   /* the RSVP list as an arcade high-score table */
+.board h3 { margin: 0; font: 400 9cqw/1 var(--f-he); color: #ffd84a; text-shadow: 0 .8cqw 0 #8a3b00; }
+.board .bc { font: 700 3.6cqw/1 var(--f-ui); color: var(--muted); }
+.board ol { margin: 2cqw 0 0; padding: 0; list-style: none; counter-reset: r; display: grid; gap: 1.6cqw; }
+.board li { counter-increment: r; display: flex; gap: 3cqw; align-items: baseline; font: 400 5.4cqw/1.2 var(--f-he); color: var(--fg); border-bottom: .3cqw dashed #ffffff22; padding-bottom: 1.2cqw; }
+.board li::before { content: counter(r); min-width: 9cqw; text-align: start; font: italic 800 5cqw/1 var(--f-mark); color: var(--p2); }
+#more .pollline { margin-top: 4cqw; font: 700 3.4cqw/1.4 var(--f-ui); color: var(--muted); } #more .pollline small { display: block; }
+.pollline a.src { color: var(--p2); text-decoration: underline; pointer-events: auto; }
+
 /* 2. CONTINUE? the loser is down, the winner taunts */
 .cont { position: relative; display: grid; justify-items: center; gap: 2cqw; margin: 0 5% 8cqw; padding: 30cqw 6cqw 7cqw; text-align: center; background: #0b0e1af2; border: .5cqw solid #e9edf3; border-radius: 1.6cqw; box-shadow: 0 3cqw 6cqw #000b; }
 .pair { position: absolute; top: -12cqw; left: 0; right: 0; height: 40cqw; pointer-events: none; }
@@ -336,12 +357,40 @@ const OUTLET = { 'Kan 11': 'כאן 11', 'Kan': 'כאן 11', 'HaHadashot 12': 'ח
   'Maariv': 'מעריב', 'Walla': 'וואלה', 'Israel Hayom': 'ישראל היום', 'Zman Yisrael': 'זמן ישראל', 'Channel 16': 'ערוץ 16', 'Ynet': 'ynet', 'Haaretz': 'הארץ' };
 const pollLine = () => { const m = C.polls_meta; if (!m?.polls?.length || !C.start.data) return '';
   const [y, mo, d] = m.updated.split('-'), polls = [...new Set(m.polls.map((p) => OUTLET[p.pollster.split(' / ').pop()] || p.pollster.split(' / ').pop()))];
-  return `<div class="pollline">${fmt(C.start.data, { date: `${+d}.${+mo}`, n: m.polls.length, polls: polls.join(' · ') })}</div>`; };
+  return `<div class="pollline">${fmt(C.start.data, { date: `${+d}.${+mo}`, n: m.polls.length, polls: polls.join(' · ') })}${pollLink()}</div>`; };
+const pollLink = () => C.polls_meta?.source ? ` <a class="src" href="${C.polls_meta.source}" target="_blank" rel="noopener" data-t="polls">${C.start.polls_link}</a>` : '';   // the daily job keeps the source and date fresh
 const ballots = () => fmt(C.start.credits, { n: FIGHTS ?? 0 });                                       // [winner, loser] of the last fight, they lead the stairwell crew
 let PWR = {};                                          // power = party's expected seats × weight of the place on its list
 const computePower = () => { PWR = {}; const w = C.game.rank_weights;
-  C.parties.forEach((p) => p.members.forEach((id, i) => { PWR[id] = p.seats * (w[i] ?? w[w.length - 1]); })); };
+  PRNG = {}; C.parties.forEach((p) => p.members.forEach((id, i) => { const k = w[i] ?? w[w.length - 1]; PWR[id] = p.seats * k; PRNG[id] = (p.range || [p.seats, p.seats]).map((x) => x * k); })); };
 const PW = (id) => PWR[id] ?? 1;
+let PRNG = {};                                         // power range: the party's lowest to highest poll × the list weight; each hit rolls inside it
+const PR = (id) => PRNG[id] || [PW(id), PW(id)];
+const sideP = (ids) => ids.reduce((a, id) => a + PW(id), 0) * (ids.length > 1 ? 1.15 : 1);   // a duo: 15% more than the two together
+const sideT = (ids, k) => (DUO?.k === k && C.game.tiers[DUO.tier]) || TIER(ids[k][0]);
+const HP_BOOST = .3, BOUT = { exp: .3, spread: .6, tier: .5 };   // exp: how much more power hits harder (lower = more upsets); spread: per-hit luck; tier: how hard the boss tiers bite (1 = full)                                   // the strongest character gets up to +30% HP (Max, 10.10)
+// One bout, simulated hit by hit: who attacks is a coin flip, the force is rolled from the attacker's poll range (compressed, so upsets happen), the HP bars decide.
+// Fixed rates (game.win, e.g. Golan 80%) pick the winner first and resample until the hits agree. Returns { W, plan: [{ ak, blocked, v (% of the defender's bar) }], hpm }.
+function bout(ids) {
+  Object.assign(BOUT, C.game.bout || {});   // the admin can tune the three knobs
+  const pmax = Math.max(1, ...Object.values(PWR)), avg = Object.values(PWR).reduce((a, b) => a + b, 0) / Math.max(1, Object.keys(PWR).length);
+  const hpm = { 1: 100 * (1 + HP_BOOST * Math.min(1, sideP(ids[1]) / pmax)), 2: 100 * (1 + HP_BOOST * Math.min(1, sideP(ids[2]) / pmax)) };
+  const roll = (k) => ids[k].reduce((a, id) => { const [lo, hi] = PR(id); return a + lo + Math.random() * (hi - lo); }, 0) * (ids[k].length > 1 ? 1.15 : 1);
+  const force = (k) => 30 * Math.pow((roll(k) + 2) / (avg + 2), BOUT.exp) * Math.pow(sideT(ids, k).hit * sideT(ids, 3 - k).armor, BOUT.tier) * (ids[k][0] === CHAMP ? Math.pow(.85, STREAK) : 1) * (1 - BOUT.spread + Math.random() * 2 * BOUT.spread);
+  const blockP = (dk, ak) => .12 + .18 * sideP(ids[dk]) / (sideP(ids[dk]) + sideP(ids[ak]));
+  const fixed = (k) => { const v = ids[k].map((id) => C.game.win?.[id]).filter((x) => x != null); return v.length ? Math.max(...v) : null; }, f1 = fixed(1), f2 = fixed(2);
+  const want = f1 == null && f2 == null ? 0 : Math.random() < (f1 != null && f2 != null ? f1 / (f1 + f2) : f1 != null ? f1 / 100 : 1 - f2 / 100) ? 1 : 2;
+  let last = null;
+  for (let tries = 0; tries < 400; tries++) {
+    const hp = { ...hpm }, plan = []; let W = 0;
+    while (plan.length < 12) { const ak = Math.random() < .5 ? 1 : 2, dk = 3 - ak, blocked = Math.random() < blockP(dk, ak), v = force(ak) * (blocked ? .25 : 1);
+      if (!blocked && hp[dk] - v <= 0) { W = ak; break; }                       // this hit would KO: the winner's finisher takes it instead
+      hp[dk] -= v; plan.push({ ak, blocked, v: v / hpm[dk] * 100 }); }
+    if (!W) continue; last = { W, plan, hpm };
+    if (plan.length >= 3 && plan.length <= 9 && (!want || W === want)) return last;
+  }
+  return last && (!want || last.W === want) ? last : { W: want || 1, plan: [{ ak: want || 1, blocked: false, v: 30 }, { ak: 3 - (want || 1), blocked: false, v: 25 }, { ak: want || 1, blocked: false, v: 30 }], hpm };
+}
 const NOTIER = { hit: 1, armor: 1, appear: 1 };
 const TIER = (id) => Object.values(C.game.tiers).find((t) => t.ids.includes(id)) || NOTIER;   // bosses: hit harder, take less, show up less
 const fmt = (s, o = {}) => String(s ?? '').replace(/\{(\w+)\}/g, (_, k) => o[k] ?? '');
@@ -688,16 +737,10 @@ function fight() {                                     // returns its length in 
   const bar = { 1: hud.querySelector('.p1 span'), 2: hud.querySelector('.p2 span') }, hp = { 1: 100, 2: 100 }, beat = {};
   const setHP = (k, v) => { hp[k] = Math.max(0, Math.round(v)); bar[k].querySelector('i').style.width = hp[k] + '%'; setTimeout(() => (bar[k].querySelector('em').style.width = hp[k] + '%'), 380);
     if (hp[k] && hp[k] < 35 && !beat[k]) { beat[k] = 1; setTimeout(() => sfx('heart', .55), 350); } };
-  const sp = (k) => ids[k].reduce((a, id) => a + PW(id), 0) * (ids[k].length > 1 ? 1.15 : 1);   // a duo: 15% more than the two together
-  const st = (k) => (DUO?.k === k && C.game.tiers[DUO.tier]) || TIER(ids[k][0]);
-  const odds = (k) => Math.pow(sp(k) + 2, 1.3) * st(k).hit * (ids[k][0] === CHAMP ? Math.pow(.75, STREAK) : 1), fixed = (k) => { const v = ids[k].map((id) => C.game.win?.[id]).filter((x) => x != null); return v.length ? Math.max(...v) : null; };
-  const f1 = fixed(1), f2 = fixed(2);                                    // fixed win rates (e.g. Golan) beat the odds
-  const p1 = f1 != null && f2 != null ? f1 / (f1 + f2) : f1 != null ? f1 / 100 : f2 != null ? 1 - f2 / 100 : odds(1) / (odds(1) + odds(2));
-  const W = Math.random() < p1 ? 1 : 2, Lz = 3 - W;
+  const { W, plan, hpm } = bout(ids), Lz = 3 - W, sp = (k) => sideP(ids[k]), st = (k) => sideT(ids, k);   // the rolled hits decide (fixed rates like Golan's still win)
   LAST = [ids[W][0], ids[Lz][0]]; bench(ids[Lz]); DECIDED = true; if (FIGHTS != null) FIGHTS++; ids[W].forEach((id) => (WINS[id] = (WINS[id] || 0) + 1)); paintWins();
   track('fight', `${ids[W].join('+')}>${ids[Lz].join('+')}${SAME ? ' same' : ''}`);
-  const dmg = (k) => 20 * Math.min(2.6, Math.max(.35, Math.pow((sp(k) + 2) / (sp(3 - k) + 2), .7) * st(k).hit * st(3 - k).armor));   // more expected seats (and a higher list spot) hit proportionally harder
-
+  if (hpm[1] !== hpm[2]) [1, 2].forEach((k) => { bar[k].style.width = `${hpm[k] / Math.max(hpm[1], hpm[2]) * 100}%`; if (k === 2) bar[k].style.marginInlineStart = 'auto'; });   // a longer bar: more HP
   const pose = (f, p, back) => { f.img.src = POSE(f.id, p); if (back) setTimeout(() => { if (f.img.isConnected) f.img.src = POSE(f.id, 'stance'); }, back); };
   const go = (f, kf, ms, easing = 'cubic-bezier(.3,0,.2,1)') => f.mv.animate(kf, { duration: ms, easing });
   const tx = (x, y = 0, r = 0) => ({ transform: `translate(${x}cqw,${y}cqw) rotate(${r}deg)` }), rest = { transform: 'none' };
@@ -743,16 +786,7 @@ function fight() {                                     // returns its length in 
     }));
     return m.dur;
   };
-  // plan the fight on a simulated health bar: random hits until the loser is low enough for the finisher (4–9 exchanges, never the same twice)
-  const plan = [], sim = { 1: 100, 2: 100 }, koLine = 16 + Math.random() * 18, edge = Math.min(.78, Math.max(.52, .56 + (odds(W) - odds(Lz)) / (odds(W) + odds(Lz)) * .3));
-  const blockP = (dk, ak) => .1 + .25 * sp(dk) / (sp(dk) + sp(ak)) + (1 - st(dk).armor) * .5;   // the stronger side blocks more
-  while ((sim[Lz] > koLine || plan.length < 4) && plan.length < 9) {
-    const ak = plan.length === 1 && !plan.some((p) => p.ak === Lz) ? Lz : Math.random() < edge ? W : Lz, dk = 3 - ak;
-    const blocked = Math.random() < blockP(dk, ak), kind = pick(Object.keys(MOVESET));
-    let v = dmg(ak) * (.5 + Math.random()) * (blocked ? .25 : 1);
-    v = ak === W ? Math.min(v, sim[Lz] - 6) : Math.min(v, sim[W] - (8 + Math.random() * 10));   // the winner never falls; the loser drops only to the finisher
-    v = Math.max(blocked ? 1 : 3, v); sim[dk] -= v; plan.push({ ak, kind, blocked, v });
-  }
+  plan.forEach((p) => (p.kind = pick(Object.keys(MOVESET))));
   let t = 1000;
   plan.forEach((p) => { t += attack(p, t) + 200 + Math.random() * 240; });
   if (Math.random() * 100 < (C.game.powerup_pct ?? 25)) { const pt = t * (.4 + Math.random() * .25), k = Lz;   // a Coke Zero drops to whoever is behind: hope, briefly
@@ -879,7 +913,7 @@ function buildMore() {
     <section class="win" aria-label="${d.title}">
       <div class="arena2" aria-hidden="true"><img class="l" alt=""><img class="w" alt=""></div>
       <h2 class="wt"></h2>
-      <div class="bubble2"><p class="q" aria-live="off"></p><dl>${d.rows.map((r) => `<dt>${r.k}</dt><dd>${chunks(r.v)}</dd>`).join('')}</dl></div>
+      <div class="bubble2"><p class="q" aria-live="off"></p><dl>${d.rows.map((r) => `<dt>${r.k}</dt><dd>${chunks(r.v)}</dd>`).join('')}</dl>${pollLine()}</div>
       <div class="loot"><h3>${C.loot.title}</h3><ul>${C.loot.items.map((it) => `<li><img src="img/loot/${it.img}.webp" alt=""><b>${it.name}</b><small>${it.cap}</small></li>`).join('')}</ul><p>${C.loot.line}</p></div>
       <a class="arc a1 join" data-t="whatsapp" ${wa ? `href="${wa}" target="_blank" rel="noopener"` : 'aria-disabled="true"'}>${d.whatsapp}</a>
       <div class="trio">
@@ -888,6 +922,13 @@ function buildMore() {
         <button class="arc dim" type="button" id="ics" data-t="calendar">${d.calendar}</button>
       </div>
       <div class="chal" aria-hidden="true">${v.challenger}</div>
+    </section>
+    <section class="rsvp" aria-label="${C.rsvp.title}">
+      <h3>${C.rsvp.title}</h3>
+      <input type="text" maxlength="40" autocomplete="name" placeholder="${C.rsvp.name_ph}" aria-label="${C.rsvp.name_ph}">
+      <label class="lk"><span>${C.rsvp.likely}</span><input type="range" min="0" max="100" step="5" value="70"><b class="lv" aria-live="polite"></b></label>
+      <button class="arc a1" type="button" id="rsvpGo" data-t="rsvp">${C.rsvp.send}</button>
+      <p class="msg" role="status"></p>
     </section>
     <section class="idea" aria-label="${C.idea.or}">
       <button class="arc a1" type="button" data-again data-t="replay_idea">${d.again} ${ICON.replay}</button>
@@ -902,6 +943,7 @@ function buildMore() {
       <button class="arc a1" type="button" id="again2" data-t="replay">${d.again} ${ICON.replay}</button><small class="ballots">${ballots()}</small>
     </section>
     <footer class="foot">
+      <div class="board"><h3>${C.rsvp.board_title}</h3><small class="bc"></small><ol></ol></div>
       <div class="roll" aria-label="${C.credits.title}"><div class="track"><h3>${C.credits.title}</h3><p>${C.credits.intro}</p>
         <ul>${Object.entries(CREDITS).map(([id, [who, lic]]) => `<li data-id="${id}"><img src="img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp" alt=""><b>${NAME[id]}</b><em class="wins"></em><span><bdi>${who}</bdi> · <bdi>${lic}</bdi></span></li>`).join('')}</ul>
         <p>${C.credits.outro}</p></div></div>
@@ -912,6 +954,20 @@ function buildMore() {
       'DTSTART:20261027T180000Z', 'DTEND:20261028T000000Z', `SUMMARY:${C.poster.h1}`, `LOCATION:${C.links.address}`, 'URL:https://elections26.dimaxtlv.com', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
     Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), download: 'elections26.ics' }).click(); };
   more.querySelectorAll('#again2, [data-again]').forEach((b) => (b.onclick = () => { sfx('ballot', .7, false); scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); C = resolve(RAW); rollStyles(false); rollFighters(LAST?.[0]);   /* every run: fresh clay / LEGO / 3D mix */ setTimeout(trailer, RM ? 0 : 450); }));
+
+  // RSVP: a name (shown on the board) and a slider (only the admin sees it); one per visitor, sending again updates it
+  const rs = more.querySelector('.rsvp'), rn = rs.querySelector('input[type=text]'), rr = rs.querySelector('input[type=range]'), rl = rs.querySelector('.lv'), rg = rs.querySelector('#rsvpGo'), rm = rs.querySelector('.msg');
+  const lvl = () => { rl.textContent = `${rr.value}% · ${C.rsvp.levels[Math.min(4, rr.value / 20 | 0)]}`; rr.style.setProperty('--v', `${rr.value}%`); };
+  try { const m = JSON.parse(localStorage.getItem('rsvp')); if (m) { rn.value = m.name; rr.value = m.p; rg.textContent = C.rsvp.update; } } catch (e) {}
+  rr.oninput = () => { lvl(); if (rr.value % 20 === 0) blip(); }; lvl();
+  rg.onclick = async () => { const name = rn.value.replace(/\s+/g, ' ').trim(); if (name.length < 2) return rn.focus();
+    rg.setAttribute('aria-disabled', 'true'); rm.className = 'msg'; rm.textContent = '';
+    try { const r = await fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { method: 'POST', body: JSON.stringify({ vid: VID, dev: DEV, name, p: +rr.value }) });   // text/plain: no CORS preflight
+      if (!r.ok) throw 0; try { localStorage.setItem('rsvp', JSON.stringify({ name, p: +rr.value })); } catch (e) {}
+      rm.textContent = C.rsvp.thanks; rg.textContent = C.rsvp.update; sfx('confirm', .6); flash(.25, 120); loadBoard();
+    } catch (e) { rm.className = 'msg err'; rm.textContent = C.rsvp.error; }
+    rg.removeAttribute('aria-disabled'); };
+  loadBoard();
 
   // the idea box: free text into our own stats table, read in the admin
   const idea = more.querySelector('.idea'), ta = idea.querySelector('textarea'), send = idea.querySelector('#send'), msg = idea.querySelector('.msg');
@@ -957,6 +1013,10 @@ function buildMore() {
     setTimeout(() => { sfx('ballot', .5, false); [dl, dr].forEach((b) => A(b, [{ opacity: .15 }, { opacity: 1 }, { opacity: .3 }, { opacity: 1 }], { duration: 320 }));
       A(foot.querySelector('.glow'), [{ opacity: 0 }, { opacity: 1 }, { opacity: .55 }], { duration: 900 }); sweep(m, 1300); }, 900); }, .6);
 }
+const loadBoard = () => { const b = more.querySelector('.board'); if (!b || !C.links.stats) return;   // everyone who RSVP'd, oldest first; names only
+  fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { cache: 'no-store' }).then((r) => r.json()).then(({ names = [] }) => {
+    b.querySelector('.bc').textContent = names.length ? fmt(C.rsvp.board_count, { n: names.length }) : C.rsvp.board_empty;
+    b.querySelector('ol').replaceChildren(...names.map((n) => Object.assign(document.createElement('li'), { textContent: n }))); }).catch(() => {}); };
 const VICTOR = () => LAST || [P1, P2];                 // [winner, loser]; a skipped show uses the drawn pair
 function fillMore() {                                  // this run's winner and loser, and a fresh countdown
   const [w, l] = VICTOR();
