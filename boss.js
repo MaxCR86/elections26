@@ -110,7 +110,7 @@ function finale(hero, o = {}) {
   beat(o.rematch ? 300 : 200, () => { cam.append(sat); const w = el('div', 'bz-warn', T.warning); cam.append(w); duck(.2, 2);
     [0, 1, 2].forEach((i) => setTimeout(() => sfx('alarm', .7), i * 520));
     A(w, [{ opacity: 0 }, { opacity: 1, offset: .08 }, { opacity: .15, offset: .3 }, { opacity: 1, offset: .38 }, { opacity: .15, offset: .6 }, { opacity: 1, offset: .68 }, { opacity: 1, offset: .9 }, { opacity: 0 }], { duration: 1700 }).finished.then(() => w.remove()); });
-  beat(1800, () => { big('bz-chal', C.victory.challenger, 1500, [{ opacity: 0, transform: 'scaleY(0)' }, { opacity: 1, transform: 'none', offset: .15 }, { opacity: 1, offset: .85 }, { opacity: 0 }]); sfx('vs', .8); });
+  beat(1800, () => { big('bz-chal', T.challenger || C.victory.challenger, 1500, [{ opacity: 0, transform: 'scaleY(0)' }, { opacity: 1, transform: 'none', offset: .15 }, { opacity: 1, offset: .85 }, { opacity: 0 }]); sfx('vs', .8); });
 
   // ---------- act 1: "הגברת" ----------
   beat(1600, () => { A(dark, [{ opacity: .94 }, { opacity: 0 }], { duration: 400, fill: 'forwards' }); mix('fight'); music('bed'); open(.6);
