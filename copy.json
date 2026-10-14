@@ -1804,7 +1804,7 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 22,
+      "seats": 21.9,
       "range": [
         19,
         29
@@ -1838,7 +1838,7 @@
     },
     {
       "name": "ביחד",
-      "seats": 12,
+      "seats": 11.9,
       "range": [
         7,
         14
@@ -1933,7 +1933,7 @@
     },
     {
       "name": "הציונות הדתית",
-      "seats": 6.1,
+      "seats": 6,
       "range": [
         5,
         7
@@ -1941,7 +1941,7 @@
       "members": [
         "smotrich"
       ],
-      "risk": 11,
+      "risk": 12,
       "lock": false
     },
     {
@@ -1959,10 +1959,10 @@
     },
     {
       "name": "המילואימניקים",
-      "seats": 2.6,
+      "seats": 2.5,
       "range": [
         0,
-        5
+        4
       ],
       "members": [
         "hendel"
@@ -1972,7 +1972,7 @@
     },
     {
       "name": "וינטר",
-      "seats": 2.8,
+      "seats": 3.2,
       "range": [
         0,
         5
@@ -2008,7 +2008,7 @@
     }
   ],
   "polls_meta": {
-    "updated": "2026-10-13",
+    "updated": "2026-10-14",
     "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
     "polls": [
       {
@@ -2016,15 +2016,15 @@
         "date": "2026-10-12"
       },
       {
+        "pollster": "Kantar / Kan 11",
+        "date": "2026-10-11"
+      },
+      {
         "pollster": "Yossi Tatika / Zman Yisrael",
         "date": "2026-10-08"
       },
       {
         "pollster": "LRI+P4A / Maariv",
-        "date": "2026-10-08"
-      },
-      {
-        "pollster": "Kantar / Israel Hayom",
         "date": "2026-10-08"
       },
       {
