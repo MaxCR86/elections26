@@ -1804,7 +1804,7 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 21.5,
+      "seats": 21.4,
       "range": [
         18,
         29
@@ -1824,10 +1824,10 @@
     },
     {
       "name": "ישר!",
-      "seats": 21.4,
+      "seats": 21.8,
       "range": [
         20,
-        24
+        26
       ],
       "members": [
         "eisenkot",
@@ -1838,10 +1838,10 @@
     },
     {
       "name": "ביחד",
-      "seats": 11.9,
+      "seats": 11.5,
       "range": [
         7,
-        14
+        13
       ],
       "members": [
         "bennett",
@@ -1853,7 +1853,7 @@
     },
     {
       "name": "הדמוקרטים",
-      "seats": 9,
+      "seats": 9.1,
       "range": [
         8,
         10
@@ -1866,7 +1866,7 @@
     },
     {
       "name": "ש״ס",
-      "seats": 7.8,
+      "seats": 7.6,
       "range": [
         7,
         10
@@ -1879,10 +1879,10 @@
     },
     {
       "name": "ישראל ביתנו",
-      "seats": 8,
+      "seats": 7.9,
       "range": [
         5,
-        10
+        9
       ],
       "members": [
         "liberman"
@@ -1892,9 +1892,9 @@
     },
     {
       "name": "עוצמה יהודית",
-      "seats": 7.9,
+      "seats": 8.1,
       "range": [
-        6,
+        7,
         9
       ],
       "members": [
@@ -1905,7 +1905,7 @@
     },
     {
       "name": "יהדות התורה",
-      "seats": 7.6,
+      "seats": 7.9,
       "range": [
         7,
         8
@@ -1919,7 +1919,7 @@
     },
     {
       "name": "חד״ש-תע״ל",
-      "seats": 7.9,
+      "seats": 8,
       "range": [
         7,
         9
@@ -1933,7 +1933,7 @@
     },
     {
       "name": "הציונות הדתית",
-      "seats": 5.9,
+      "seats": 6,
       "range": [
         5,
         7
@@ -1941,7 +1941,7 @@
       "members": [
         "smotrich"
       ],
-      "risk": 13,
+      "risk": 12,
       "lock": false
     },
     {
@@ -1959,10 +1959,10 @@
     },
     {
       "name": "המילואימניקים",
-      "seats": 3,
+      "seats": 3.6,
       "range": [
         0,
-        4
+        5
       ],
       "members": [
         "hendel"
@@ -1972,10 +1972,10 @@
     },
     {
       "name": "וינטר",
-      "seats": 3.1,
+      "seats": 2,
       "range": [
         0,
-        5
+        4
       ],
       "members": [
         "winter",
@@ -2008,12 +2008,24 @@
     }
   ],
   "polls_meta": {
-    "updated": "2026-10-15",
+    "updated": "2026-10-16",
     "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
     "polls": [
       {
+        "pollster": "Yossi Tatika / Zman Yisrael",
+        "date": "2026-10-15"
+      },
+      {
         "pollster": "MP+TM+SN+A / Channel 13",
         "date": "2026-10-14"
+      },
+      {
+        "pollster": "Maagar Mochot / Channel 16",
+        "date": "2026-10-13"
+      },
+      {
+        "pollster": "LRI+P4A / Walla",
+        "date": "2026-10-12"
       },
       {
         "pollster": "Midgam R&C / HaHadashot 12",
@@ -2028,20 +2040,8 @@
         "date": "2026-10-11"
       },
       {
-        "pollster": "Yossi Tatika / Zman Yisrael",
-        "date": "2026-10-08"
-      },
-      {
-        "pollster": "LRI+P4A / Maariv",
-        "date": "2026-10-08"
-      },
-      {
         "pollster": "Direct Polls / i24 News",
         "date": "2026-10-07"
-      },
-      {
-        "pollster": "Maagar Mochot / Channel 16",
-        "date": "2026-09-29"
       }
     ]
   },
