@@ -1804,7 +1804,7 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 21.4,
+      "seats": 21.1,
       "range": [
         18,
         29
@@ -1824,7 +1824,7 @@
     },
     {
       "name": "ישר!",
-      "seats": 21.8,
+      "seats": 21.6,
       "range": [
         20,
         26
@@ -1853,7 +1853,7 @@
     },
     {
       "name": "הדמוקרטים",
-      "seats": 9.1,
+      "seats": 9,
       "range": [
         8,
         10
@@ -1879,7 +1879,7 @@
     },
     {
       "name": "ישראל ביתנו",
-      "seats": 7.9,
+      "seats": 7.8,
       "range": [
         5,
         9
@@ -1946,7 +1946,7 @@
     },
     {
       "name": "רע״מ",
-      "seats": 5.1,
+      "seats": 5.2,
       "range": [
         5,
         6
@@ -1954,7 +1954,7 @@
       "members": [
         "abbas"
       ],
-      "risk": 24,
+      "risk": 22,
       "lock": false
     },
     {
@@ -1972,7 +1972,7 @@
     },
     {
       "name": "וינטר",
-      "seats": 2,
+      "seats": 2.5,
       "range": [
         0,
         4
@@ -2008,11 +2008,15 @@
     }
   ],
   "polls_meta": {
-    "updated": "2026-10-16",
+    "updated": "2026-10-17",
     "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
     "polls": [
       {
         "pollster": "Yossi Tatika / Zman Yisrael",
+        "date": "2026-10-15"
+      },
+      {
+        "pollster": "LRI+P4A / Maariv",
         "date": "2026-10-15"
       },
       {
@@ -2022,10 +2026,6 @@
       {
         "pollster": "Maagar Mochot / Channel 16",
         "date": "2026-10-13"
-      },
-      {
-        "pollster": "LRI+P4A / Walla",
-        "date": "2026-10-12"
       },
       {
         "pollster": "Midgam R&C / HaHadashot 12",
