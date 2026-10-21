@@ -1804,10 +1804,10 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 21.1,
+      "seats": 236,
       "range": [
         18,
-        29
+        454
       ],
       "members": [
         "netanyahu",
@@ -1824,10 +1824,10 @@
     },
     {
       "name": "ישר!",
-      "seats": 21.6,
+      "seats": 15,
       "range": [
-        20,
-        26
+        10,
+        20
       ],
       "members": [
         "eisenkot",
@@ -1838,10 +1838,10 @@
     },
     {
       "name": "ביחד",
-      "seats": 11.5,
+      "seats": 22,
       "range": [
-        7,
-        13
+        14,
+        30
       ],
       "members": [
         "bennett",
@@ -1853,10 +1853,10 @@
     },
     {
       "name": "הדמוקרטים",
-      "seats": 9,
+      "seats": 8.5,
       "range": [
         8,
-        10
+        9
       ],
       "members": [
         "golan"
@@ -1866,10 +1866,10 @@
     },
     {
       "name": "ש״ס",
-      "seats": 7.6,
+      "seats": 7,
       "range": [
         7,
-        10
+        7
       ],
       "members": [
         "deri"
@@ -1879,10 +1879,10 @@
     },
     {
       "name": "ישראל ביתנו",
-      "seats": 7.8,
+      "seats": 8,
       "range": [
-        5,
-        9
+        8,
+        8
       ],
       "members": [
         "liberman"
@@ -1892,23 +1892,23 @@
     },
     {
       "name": "עוצמה יהודית",
-      "seats": 8.1,
+      "seats": 3.5,
       "range": [
-        7,
-        9
+        0,
+        7
       ],
       "members": [
         "bengvir"
       ],
-      "risk": 0,
+      "risk": 85,
       "lock": false
     },
     {
       "name": "יהדות התורה",
-      "seats": 7.9,
+      "seats": 8.5,
       "range": [
         7,
-        8
+        10
       ],
       "members": [
         "goldknopf",
@@ -1919,9 +1919,9 @@
     },
     {
       "name": "חד״ש-תע״ל",
-      "seats": 8,
+      "seats": 7,
       "range": [
-        7,
+        5,
         9
       ],
       "members": [
@@ -1933,46 +1933,46 @@
     },
     {
       "name": "הציונות הדתית",
-      "seats": 6,
+      "seats": 12,
       "range": [
-        5,
-        7
+        7,
+        17
       ],
       "members": [
         "smotrich"
       ],
-      "risk": 12,
+      "risk": 0,
       "lock": false
     },
     {
       "name": "רע״מ",
-      "seats": 5.2,
+      "seats": 6,
       "range": [
-        5,
+        6,
         6
       ],
       "members": [
         "abbas"
       ],
-      "risk": 22,
+      "risk": 12,
       "lock": false
     },
     {
       "name": "המילואימניקים",
-      "seats": 3.6,
+      "seats": 11.5,
       "range": [
-        0,
-        5
+        4,
+        19
       ],
       "members": [
         "hendel"
       ],
-      "risk": 85,
+      "risk": 0,
       "lock": false
     },
     {
       "name": "וינטר",
-      "seats": 2.5,
+      "seats": 2,
       "range": [
         0,
         4
@@ -2008,40 +2008,16 @@
     }
   ],
   "polls_meta": {
-    "updated": "2026-10-17",
+    "updated": "2026-10-21",
     "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
     "polls": [
       {
-        "pollster": "Yossi Tatika / Zman Yisrael",
-        "date": "2026-10-15"
-      },
-      {
-        "pollster": "LRI+P4A / Maariv",
-        "date": "2026-10-15"
+        "pollster": "SF+ND / Channel 14<ref name=\"Filber19oct\">{{cite web|date=19 October 2026|lang=he-IL|title=הפער בין נתניהו לאיזנקוט שוב מזנק - גם במנדטים וגם בהתאמה",
+        "date": "2026-10-19"
       },
       {
         "pollster": "MP+TM+SN+A / Channel 13",
-        "date": "2026-10-14"
-      },
-      {
-        "pollster": "Maagar Mochot / Channel 16",
-        "date": "2026-10-13"
-      },
-      {
-        "pollster": "Midgam R&C / HaHadashot 12",
-        "date": "2026-10-12"
-      },
-      {
-        "pollster": "SF+ND / Channel 14",
-        "date": "2026-10-12"
-      },
-      {
-        "pollster": "Kantar / Kan 11",
-        "date": "2026-10-11"
-      },
-      {
-        "pollster": "Direct Polls / i24 News",
-        "date": "2026-10-07"
+        "date": "2026-10-19"
       }
     ]
   },
