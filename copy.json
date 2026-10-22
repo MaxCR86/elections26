@@ -1804,10 +1804,10 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 236,
+      "seats": 24,
       "range": [
         18,
-        454
+        30
       ],
       "members": [
         "netanyahu",
@@ -1824,9 +1824,9 @@
     },
     {
       "name": "ישר!",
-      "seats": 15,
+      "seats": 20,
       "range": [
-        10,
+        20,
         20
       ],
       "members": [
@@ -1838,10 +1838,10 @@
     },
     {
       "name": "ביחד",
-      "seats": 22,
+      "seats": 11.5,
       "range": [
-        14,
-        30
+        9,
+        14
       ],
       "members": [
         "bennett",
@@ -1853,9 +1853,9 @@
     },
     {
       "name": "הדמוקרטים",
-      "seats": 8.5,
+      "seats": 9,
       "range": [
-        8,
+        9,
         9
       ],
       "members": [
@@ -1866,10 +1866,10 @@
     },
     {
       "name": "ש״ס",
-      "seats": 7,
+      "seats": 8,
       "range": [
         7,
-        7
+        9
       ],
       "members": [
         "deri"
@@ -1879,9 +1879,9 @@
     },
     {
       "name": "ישראל ביתנו",
-      "seats": 8,
+      "seats": 7,
       "range": [
-        8,
+        6,
         8
       ],
       "members": [
@@ -1892,23 +1892,23 @@
     },
     {
       "name": "עוצמה יהודית",
-      "seats": 3.5,
+      "seats": 7.5,
       "range": [
-        0,
-        7
+        7,
+        8
       ],
       "members": [
         "bengvir"
       ],
-      "risk": 85,
+      "risk": 0,
       "lock": false
     },
     {
       "name": "יהדות התורה",
-      "seats": 8.5,
+      "seats": 7.5,
       "range": [
         7,
-        10
+        8
       ],
       "members": [
         "goldknopf",
@@ -1919,9 +1919,9 @@
     },
     {
       "name": "חד״ש-תע״ל",
-      "seats": 7,
+      "seats": 8.5,
       "range": [
-        5,
+        8,
         9
       ],
       "members": [
@@ -1933,10 +1933,10 @@
     },
     {
       "name": "הציונות הדתית",
-      "seats": 12,
+      "seats": 7,
       "range": [
         7,
-        17
+        7
       ],
       "members": [
         "smotrich"
@@ -1959,15 +1959,15 @@
     },
     {
       "name": "המילואימניקים",
-      "seats": 11.5,
+      "seats": 2,
       "range": [
-        4,
-        19
+        0,
+        4
       ],
       "members": [
         "hendel"
       ],
-      "risk": 0,
+      "risk": 85,
       "lock": false
     },
     {
@@ -2008,12 +2008,12 @@
     }
   ],
   "polls_meta": {
-    "updated": "2026-10-21",
+    "updated": "2026-10-22",
     "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
     "polls": [
       {
-        "pollster": "SF+ND / Channel 14<ref name=\"Filber19oct\">{{cite web|date=19 October 2026|lang=he-IL|title=הפער בין נתניהו לאיזנקוט שוב מזנק - גם במנדטים וגם בהתאמה",
-        "date": "2026-10-19"
+        "pollster": "SF+ND / Channel 14",
+        "date": "2026-10-20"
       },
       {
         "pollster": "MP+TM+SN+A / Channel 13",
