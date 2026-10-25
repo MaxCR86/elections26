@@ -1804,7 +1804,7 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 21.7,
+      "seats": 21.6,
       "range": [
         18,
         30
@@ -1824,7 +1824,7 @@
     },
     {
       "name": "ישר!",
-      "seats": 21.1,
+      "seats": 21.4,
       "range": [
         20,
         23
@@ -1838,7 +1838,7 @@
     },
     {
       "name": "ביחד",
-      "seats": 13.3,
+      "seats": 13.4,
       "range": [
         11,
         15
@@ -1853,7 +1853,7 @@
     },
     {
       "name": "הדמוקרטים",
-      "seats": 9,
+      "seats": 8.9,
       "range": [
         8,
         10
@@ -1866,7 +1866,7 @@
     },
     {
       "name": "ש״ס",
-      "seats": 7.7,
+      "seats": 7.8,
       "range": [
         6,
         9
@@ -1905,7 +1905,7 @@
     },
     {
       "name": "יהדות התורה",
-      "seats": 7.6,
+      "seats": 7.5,
       "range": [
         7,
         8
@@ -1919,7 +1919,7 @@
     },
     {
       "name": "חד״ש-תע״ל",
-      "seats": 8.7,
+      "seats": 8.8,
       "range": [
         8,
         9
@@ -1933,7 +1933,7 @@
     },
     {
       "name": "הציונות הדתית",
-      "seats": 6.7,
+      "seats": 6.6,
       "range": [
         6,
         8
@@ -1941,7 +1941,7 @@
       "members": [
         "smotrich"
       ],
-      "risk": 4,
+      "risk": 5,
       "lock": false
     },
     {
@@ -1959,7 +1959,7 @@
     },
     {
       "name": "המילואימניקים",
-      "seats": 2.3,
+      "seats": 2.5,
       "range": [
         0,
         4
@@ -1972,7 +1972,7 @@
     },
     {
       "name": "וינטר",
-      "seats": 1.1,
+      "seats": 1,
       "range": [
         0,
         4
@@ -2008,7 +2008,7 @@
     }
   ],
   "polls_meta": {
-    "updated": "2026-10-24",
+    "updated": "2026-10-25",
     "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
     "polls": [
       {
@@ -2017,6 +2017,10 @@
       },
       {
         "pollster": "LRI+P4A / Maariv",
+        "date": "2026-10-22"
+      },
+      {
+        "pollster": "Kantar / Israel Hayom",
         "date": "2026-10-22"
       },
       {
