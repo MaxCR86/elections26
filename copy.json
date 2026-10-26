@@ -1804,7 +1804,7 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 21.6,
+      "seats": 21.9,
       "range": [
         18,
         30
@@ -1824,7 +1824,7 @@
     },
     {
       "name": "ישר!",
-      "seats": 21.4,
+      "seats": 21.6,
       "range": [
         20,
         23
@@ -1853,7 +1853,7 @@
     },
     {
       "name": "הדמוקרטים",
-      "seats": 8.9,
+      "seats": 9,
       "range": [
         8,
         10
@@ -1892,7 +1892,7 @@
     },
     {
       "name": "עוצמה יהודית",
-      "seats": 7.9,
+      "seats": 8.1,
       "range": [
         7,
         9
@@ -1946,20 +1946,20 @@
     },
     {
       "name": "רע״מ",
-      "seats": 5.4,
+      "seats": 5.5,
       "range": [
         5,
-        6
+        7
       ],
       "members": [
         "abbas"
       ],
-      "risk": 20,
+      "risk": 18,
       "lock": false
     },
     {
       "name": "המילואימניקים",
-      "seats": 2.5,
+      "seats": 2,
       "range": [
         0,
         4
@@ -1972,7 +1972,7 @@
     },
     {
       "name": "וינטר",
-      "seats": 1,
+      "seats": 0.5,
       "range": [
         0,
         4
@@ -2008,9 +2008,17 @@
     }
   ],
   "polls_meta": {
-    "updated": "2026-10-25",
+    "updated": "2026-10-26",
     "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
     "polls": [
+      {
+        "pollster": "Midgam R&C / HaHadashot 12",
+        "date": "2026-10-23"
+      },
+      {
+        "pollster": "MP+TM+SN+A / Channel 13",
+        "date": "2026-10-23"
+      },
       {
         "pollster": "Yossi Tatika / Zman Yisrael",
         "date": "2026-10-22"
@@ -2026,14 +2034,6 @@
       {
         "pollster": "SF+ND / Channel 14",
         "date": "2026-10-22"
-      },
-      {
-        "pollster": "Midgam R&C / HaHadashot 12",
-        "date": "2026-10-21"
-      },
-      {
-        "pollster": "MP+TM+SN+A / Channel 13",
-        "date": "2026-10-21"
       },
       {
         "pollster": "Direct Polls / i24 News",
