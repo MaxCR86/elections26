@@ -73,7 +73,7 @@ function bossAllies(hero) {
 function finale(hero, o = {}) {
   reset(); FX.clear(); cam.style.background = '#000'; document.body.classList.remove('done');
   const B = { sarah_win: 60, ...(C.game.boss || {}) }, T = C.boss, nm = FULL(hero), d = -1;   // the hero stands right and attacks leftwards
-  const sarahWins = hero === 'netanyahu' || Math.random() * 100 < B.sarah_win;
+  const sarahWins = hero === 'netanyahu' || Math.random() * 100 < (PARTY() ? 50 : B.sarah_win);   // party mode: a coin toss (Bibi still always loses to her)
   const cand = bossAllies(hero), team = window.FORCE_TEAM || cand.slice(0, 4).sort(() => Math.random() - .5).slice(0, 2);   // a fresh pair every attempt
   const bibi = team.indexOf('netanyahu');   // Bibi, when called in, betrays whoever called him and fights next to his wife (Max)
   const END = window.FORCE_END || pick(['beam', 'ballot', 'homer']);   // the final blow: one of three, at random
@@ -81,7 +81,7 @@ function finale(hero, o = {}) {
   [1, 2, 3].forEach((f) => { new Image().src = BIMG(`f${f}`); }); ['f1', 'f2'].forEach((f) => ['stance', 'punch', 'kick', 'hit'].forEach((p) => { new Image().src = BIMG(`${f}_${p}`); }));
   [hero, ...team].forEach((id) => ['stance', 'punch', 'kick', 'hit'].forEach((p) => { new Image().src = POSE(id, p); }));
   track(o.rematch ? 'boss_rematch' : o.secret ? 'boss_secret' : 'boss_start', hero);
-  skipBtn = uiBtn('skip', C.ui.skip, () => { track('boss_skip'); afterBoss(); });
+  if (!PARTY()) skipBtn = uiBtn('skip', C.ui.skip, () => { track('boss_skip'); afterBoss(); });
 
   let t = 0; const beat = (dt, fn) => at((t += dt), fn);   // the timeline: every beat is ms after the previous one
   const say = (who, text, ms = 1800) => { const x = who.x, b = el('div', `bz-say${who === boss ? ' boss' : ''} ${x > 50 ? 'tail-r' : 'tail-l'}`, text); ms = readMs(text, ms);   // a comic bubble, up long enough to read
@@ -392,6 +392,7 @@ function finale(hero, o = {}) {
 
   function gameOver() {
     musicStop(.5); sfx('dq', .7);
+    if (PARTY()) { const g = el('div', 'bz-over', `<div class="go">GAME OVER</div><p>${T.lose}</p>`); cam.append(g); A(g, [{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: 'forwards' }); at(3200, afterBoss); return; }   // party mode: no retry, straight to play again
     const g = el('div', 'bz-over', `<div class="go">GAME OVER</div><p>${T.lose}</p><b class="count">9</b><button type="button" class="arc a1">${T.retry}</button>`); cam.append(g);
     A(g, [{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: 'forwards' });
     let c = 9; const cnt = g.querySelector('.count'), iv = setInterval(() => { if (!g.isConnected) return clearInterval(iv); c--; sfx('tick', .4);
@@ -403,5 +404,5 @@ function finale(hero, o = {}) {
 // After the boss (won, lost, or skipped): a new season, then the usual poster and the scroll page
 function afterBoss() {
   reset(); BENCH = []; bench([]); CHAMP = null; STREAK = 0; RECENT = []; FINALE = false;
-  mix('fin'); music('fin'); poster(true); at(3300, end);
+  mix('fin'); music('fin'); poster(true); at(PARTY() ? 2600 : 3300, PARTY() ? playAgain : end);
 }

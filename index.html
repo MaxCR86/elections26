@@ -231,6 +231,8 @@ canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-eve
 @keyframes nudge { 50% { transform: translateY(.8cqw); } }
 
 /* ---------- CONTINUE? on the stage after every fight: play on, or give up to the results ---------- */
+.pagain { position: absolute; left: 50%; bottom: 9%; z-index: 30; width: 84%; transform: translateX(-50%); font: 400 7.4cqw/1 var(--f-he); padding: 5cqw 0; pointer-events: auto; animation: pflash .7s ease-in-out infinite alternate; }
+@keyframes pflash { from { box-shadow: 0 1.4cqw 0 #8a3b00, 0 0 0 #ffd84a; filter: brightness(1); } to { box-shadow: 0 1.4cqw 0 #8a3b00, 0 0 10cqw #ffd84a; filter: brightness(1.35); } }
 .cscr { position: absolute; inset: 0; z-index: 30; display: grid; align-content: center; justify-items: center; gap: 3.4cqw; padding: 0 10%; background: radial-gradient(ellipse at 50% 45%, #0b0e1ae6, #000f 75%); text-align: center; }
 .cscr .cq { direction: ltr; font: italic 800 11cqw/1 var(--f-mark); font-stretch: 112%; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 .6cqw 0 #222); }
 .cscr .count { direction: ltr; font: italic 900 40cqw/.9 var(--f-mark); font-stretch: 115%; color: #ffd84a; text-shadow: 0 1.4cqw 0 #8a3b00, 0 0 7cqw #ff8a2a; font-variant-numeric: tabular-nums; }
@@ -379,12 +381,19 @@ let PRNG = {};                                         // power range: the party
 const PR = (id) => PRNG[id] || [PW(id), PW(id)];
 const sideP = (ids) => ids.reduce((a, id) => a + PW(id), 0) * (ids.length > 1 ? 1.15 : 1);   // a duo: 15% more than the two together
 const sideT = (ids, k) => (DUO?.k === k && C.game.tiers[DUO.tier]) || TIER(ids[k][0]);
+const PARTY = () => C.game?.party === true;   // party night (Max, 27.10): pure-chance fights, the game runs itself to the boss, then one flashing 'play again'. No invite page.
 const HP_BOOST = .3, BOUT = { exp: .3, spread: .6, tier: .5 };   // exp: how much more power hits harder (lower = more upsets); spread: per-hit luck; tier: how hard the boss tiers bite (1 = full)                                   // the strongest character gets up to +30% HP (Max, 10.10)
 // One bout, simulated hit by hit: who attacks is a coin flip, the force is rolled from the attacker's poll range (compressed, so upsets happen), the HP bars decide.
 // Fixed rates (game.win, e.g. Golan 80%) pick the winner first and resample until the hits agree. Returns { W, plan: [{ ak, blocked, v (% of the defender's bar) }], hpm }.
+function chaos() {   // party mode: every hit is luck, nobody is stronger
+  for (;;) { const hp = { 1: 100, 2: 100 }, plan = []; let W = 0;
+    while (plan.length < 12) { const ak = Math.random() < .5 ? 1 : 2, dk = 3 - ak, blocked = Math.random() < .2, v = (14 + Math.random() * 26) * (blocked ? .25 : 1);
+      if (!blocked && hp[dk] - v <= 0) { W = ak; break; } hp[dk] -= v; plan.push({ ak, blocked, v }); }
+    if (W && plan.length >= 3 && plan.length <= 9) return { W, plan, hpm: { 1: 100, 2: 100 } }; } }
 function bout(ids) {
   Object.assign(BOUT, C.game.bout || {});   // the admin can tune the three knobs
   const pmax = Math.max(1, ...Object.values(PWR)), avg = Object.values(PWR).reduce((a, b) => a + b, 0) / Math.max(1, Object.keys(PWR).length);
+  if (PARTY()) return chaos();
   const hpm = { 1: 100 * (1 + HP_BOOST * Math.min(1, sideP(ids[1]) / pmax)), 2: 100 * (1 + HP_BOOST * Math.min(1, sideP(ids[2]) / pmax)) };
   const roll = (k) => ids[k].reduce((a, id) => { const [lo, hi] = PR(id); return a + lo + Math.random() * (hi - lo); }, 0) * (ids[k].length > 1 ? 1.15 : 1);
   const force = (k) => 30 * Math.pow((roll(k) + 2) / (avg + 2), BOUT.exp) * Math.pow(sideT(ids, k).hit * sideT(ids, 3 - k).armor, BOUT.tier) * (ids[k][0] === CHAMP ? Math.pow(.85, STREAK) : 1) * (1 - BOUT.spread + Math.random() * 2 * BOUT.spread);
@@ -428,7 +437,8 @@ function rollStyles(fixed) {
 }
 // Mostly coalition vs opposition; game.same_team_pct of fights are a same-team "bug". A duo member drags the partner in at that duo's chance.
 let P1 = 'netanyahu', P2 = 'eisenkot', SAME = false, DUO = null;   // P1 stands right, P2 left; DUO = { k: side, id: partner, tier, line }
-const wpick = (ids) => { const w = ids.map((id) => TIER(id).appear); let r = Math.random() * w.reduce((a, b) => a + b); return ids.find((_, i) => (r -= w[i]) < 0) ?? ids[0]; };
+const wpick = (ids) => { if (PARTY()) return pick(ids);   // party mode: everyone equally likely to show up
+  const w = ids.map((id) => TIER(id).appear); let r = Math.random() * w.reduce((a, b) => a + b); return ids.find((_, i) => (r -= w[i]) < 0) ?? ids[0]; };
 // The threshold: once per page load, every at-risk party (parties[].risk %) may fall under 3.25% and leave the game.
 let OUT = new Set(), RISKY = [], DQ_SHOWN = false;
 const GRID_IDS = () => [...R.map((r) => r[0]), ...L.map((r) => r[0]), 'gantz', 'hendel'];
@@ -1156,12 +1166,18 @@ function end() {   // the landing page: the poster on the stage with the arrow o
 function trailer() {
   if (FINALE) { FINALE = false; return finale(ALIVE()[0] || LAST?.[0]); }   // the last man standing meets the secret boss
   reset(); showSnd();
-  skipBtn = uiBtn('skip', C.ui.skip, () => { track('skip'); if (!DECIDED) { LAST = [P1, P2]; bench([P2]); DECIDED = true; }   /* skipped before the fight: the shown result counts */ reset(); poster(false); mix('fin'); music('fin'); end(); });
+  if (!PARTY()) skipBtn = uiBtn('skip', C.ui.skip, () => { track('skip'); if (!DECIDED) { LAST = [P1, P2]; bench([P2]); DECIDED = true; }   /* skipped before the fight: the shown result counts */ reset(); poster(false); mix('fin'); music('fin'); end(); });
   const s = select();
   at(s + 500, () => { const d = fight();
     if (ALIVE().length < 2 && C.game.boss?.on !== false) at(d, () => finale(LAST[0]));   // that was the last match: confetti… and then her
-    else at(d, contScreen); });
+    else at(d, PARTY() ? playOn : contScreen); });
 }
+function newRun() { BENCH = []; bench([]); CHAMP = null; STREAK = 0; RECENT = []; FINALE = false; LAST = null; DQ_SHOWN = false;
+  C = resolve(RAW); rollStyles(false); rollThreshold(); rollFighters(); trailer(); }
+function playAgain() {   // party mode, after the boss: over the poster, one flashing button
+  const b = el('button', 'arc a1 pagain', C.party?.again || 'PLAY AGAIN'); b.type = 'button'; cam.append(b);
+  A(b, [{ opacity: 0, transform: 'translateX(-50%) scale(.6)' }, { opacity: 1, transform: 'translateX(-50%)' }], { duration: 400, easing: 'cubic-bezier(.2,1.4,.4,1)', fill: 'forwards' });
+  b.onclick = () => { sfx('ballot', .7, false); flash(.5, 140); newRun(); }; }
 const playOn = () => { C = resolve(RAW); rollStyles(false); rollFighters(LAST?.[0]); trailer(); };   // every run: fresh clay / LEGO / 3D mix
 const results = () => { reset(); mix('fin'); music('fin'); poster(true); at(3300, end); };
 // after each fight: CONTINUE? counts down (game.continue_s, default 5). Play on, or give up (tap or time) to the results
