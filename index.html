@@ -28,20 +28,16 @@
 html, body { height: 100%; }
 body { background: var(--ink); color: var(--fg); font-family: var(--f-ui); margin: 0; overflow: hidden; }
 body.done { overflow-y: auto; }
-/* party mode on a TV: the portrait game at full height in the middle; the sides show the arena, blurred, and two panels */
-body.party { display: grid; grid-template-columns: 1fr auto 1fr; }
-body.party::before { content: ""; position: fixed; inset: -5%; z-index: -1; background: #000 var(--arena, url("img/bg.jpg")) center / cover; filter: blur(3vh) brightness(.4) saturate(1.3); transition: background-image .6s; }
-body.party #stage { grid-column: 2; height: 100dvh; margin: 0; box-shadow: 0 0 6vh #000; }
-body.party #more { display: none !important; }
-.side { height: 100dvh; box-sizing: border-box; padding: 5vh 3vw; display: flex; flex-direction: column; gap: 2vh; overflow: hidden; direction: rtl; color: #fff; }
-.side h2 { margin: 0; font: 400 5.4vh/1.1 var(--f-he); color: #ffd84a; text-shadow: 0 .5vh 0 #8a3b00; }
-.side h3 { margin: 1vh 0 0; font: 400 3.6vh/1.1 var(--f-he); color: #fff; }
-.side ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.4vh; }
-.side li { display: flex; align-items: center; gap: 1.2vw; font: 700 2.8vh/1.2 var(--f-ui); }
-.side li img, .side li i { flex: none; width: 7vh; height: 7vh; border-radius: 50%; object-fit: cover; object-position: 50% 6%; background: #1a2140; box-shadow: 0 0 0 .4vh #ffd84a; }
-.side li i { box-shadow: 0 0 0 .4vh #ffffff33; } .side li img.champ { box-shadow: 0 0 0 .5vh #ff3aa8, 0 0 2vh #ff3aa8; object-position: 50% 0; }
-.side li b { margin-inline-start: auto; color: #ffd84a; font-weight: 700; }
-@media (max-aspect-ratio: 1/1) { .side { display: none; } body.party { display: block; } }
+/* party mode on a TV (landscape): the scene fills the whole screen. Text keeps its size (it measures the portrait column, the container),
+   while the scene layers stretch to the screen edges and every move measured in "% of the stage" is scaled by WX() */
+body.tv { --side: max(0px, calc((100vw - 100dvh * 9 / 16) / 2)); }
+body.tv #stage { width: calc(100dvh * 9 / 16); height: 100dvh; aspect-ratio: auto; max-width: none; margin: 0 auto; overflow: visible; }
+body.tv .cam, body.tv canvas.fx, body.tv .flash, body.tv .fz-screen { left: calc(-1 * var(--side)); right: calc(-1 * var(--side)); width: auto; }
+body.tv .bgp { background-position: 50% 70%; }
+body.tv .start, body.tv .teams, body.tv .hud, body.tv .glitch, body.tv .cscr, body.tv .bz-sum, body.tv .bz-over { left: calc(var(--side) + 2vh); right: calc(var(--side) + 2vh); }   /* menus keep the column width */
+body.tv .pagain { width: calc(100dvh * 9 / 16 * .84); }
+body.tv .start { left: var(--side); right: var(--side); align-content: safe center; }
+body.tv #more { display: none !important; }
 #stage { position: relative; height: min(100dvh, 177.78vw); aspect-ratio: 9 / 16; max-width: 100%; margin: 0 auto; overflow: hidden; background: #000;
   container-type: inline-size; isolation: isolate; direction: rtl; }
 .cam { position: absolute; inset: 0; }
@@ -377,18 +373,7 @@ const resolve = (v) => { if (isOpts(v)) { const on = v.filter((o) => o.on); retu
   return v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, resolve(x)])) : v; };
 let LAST = null, FIGHTS = null, WINS = {};                         // FIGHTS: total fights played by everyone (stats table)
 const paintWins = () => { const ul = document.querySelector('.roll ul'); if (!ul) return; const lis = [...ul.querySelectorAll('li[data-id]')], w = (li) => WINS[li.dataset.id] || 0;   // the scoreboard: most wins first
-  lis.forEach((li) => { li.querySelector('.wins').textContent = w(li) ? fmt(C.credits.wins, { n: w(li) }) : ''; }); lis.sort((a, b) => w(b) - w(a)).forEach((li) => ul.append(li)); paintSides(); };
-let GUESTS = [];
-function paintSides() { if (!PARTY()) return; document.body.classList.add('party');
-  let [g, w] = ['sg', 'sw'].map((k) => document.querySelector(`.side.${k}`)); if (!g) { g = el('aside', 'side sg'); w = el('aside', 'side sw'); stage.before(g); stage.after(w); }
-  const row = (img, name, n) => { const li = document.createElement('li'); li.append(img || document.createElement('i')); const b = document.createElement('span'); b.textContent = name; li.append(b); if (n != null) { const c = document.createElement('b'); c.textContent = n; li.append(c); } return li; };
-  const face = (src, champ) => { const i = new Image(); i.alt = ''; i.src = src; if (champ) i.className = 'champ'; return i; };
-  const top = Object.keys(NAME).filter((id) => WINS[id]).sort((a, b) => WINS[b] - WINS[a]).slice(0, 8);
-  w.replaceChildren(el('h2', '', fmt(C.select.left, { n: LEFT() })), el('h3', '', C.party?.wins_title || ''), Object.assign(document.createElement('ol'), {}));
-  w.querySelector('ol').append(...top.map((id) => row(face(HEAD(id)), NAME[id], WINS[id])));
-  g.replaceChildren(el('h2', '', C.party?.guests_title || ''), document.createElement('ol'));
-  g.querySelector('ol').append(...GUESTS.slice(0, 10).map((r) => row(r.boss ? face('img/boss/sarah_f3.webp', true) : NAME[r.face] ? face(HEAD(r.face)) : null, r.name))); }
-const loadGuests = () => C.links.stats && fetch(C.links.stats.replace(/\/$/, '') + '/rsvp', { cache: 'no-store' }).then((r) => r.json()).then(({ rows = [] }) => { GUESTS = rows; paintSides(); }).catch(() => {});
+  lis.forEach((li) => { li.querySelector('.wins').textContent = w(li) ? fmt(C.credits.wins, { n: w(li) }) : ''; }); lis.sort((a, b) => w(b) - w(a)).forEach((li) => ul.append(li)); };
 const HEAD = (id) => `img/${id}_${STY.find((s) => !BAD.has(`${id}_${s}`))}.webp`;
 // "the game is real": when the strengths were last updated from the polls, and which ones (polls_meta, written daily by the poll job)
 const OUTLET = { 'Kan 11': 'כאן 11', 'Kan': 'כאן 11', 'HaHadashot 12': 'חדשות 12', 'Channel 12': 'חדשות 12', 'Channel 13': 'חדשות 13', 'Channel 14': 'ערוץ 14', 'i24 News': 'i24NEWS',
@@ -510,6 +495,7 @@ document.addEventListener('click', (e) => { const n = e.target.closest('[data-t]
 
 // ---------- helpers ----------
 const stage = document.getElementById('stage'), cam = document.getElementById('cam'), F = document.getElementById('flash'), more = document.getElementById('more');
+const WX = () => cam.clientWidth / stage.clientWidth, VR = () => cam.clientHeight / cam.clientWidth, TVS = () => (document.body.classList.contains('tv') ? 1.25 : 1);   // TVS: fighters a size up on a TV   // 1 and 16/9 on a phone; on a TV the scene is wider than the text column
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const el = (tag, cls, html) => Object.assign(document.createElement(tag), { className: cls || '', innerHTML: html || '' });
 const A = (n, kf, o) => n.animate(kf, { fill: 'both', ...o });
@@ -524,7 +510,7 @@ const slam = (n, delay = 0) => A(n, [{ opacity: 0, transform: 'scale(1.7)' }, { 
 const FX = (() => {
   const c = el('canvas', 'fx'); stage.append(c);
   const ctx = c.getContext('2d'); let W = 1, H = 1, last = performance.now();
-  const size = () => { const d = Math.min(devicePixelRatio || 1, 2); W = stage.clientWidth; H = stage.clientHeight; c.width = W * d; c.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  const size = () => { const d = Math.min(devicePixelRatio || 1, 2); W = c.clientWidth; H = c.clientHeight; c.width = W * d; c.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
   size(); addEventListener('resize', size);
   const ps = []; let paint = null;
   (function loop(t) {
@@ -651,7 +637,7 @@ const FULL = (id) => C.full_names?.[id] || NAME[id];   // full name with title, 
 const sideFull = (k) => [k === 1 ? P1 : P2, DUO?.k === k ? DUO.id : null].filter(Boolean).map(FULL).join(' + ');
 const sideNames = (k) => [k === 1 ? P1 : P2, DUO?.k === k ? DUO.id : null].filter(Boolean).map((id) => NAME[id]).join(' + ');
 function ch([id, label, x, y, h], z = 2) {
-  const w = h * (2 / 3) * (16 / 9), d = el('div', 'ch'); d.dataset.id = id;
+  const w = h * (2 / 3) * VR(), d = el('div', 'ch'); d.dataset.id = id;
   d.style.cssText = `left:${x - w / 2}%;top:${y - h}%;width:${w}%;height:${h}%;z-index:${z}`;
   d.append(Object.assign(new Image(), { src: IMG(id), alt: NAME[id] })); cam.append(d); return d;
 }
@@ -837,7 +823,7 @@ function fight() {                                     // returns its length in 
   const X = { 1: 70, 2: 30 }, D = (k) => (k === 1 ? -1 : 1);            // P1 stands right and attacks leftwards
   const duo = ids[1].length > 1 ? 1 : ids[2].length > 1 ? 2 : 0;
   const mk = (id, k, i) => {                                             // i: 0 = lead, 1 = duo partner standing further back, never behind the lead
-    const pair = k === duo, h = pair ? 35 : 40, w = h * 16 / 9, x = X[k] + (pair ? D(k) * (i ? -13 : 6) : 0);
+    const pair = k === duo, h = (pair ? 35 : 40) * TVS(), w = h * VR(), x = X[k] + (pair ? D(k) * (i ? -13 : 6) : 0);
     const c = el('div', 'ch'); c.style.cssText = `left:${x - w / 2}%;top:${92 - h}%;width:${w}%;height:${h}%;z-index:${i ? 4 : 5}`;
     const mv = el('div', 'mv'), bob = el('div', 'bob'), img = Object.assign(new Image(), { src: POSE(id, 'stance'), alt: NAME[id] });
     if (k === 1) img.className = 'flip';
@@ -858,7 +844,7 @@ function fight() {                                     // returns its length in 
   if (hpm[1] !== hpm[2]) [1, 2].forEach((k) => { bar[k].style.width = `${hpm[k] / Math.max(hpm[1], hpm[2]) * 100}%`; if (k === 2) bar[k].style.marginInlineStart = 'auto'; });   // a longer bar: more HP
   const pose = (f, p, back) => { f.img.src = POSE(f.id, p); if (back) setTimeout(() => { if (f.img.isConnected) f.img.src = POSE(f.id, 'stance'); }, back); };
   const go = (f, kf, ms, easing = 'cubic-bezier(.3,0,.2,1)') => f.mv.animate(kf, { duration: ms, easing });
-  const tx = (x, y = 0, r = 0) => ({ transform: `translate(${x}cqw,${y}cqw) rotate(${r}deg)` }), rest = { transform: 'none' };
+  const tx = (x, y = 0, r = 0) => ({ transform: `translate(${x * WX()}cqw,${y}cqw) rotate(${r}deg)` }), rest = { transform: 'none' };
   const MOVESET = {                                    // hits: impact times (ms); react: what the defender does
     jab: { hits: [400], dur: 760, react: 'hit', run(f, d) { sfx('step', .45); go(f, [rest, { ...tx(d * (20 + f.reach)), offset: .5 }, { ...tx(d * (20 + f.reach)), offset: .7 }, rest], 760);
       setTimeout(() => { sfx('whoosh', .45); pose(f, 'punch', 360); }, 260); } },
@@ -1203,6 +1189,11 @@ function playAgain() {   // party mode, after the boss: over the poster, one fla
   const b = el('button', 'arc a1 pagain', C.party?.again || 'PLAY AGAIN'); b.type = 'button'; cam.append(b);
   A(b, [{ opacity: 0, transform: 'translateX(-50%) scale(.6)' }, { opacity: 1, transform: 'translateX(-50%)' }], { duration: 400, easing: 'cubic-bezier(.2,1.4,.4,1)', fill: 'forwards' });
   b.onclick = () => { sfx('ballot', .7, false); flash(.5, 140); newRun(); }; }
+function awake() {   // party mode: no screen saver while the game runs
+  const lock = () => navigator.wakeLock?.request('screen').catch(() => {});
+  if ('wakeLock' in navigator) { lock(); document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && lock()); addEventListener('pointerdown', lock, { once: true }); return; }
+  const v = Object.assign(document.createElement('video'), { src: 'audio/awake.mp4', muted: true, loop: true, playsInline: true }); v.setAttribute('playsinline', '');   // fallback for browsers without a wake lock (smart-TV browsers)
+  v.style.cssText = 'position:fixed;width:1px;height:1px;opacity:.01;pointer-events:none'; document.body.append(v); const play = () => v.play().catch(() => {}); play(); addEventListener('pointerdown', play, { once: true }); }
 const playOn = () => { C = resolve(RAW); rollStyles(false); rollFighters(LAST?.[0]); trailer(); };   // every run: fresh clay / LEGO / 3D mix
 const results = () => { reset(); mix('fin'); music('fin'); poster(true); at(3300, end); };
 // after each fight: CONTINUE? counts down (game.continue_s, default 5). Play on, or give up (tap or time) to the results
@@ -1221,7 +1212,8 @@ function contScreen() {
 
 Promise.all([document.fonts.load('italic 500 40px Saira'), document.fonts.load('40px "Secular One"')]).catch(() => {})
   .then(() => fetch('copy.json', { cache: 'no-cache' })).then((r) => r.json()).then((j) => {
-    RAW = j; C = resolve(RAW); Object.assign(NAME, C.names); computePower(); buildMore(); track('load'); if (PARTY()) { paintSides(); loadGuests(); setInterval(loadGuests, 120000); }
+    RAW = j; C = resolve(RAW); Object.assign(NAME, C.names); computePower(); buildMore(); track('load'); if (PARTY() && innerWidth > innerHeight) { document.body.classList.add('tv'); dispatchEvent(new Event('resize')); }
+    if (PARTY()) awake();
     if (C.links.stats) fetch(C.links.stats.replace(/\/$/, '') + '/count').then((r) => r.json()).then((x) => { FIGHTS = x.fights; WINS = x.wins || {}; paintWins(); document.querySelectorAll('.credit, .ballots').forEach((n) => (n.textContent = ballots())); }).catch(() => {});
     if (location.hash === '#poster') { reset(); rollStyles(true); poster(false); } else boot();
   });

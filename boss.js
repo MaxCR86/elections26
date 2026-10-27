@@ -88,14 +88,14 @@ function finale(hero, o = {}) {
     b.style.cssText = `top:${who === boss ? 34 : 38}%;${x > 50 ? 'right' : 'left'}:${x > 50 ? 100 - x - 14 : x - 16}%`; cam.append(b);
     A(b, [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'none', offset: .12 }, { opacity: 1, offset: .88 }, { opacity: 0 }], { duration: ms, easing: 'ease-out' }).finished.then(() => b.remove()); };
   const big = (cls, html, ms, kf) => { ms = readMs(html, ms); const n = el('div', cls, html); cam.append(n); A(n, kf || [{ opacity: 0, transform: 'scale(1.8)' }, { opacity: 1, transform: 'none', offset: .15 }, { opacity: 1, offset: .85 }, { opacity: 0 }], { duration: ms, easing: 'ease-out' }).finished.then(() => n.remove()); return n; };
-  const fighter = (id, x, h, flip, src) => { const w = h * 16 / 9, c = el('div', 'ch'); c.style.cssText = `left:${x - w / 2}%;top:${92 - h}%;width:${w}%;height:${h}%;z-index:5`;
+  const fighter = (id, x, h, flip, src) => { h *= TVS(); const w = h * VR(), c = el('div', 'ch'); c.style.cssText = `left:${x - w / 2}%;top:${92 - h}%;width:${w}%;height:${h}%;z-index:5`;
     const mv = el('div', 'mv'), bob = el('div', 'bob'), img = Object.assign(new Image(), { src, alt: NAME[id] || '' }); if (flip) img.className = 'flip';
     bob.append(img); mv.append(bob); c.append(mv); cam.append(c);
     bob.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${flip ? -1 : 1}cqw,-1.2%)` }], { duration: 440, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' });
     return { c, mv, bob, img, id, x, k: flip ? 1 : 2 }; };
   const pose = (f, p, back) => { f.img.src = f.id === BOSS_ID ? BIMG(`${form}_${p}`) : POSE(f.id, p);
     if (back) setTimeout(() => { if (f.img.isConnected && !f.out) f.img.src = f.id === BOSS_ID ? BIMG(`${form}_stance`) : POSE(f.id, 'stance'); }, back); };
-  const tx = (x, y = 0, r = 0) => ({ transform: `translate(${x}cqw,${y}cqw) rotate(${r}deg)` }), rest = { transform: 'none' };
+  const tx = (x, y = 0, r = 0) => ({ transform: `translate(${x * WX()}cqw,${y}cqw) rotate(${r}deg)` }), rest = { transform: 'none' };
   const go = (f, kf, ms, easing = 'cubic-bezier(.3,0,.2,1)') => f.mv.animate(kf, { duration: ms, easing });
   const hitFx = (f, hue, n = 46) => { f.img.animate([{ filter: 'brightness(3.5) saturate(0)' }, { filter: 'none' }], { duration: 150 }); FX.burst(f.x / 100, .64, n, { s0: 160, s1: 520, g: 500, life: .55, h: hue }); };
 

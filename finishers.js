@@ -56,8 +56,8 @@ const FZS = el('div', 'fz-screen'); stage.append(FZS);
 new MutationObserver(() => { if (!cam.firstChild) FZS.replaceChildren(); }).observe(cam, { childList: true });
 const FZ_H = 16 / 9;                                              // 1% of stage height in cqw
 const FZ_FACE = { golan: -1 };                                    // prop sprites that point left (the rest point right)
-const fzT = (x, y, more = '') => `translate(${x}cqw,${y * FZ_H}cqw) ${more}`;   // stage % → transform (node at left:0 top:0)
-const fzM = (x = 0, y = 0, r = 0) => ({ transform: `translate(${x}cqw,${y}cqw) rotate(${r}deg)` });
+const fzT = (x, y, more = '') => `translate(${x * WX()}cqw,${y * FZ_H}cqw) ${more}`;   // stage % → transform (node at left:0 top:0)
+const fzM = (x = 0, y = 0, r = 0) => ({ transform: `translate(${x * WX()}cqw,${y}cqw) rotate(${r}deg)` });
 const fzR = (a, b) => a + Math.random() * (b - a);
 
 // The kit: shared cinematic helpers for one finisher run. All times are ms from run(); every node is removed after the KO beat.
