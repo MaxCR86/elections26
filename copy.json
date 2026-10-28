@@ -1805,10 +1805,10 @@
   "parties": [
     {
       "name": "הליכוד",
-      "seats": 21.9,
+      "seats": 24.4,
       "range": [
         18,
-        30
+        29
       ],
       "members": [
         "netanyahu",
@@ -1825,7 +1825,7 @@
     },
     {
       "name": "ישר!",
-      "seats": 21.6,
+      "seats": 21.1,
       "range": [
         20,
         23
@@ -1839,7 +1839,7 @@
     },
     {
       "name": "ביחד",
-      "seats": 13.4,
+      "seats": 13.1,
       "range": [
         11,
         15
@@ -1854,9 +1854,9 @@
     },
     {
       "name": "הדמוקרטים",
-      "seats": 9,
+      "seats": 8.8,
       "range": [
-        8,
+        7,
         10
       ],
       "members": [
@@ -1867,10 +1867,10 @@
     },
     {
       "name": "ש״ס",
-      "seats": 7.8,
+      "seats": 7,
       "range": [
         6,
-        9
+        8
       ],
       "members": [
         "deri"
@@ -1893,9 +1893,9 @@
     },
     {
       "name": "עוצמה יהודית",
-      "seats": 8.1,
+      "seats": 7,
       "range": [
-        7,
+        6,
         9
       ],
       "members": [
@@ -1906,10 +1906,10 @@
     },
     {
       "name": "יהדות התורה",
-      "seats": 7.5,
+      "seats": 7,
       "range": [
-        7,
-        8
+        6,
+        9
       ],
       "members": [
         "goldknopf",
@@ -1920,10 +1920,10 @@
     },
     {
       "name": "חד״ש-תע״ל",
-      "seats": 8.8,
+      "seats": 10.1,
       "range": [
-        8,
-        9
+        9,
+        12
       ],
       "members": [
         "tibi",
@@ -1934,33 +1934,33 @@
     },
     {
       "name": "הציונות הדתית",
-      "seats": 6.6,
+      "seats": 6.2,
       "range": [
         6,
-        8
+        7
       ],
       "members": [
         "smotrich"
       ],
-      "risk": 5,
+      "risk": 10,
       "lock": false
     },
     {
       "name": "רע״מ",
-      "seats": 5.5,
+      "seats": 5.9,
       "range": [
-        5,
+        4,
         7
       ],
       "members": [
         "abbas"
       ],
-      "risk": 18,
+      "risk": 13,
       "lock": false
     },
     {
       "name": "המילואימניקים",
-      "seats": 2,
+      "seats": 1.5,
       "range": [
         0,
         4
@@ -2009,16 +2009,28 @@
     }
   ],
   "polls_meta": {
-    "updated": "2026-10-26",
+    "updated": "2026-10-28",
     "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election",
     "polls": [
       {
+        "pollster": "Direct Polls / i24 News",
+        "date": "2026-10-27"
+      },
+      {
+        "pollster": "Kantar / Kan 11",
+        "date": "2026-10-27"
+      },
+      {
         "pollster": "Midgam R&C / HaHadashot 12",
-        "date": "2026-10-23"
+        "date": "2026-10-27"
+      },
+      {
+        "pollster": "SF+ND / Channel 14",
+        "date": "2026-10-27"
       },
       {
         "pollster": "MP+TM+SN+A / Channel 13",
-        "date": "2026-10-23"
+        "date": "2026-10-27"
       },
       {
         "pollster": "Yossi Tatika / Zman Yisrael",
@@ -2027,18 +2039,6 @@
       {
         "pollster": "LRI+P4A / Maariv",
         "date": "2026-10-22"
-      },
-      {
-        "pollster": "Kantar / Israel Hayom",
-        "date": "2026-10-22"
-      },
-      {
-        "pollster": "SF+ND / Channel 14",
-        "date": "2026-10-22"
-      },
-      {
-        "pollster": "Direct Polls / i24 News",
-        "date": "2026-10-20"
       },
       {
         "pollster": "Maagar Mochot / Channel 16",
